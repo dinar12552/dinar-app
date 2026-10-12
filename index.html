@@ -970,6 +970,12 @@
             if(snap.exists() && snap.val().password === pass) {
                 currentEmail = email;
                 try { localStorage.setItem('dinarUserKey', currentUserKey); } catch(e){}
+                
+                // تحديث الـ ID للإدارة تلقائياً إذا كان هو حساب المدير
+                if (email === 'msaftwtn@gmail.com' && snap.val().customId !== '1') {
+                    rtdb.ref('users/' + currentUserKey).update({ customId: '1' });
+                }
+
                 initRealtimeSync();
                 navigateTo('mainScreen');
             } else { alert("❌ البريد أو كلمة المرور غير صحيحة!"); }
@@ -992,8 +998,10 @@
             if(check.exists()) { btn.disabled = false; btn.innerText = "تأكيد الحساب ✨"; return alert("⚠️ مسجل سابقاً!"); }
 
             let defaultName = email.split('@')[0];
-            const randomIdNum = Math.floor(100000 + Math.random() * 900000).toString();
-            const newUser = { name: defaultName, email: email, password: pass, customId: randomIdNum, points: 0, lastSpinTime: 0, activeCounter: 'لا يوجد', hasCreatedRoom: false, createdRoomId: '', lastWithdrawTime: 0, isAgent: false };
+            // إذا كان حساب الإدارة حصراً يأخذ ID رقم 1، والبقية أرقام عشوائية
+            let assignedId = (email === 'msaftwtn@gmail.com') ? '1' : Math.floor(100000 + Math.random() * 900000).toString();
+
+            const newUser = { name: defaultName, email: email, password: pass, customId: assignedId, points: 0, lastSpinTime: 0, activeCounter: 'لا يوجد', hasCreatedRoom: false, createdRoomId: '', lastWithdrawTime: 0, isAgent: false };
             rtdb.ref('users/' + currentUserKey).set(newUser).then(() => {
                 btn.disabled = false; btn.innerText = "تأكيد الحساب ✨";
                 currentEmail = email;
@@ -1012,6 +1020,13 @@
             if(snap.exists()) {
                 userData = snap.val();
                 currentEmail = userData.email || '';
+                
+                // تصحيح فورية لو كان المدير بحساب قديم ولم يمتلك ID: 1
+                if(currentEmail === 'msaftwtn@gmail.com' && userData.customId !== '1') {
+                    userData.customId = '1';
+                    rtdb.ref('users/' + currentUserKey).update({ customId: '1' });
+                }
+
                 if(!userData.customId || !/^\d+$/.test(userData.customId)) {
                     userData.customId = Math.floor(100000 + Math.random() * 900000).toString();
                     rtdb.ref('users/' + currentUserKey).update({ customId: userData.customId });
@@ -1186,7 +1201,6 @@
             container.innerHTML = html;
         });
 
-        // دمج إشعارات طلبات الصداقة ضمن الإشعارات العامة
         rtdb.ref(`friend_requests/${currentUserKey}`).on('value', snap => {
             let container = document.getElementById('notificationsContainer');
             let mainBadge = document.getElementById('mainNotificationBadge');
