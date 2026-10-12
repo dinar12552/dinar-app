@@ -178,91 +178,129 @@ color: #fff;
 }
 .shop-tier-content.active { display: block;
 }
-.counter-row { display: flex;
-justify-content: space-between;
-align-items: center;
-background: rgba(255,255,255,0.03);
-border: 1px solid #1e293b;
-padding: 8px 10px;
-border-radius: 8px;
-margin-bottom: 5px;
-text-align: right;
-}
-.counter-row button { width: auto;
-padding: 5px 10px;
-font-size: 11px;
-}
-.profile-box { text-align: center;
-background: rgba(30,41,59,0.7);
-border: 1px solid rgba(245,158,11,0.3);
-border-radius: 16px;
-padding: 15px;
-margin-bottom: 10px;
-}
-.large-avatar { width: 85px;
-height: 85px;
-border-radius: 50%;
-object-fit: cover;
-border: 3px solid #f59e0b;
-margin: 0 auto 8px auto;
-display: block;
-background: #222;
-cursor: pointer;
-}
-.large-avatar:hover { opacity: 0.85;
-transform: scale(1.02);
-}
-.wheel-box { width: 180px;
-height: 180px;
-border-radius: 50%;
-border: 6px solid #f59e0b;
-margin: 10px auto;
-position: relative;
-overflow: hidden;
-transition: transform 5s cubic-bezier(0.05, 0.9, 0.1, 1);
-background: conic-gradient(#ef4444 0deg 60deg, #3b82f6 60deg 120deg, #10b981 120deg 180deg, #f59e0b 180deg 240deg, #8b5cf6 240deg 300deg, #ec4899 300deg 360deg);
-}
-.wheel-pointer { width: 0;
-height: 0;
-border-left: 8px solid transparent;
-border-right: 8px solid transparent;
-border-top: 15px solid #fff;
-margin: 0 auto;
-margin-bottom: -6px;
-z-index: 10;
-position: relative;
-}
-.modal { display: none;
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-background: rgba(0,0,0,0.85);
-justify-content: center;
-align-items: center;
-z-index: 1000;
-padding: 15px;
-}
-.modal-content { background: #121826;
-border: 1px solid rgba(245, 158, 11, 0.4);
-border-radius: 16px;
-width: 100%;
-max-width: 380px;
-padding: 16px;
-max-height: 90vh;
-overflow-y: auto;
-}
 </style>
 </head>
 <body>
 <div class="container">
-<!-- واجهة تسجيل الدخول والإنشاء -->
-<div id="authScreen" class="screen-page active">
-<div class="auth-card">
-<h2 style="color: #f59e0b; margin-top:0;">تطبيق دينار</h2>
+  <!-- شاشة تسجيل الدخول وإنشاء الحساب -->
+  <div id="authScreen" class="screen-page active">
+    <div class="auth-card">
+      <h2 style="color: #f59e0b; margin-top:0;">تطبيق دينار</h2>
+      <p style="color: #94a3b8; font-size: 13px; margin-bottom: 20px;">سجل دخولك أو أنشئ حساباً جديداً للبدء</p>
+      
+      <div class="tab-switch">
+        <button class="tab-btn active" onclick="switchAuthTab('login')">تسجيل دخول</button>
+        <button class="tab-btn" onclick="switchAuthTab('register')">حساب جديد</button>
+      </div>
+
+      <div id="loginForm">
+        <input type="text" id="loginId" class="input-box" placeholder="أدخل الأيدي (ID) الخاص بك">
+        <input type="password" id="loginPass" class="input-box" placeholder="كلمة المرور">
+        <button class="action-btn btn-gold" onclick="performLogin()" style="margin-top: 5px;">دخول للتطبيق</button>
+      </div>
+
+      <div id="registerForm" style="display: none;">
+        <input type="text" id="regName" class="input-box" placeholder="اسم المستخدم">
+        <input type="text" id="regId" class="input-box" placeholder="اختر أيدي (ID) فريد">
+        <input type="password" id="regPass" class="input-box" placeholder="كلمة المرور">
+        <button class="action-btn btn-blue" onclick="performRegister()" style="margin-top: 5px;">إنشاء الحساب</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- الشاشة الرئيسية للتطبيق -->
+  <div id="mainScreen" class="screen-page">
+    <div class="top-nav">
+      <button class="nav-btn" onclick="openProfile()">الملف الشخصي</button>
+      <button class="nav-btn back" onclick="logout()">خروج</button>
+    </div>
+
+    <div class="balance-header">
+      رصيدك الحالي<br>
+      <span id="userBalance">0</span> <small style="font-size: 12px; color: #f59e0b;">دينار</small>
+    </div>
+
+    <div class="card">
+      <div class="clock-container">
+        <div class="spinning-coin">🪙</div>
+      </div>
+      <h3 style="margin: 5px 0; color: #f59e0b; font-size: 16px;">العداد اليومي للأرباح</h3>
+      <p id="timerDisplay" style="color: #94a3b8; font-size: 12px; margin-bottom: 10px;">اضغط للاستلام والمتابعة</p>
+      <button class="action-btn btn-gold" onclick="claimDailyReward()">استلام الهدية اليومية</button>
+    </div>
+
+    <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+      <button class="action-btn btn-blue" style="flex:1;" onclick="openRooms()">غرف الدردشة</button>
+      <button class="action-btn btn-purple" style="flex:1;" onclick="openShop()">متجر العدادات</button>
+    </div>
+  </div>
 </div>
-</div>
-</div>
+
+<script>
+// دوال التنقل البسيطة داخل التطبيق
+function switchAuthTab(tab) {
+  const loginBtn = document.querySelectorAll('.tab-btn')[0];
+  const regBtn = document.querySelectorAll('.tab-btn')[1];
+  const loginF = document.getElementById('loginForm');
+  const regF = document.getElementById('registerForm');
+  
+  if(tab === 'login') {
+    loginBtn.classList.add('active');
+    regBtn.classList.remove('active');
+    loginF.style.display = 'block';
+    regF.style.display = 'none';
+  } else {
+    regBtn.classList.add('active');
+    loginBtn.classList.remove('active');
+    regF.style.display = 'block';
+    loginF.style.display = 'none';
+  }
+}
+
+function performLogin() {
+  const id = document.getElementById('loginId').value;
+  if(!id) {
+    alert('يرجى إدخال الأيدي الخاص بك');
+    return;
+  }
+  document.getElementById('authScreen').classList.remove('active');
+  document.getElementById('mainScreen').classList.add('active');
+}
+
+function performRegister() {
+  const name = document.getElementById('regName').value;
+  const id = document.getElementById('regId').value;
+  if(!name || !id) {
+    alert('يرجى ملء جميع الحقول المطلوبة');
+    return;
+  }
+  alert('تم إنشاء الحساب بنجاح! يمكنك تسجيل الدخول الآن.');
+  switchAuthTab('login');
+}
+
+function logout() {
+  document.getElementById('mainScreen').classList.remove('active');
+  document.getElementById('authScreen').classList.add('active');
+}
+
+function claimDailyReward() {
+  let currentBalance = parseInt(document.getElementById('userBalance').innerText);
+  currentBalance += 100;
+  document.getElementById('userBalance').innerText = currentBalance;
+  alert('تم إضافة 100 دينار إلى رصيدك بنجاح!');
+}
+
+function openRooms() {
+  alert('جاري الانتقال إلى غرف الدردشة وغرف الميكروفون الآمنة...');
+}
+
+function openShop() {
+  alert('جاري فتح متجر العدادات (الذهبي، الماسي، والأسطوري)...');
+}
+
+function openProfile() {
+  alert('عرض لوحة التحكم والملف الشخصي والأيدي الخاص بك...');
+}
+</script>
 </body>
 </html>
