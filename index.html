@@ -174,7 +174,6 @@
             background: rgba(245, 158, 11, 0.12) !important;
         }
 
-        /* تحريك وتوهج الهدايا الحصرية 🌟 */
         @keyframes exclusivePulseAnim {
             0% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(245, 158, 11, 0.6)); }
             50% { transform: scale(1.12); filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.9)) brightness(1.15); }
@@ -417,72 +416,63 @@
                 <button class="shop-tab-btn" id="tabLegend" onclick="switchShopTab('legend')">الأسطوري</button>
             </div>
 
+            <!-- خانة الذهبي -->
             <div id="shopGoldContent" class="shop-tier-content active">
                 <div class="counter-row">
-                    <div><b>عداد 100 نقطة يومياً</b><br><small style="color:#f59e0b;">السعر: 20.000</small></div>
+                    <div><b>عداد 100 نقطة يومياً</b><br><small style="color:#f59e0b;">السعر: 20.000 نقطة</small></div>
                     <button class="action-btn btn-gold" onclick="buyCounter('100 نقطة', 20000)">شراء / تفعيل</button>
                 </div>
                 <div class="counter-row">
-                    <div><b>عداد 250 نقطة يومياً</b><br><small style="color:#f59e0b;">السعر: 50.000</small></div>
-                    <button class="action-btn btn-gold" onclick="buyCounter('250 نقطة', 50000)">شراء / تفعيل</button>
+                    <div><b>عداد 200 نقطة يومياً</b><br><small style="color:#f59e0b;">السعر: 40.000 نقطة</small></div>
+                    <button class="action-btn btn-gold" onclick="buyCounter('200 نقطة', 40000)">شراء / تفعيل</button>
                 </div>
                 <div class="counter-row">
-                    <div><b>عداد 500 نقطة يومياً</b><br><small style="color:#f59e0b;">السعر: 100.000</small></div>
+                    <div><b>عداد 500 نقطة يومياً</b><br><small style="color:#f59e0b;">السعر: 100.000 نقطة</small></div>
                     <button class="action-btn btn-gold" onclick="buyCounter('500 نقطة', 100000)">شراء / تفعيل</button>
                 </div>
                 <div class="counter-row">
-                    <div><b>عداد 1.000 نقطة يومياً</b><br><small style="color:#f59e0b;">السعر: 200.000</small></div>
+                    <div><b>عداد 1.000 نقطة يومياً</b><br><small style="color:#f59e0b;">السعر: 200.000 نقطة</small></div>
                     <button class="action-btn btn-gold" onclick="buyCounter('1.000 نقطة', 200000)">شراء / تفعيل</button>
                 </div>
-                <div class="counter-row">
-                    <div><b>عداد 2.500 نقطة يومياً</b><br><small style="color:#f59e0b;">السعر: 500.000</small></div>
-                    <button class="action-btn btn-gold" onclick="buyCounter('2.500 نقطة', 500000)">شراء / تفعيل</button>
-                </div>
             </div>
 
+            <!-- خانة الماسي -->
             <div id="shopDiamondContent" class="shop-tier-content">
                 <div class="counter-row">
-                    <div><b>عداد 5.000 نقطة يومياً</b><br><small style="color:#38bdf8;">السعر: 1.000.000</small></div>
+                    <div><b>عداد 2.000 نقطة يومياً</b><br><small style="color:#38bdf8;">السعر: 400.000 نقطة</small></div>
+                    <button class="action-btn btn-blue" onclick="buyCounter('2.000 نقطة', 400000)">شراء / تفعيل</button>
+                </div>
+                <div class="counter-row">
+                    <div><b>عداد 3.000 نقطة يومياً</b><br><small style="color:#38bdf8;">السعر: 600.000 نقطة</small></div>
+                    <button class="action-btn btn-blue" onclick="buyCounter('3.000 نقطة', 600000)">شراء / تفعيل</button>
+                </div>
+                <div class="counter-row">
+                    <div><b>عداد 4.000 نقطة يومياً</b><br><small style="color:#38bdf8;">السعر: 800.000 نقطة</small></div>
+                    <button class="action-btn btn-blue" onclick="buyCounter('4.000 نقطة', 800000)">شراء / تفعيل</button>
+                </div>
+                <div class="counter-row">
+                    <div><b>عداد 5.000 نقطة يومياً</b><br><small style="color:#38bdf8;">السعر: 1.000.000 نقطة</small></div>
                     <button class="action-btn btn-blue" onclick="buyCounter('5.000 نقطة', 1000000)">شراء / تفعيل</button>
-                </div>
-                <div class="counter-row">
-                    <div><b>عداد 10.000 نقطة يومياً</b><br><small style="color:#38bdf8;">السعر: 2.000.000</small></div>
-                    <button class="action-btn btn-blue" onclick="buyCounter('10.000 نقطة', 2000000)">شراء / تفعيل</button>
-                </div>
-                <div class="counter-row">
-                    <div><b>عداد 15.000 نقطة يومياً</b><br><small style="color:#38bdf8;">السعر: 3.000.000</small></div>
-                    <button class="action-btn btn-blue" onclick="buyCounter('15.000 نقطة', 3000000)">شراء / تفعيل</button>
-                </div>
-                <div class="counter-row">
-                    <div><b>عداد 20.000 نقطة يومياً</b><br><small style="color:#38bdf8;">السعر: 4.000.000</small></div>
-                    <button class="action-btn btn-blue" onclick="buyCounter('20.000 نقطة', 4000000)">شراء / تفعيل</button>
-                </div>
-                <div class="counter-row">
-                    <div><b>عداد 25.000 نقطة يومياً</b><br><small style="color:#38bdf8;">السعر: 5.000.000</small></div>
-                    <button class="action-btn btn-blue" onclick="buyCounter('25.000 نقطة', 5000000)">شراء / تفعيل</button>
                 </div>
             </div>
 
+            <!-- خانة الأسطوري -->
             <div id="shopLegendContent" class="shop-tier-content">
                 <div class="counter-row">
-                    <div><b>عداد 30.000 نقطة يومياً</b><br><small style="color:#a855f7;">السعر: 7.000.000</small></div>
-                    <button class="action-btn btn-purple" onclick="buyCounter('30.000 نقطة', 7000000)">شراء / تفعيل</button>
+                    <div><b>عداد 10.000 نقطة يومياً</b><br><small style="color:#a855f7;">السعر: 2.000.000 نقطة</small></div>
+                    <button class="action-btn btn-purple" onclick="buyCounter('10.000 نقطة', 2000000)">شراء / تفعيل</button>
                 </div>
                 <div class="counter-row">
-                    <div><b>عداد 50.000 نقطة يومياً</b><br><small style="color:#a855f7;">السعر: 10.000.000</small></div>
-                    <button class="action-btn btn-purple" onclick="buyCounter('50.000 نقطة', 10000000)">شراء / تفعيل</button>
+                    <div><b>عداد 20.000 نقطة يومياً</b><br><small style="color:#a855f7;">السعر: 4.000.000 نقطة</small></div>
+                    <button class="action-btn btn-purple" onclick="buyCounter('20.000 نقطة', 4000000)">شراء / تفعيل</button>
                 </div>
                 <div class="counter-row">
-                    <div><b>عداد 75.000 نقطة يومياً</b><br><small style="color:#a855f7;">السعر: 15.000.000</small></div>
-                    <button class="action-btn btn-purple" onclick="buyCounter('75.000 نقطة', 15000000)">شراء / تفعيل</button>
+                    <div><b>عداد 30.000 نقطة يومياً</b><br><small style="color:#a855f7;">السعر: 6.000.000 نقطة</small></div>
+                    <button class="action-btn btn-purple" onclick="buyCounter('30.000 نقطة', 6000000)">شراء / تفعيل</button>
                 </div>
                 <div class="counter-row">
-                    <div><b>عداد 100.000 نقطة يومياً</b><br><small style="color:#a855f7;">السعر: 20.000.000</small></div>
-                    <button class="action-btn btn-purple" onclick="buyCounter('100.000 نقطة', 20000000)">شراء / تفعيل</button>
-                </div>
-                <div class="counter-row">
-                    <div><b>عداد 200.000 نقطة يومياً</b><br><small style="color:#a855f7;">السعر: 40.000.000</small></div>
-                    <button class="action-btn btn-purple" onclick="buyCounter('200.000 نقطة', 40000000)">شراء / تفعيل</button>
+                    <div><b>عداد 40.000 نقطة يومياً</b><br><small style="color:#a855f7;">السعر: 8.000.000 نقطة</small></div>
+                    <button class="action-btn btn-purple" onclick="buyCounter('40.000 نقطة', 8000000)">شراء / تفعيل</button>
                 </div>
             </div>
         </div>
