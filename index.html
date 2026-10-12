@@ -323,10 +323,6 @@
     <div id="mainScreen" class="screen-page">
         <div class="top-nav">
             <button class="nav-btn" onclick="navigateTo('profileScreen')">👤 الملف الشخصي</button>
-            <button class="nav-btn" onclick="openNotificationsPage()">
-                🔔 الإشعارات
-                <span id="notificationBadge" class="notification-badge"></span>
-            </button>
             <button class="nav-btn" style="color:#ef4444" onclick="handleLogout()">🚪 خروج</button>
         </div>
 
@@ -376,6 +372,21 @@
             <div class="card" style="flex: 1; margin: 0;">
                 <h4 style="margin:0 0 6px 0; color:#38bdf8; font-size:13px;">👔 الوكلاء</h4>
                 <button class="action-btn btn-blue" onclick="navigateTo('agentsScreen')">وكلاء دينار 👔</button>
+            </div>
+        </div>
+
+        <!-- أزرار الإشعارات وقائمة الأصدقاء والبحث المنظمة تحت الوكلاء -->
+        <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+            <div class="card" style="flex: 1; margin: 0; position: relative;">
+                <h4 style="margin:0 0 6px 0; color:#f59e0b; font-size:13px;">🔔 الإشعارات</h4>
+                <button class="action-btn btn-gold" onclick="openNotificationsPage()" style="position:relative;">
+                    صندوق الإشعارات
+                    <span id="mainNotificationBadge" class="notification-badge" style="top:2px; right:8px;"></span>
+                </button>
+            </div>
+            <div class="card" style="flex: 1; margin: 0;">
+                <h4 style="margin:0 0 6px 0; color:#38bdf8; font-size:13px;">👥 الأصدقاء والبحث</h4>
+                <button class="action-btn btn-blue" onclick="navigateTo('friendsScreen')">قائمة الأصدقاء 🔍</button>
             </div>
         </div>
     </div>
@@ -493,10 +504,10 @@
         </div>
     </div>
 
-    <!-- 4. صفحة الملف الشخصي والأصدقاء -->
+    <!-- 4. صفحة الملف الشخصي -->
     <div id="profileScreen" class="screen-page">
         <div class="top-nav">
-            <h3 style="margin:0; color:#f59e0b; font-size:15px;">👤 الملف الشخصي والأصدقاء</h3>
+            <h3 style="margin:0; color:#f59e0b; font-size:15px;">👤 الملف الشخصي</h3>
             <button class="nav-btn back" onclick="navigateBackFromProfile()">⬅️ الرئيسية</button>
         </div>
 
@@ -514,6 +525,14 @@
                 <input type="text" id="profileNameInput" class="input-box" placeholder="تعديل الاسم" style="margin-top:4px; margin-bottom:6px;">
                 <button class="action-btn btn-gold" onclick="saveProfileData()">حفظ التعديلات 💾</button>
             </div>
+        </div>
+    </div>
+
+    <!-- 4. مكررة/مستقلة: صفحة الأصدقاء والبحث -->
+    <div id="friendsScreen" class="screen-page">
+        <div class="top-nav">
+            <h3 style="margin:0; color:#38bdf8; font-size:15px;">👥 قائمة الأصدقاء والبحث</h3>
+            <button class="nav-btn back" onclick="navigateTo('mainScreen')">⬅️ الرئيسية</button>
         </div>
 
         <div class="card">
@@ -541,7 +560,7 @@
         </div>
     </div>
 
-    <!-- 5. صفحة الإشعارات -->
+    <!-- 5. صفحة الإشعارات المستقلة -->
     <div id="notificationsScreen" class="screen-page">
         <div class="top-nav">
             <h3 style="margin:0; color:#f59e0b; font-size:15px;">🔔 صندوق الإشعارات</h3>
@@ -920,12 +939,12 @@
         document.querySelectorAll('.screen-page').forEach(page => page.classList.remove('active'));
         const target = document.getElementById(screenId);
         if(target) target.classList.add('active');
-        if(screenId === 'profileScreen') loadFriendSystem();
+        if(screenId === 'friendsScreen') loadFriendSystem();
         if(screenId === 'agentsScreen') loadApprovedAgentsList();
     }
 
     function openNotificationsPage() {
-        document.getElementById('notificationBadge').style.display = 'none';
+        document.querySelectorAll('.notification-badge').forEach(b => b.style.display = 'none');
         navigateTo('notificationsScreen');
     }
 
@@ -1002,6 +1021,7 @@
             }
         });
         loadNotifications();
+        loadFriendSystem();
     }
 
     function updateUI() {
@@ -1150,14 +1170,35 @@
         if(!currentUserKey || !rtdb) return;
         rtdb.ref(`notifications/${currentUserKey}`).on('value', snap => {
             let container = document.getElementById('notificationsContainer');
+            let mainBadge = document.getElementById('mainNotificationBadge');
             if(!container) return;
-            if(!snap.exists()) { container.innerHTML = "لا توجد إشعارات جديدة"; return; }
+            if(!snap.exists()) { 
+                container.innerHTML = "لا توجد إشعارات جديدة"; 
+                if(mainBadge) mainBadge.style.display = 'none';
+                return; 
+            }
+            if(mainBadge) mainBadge.style.display = 'block';
             let html = '';
             snap.forEach(n => {
                 let item = n.val();
                 html += `<div style="border-bottom:1px solid rgba(255,255,255,0.08); padding:6px 0;">🔔 ${item.text}</div>`;
             });
             container.innerHTML = html;
+        });
+
+        // دمج إشعارات طلبات الصداقة ضمن الإشعارات العامة
+        rtdb.ref(`friend_requests/${currentUserKey}`).on('value', snap => {
+            let container = document.getElementById('notificationsContainer');
+            let mainBadge = document.getElementById('mainNotificationBadge');
+            if(snap.exists()) {
+                if(mainBadge) mainBadge.style.display = 'block';
+                let html = container.innerHTML === "لا توجد إشعارات جديدة" ? "" : container.innerHTML;
+                snap.forEach(req => {
+                    let dat = req.val();
+                    html += `<div style="border-bottom:1px solid rgba(255,255,255,0.08); padding:6px 0; color:#38bdf8;">👥 أرسل لك <b>${dat.name}</b> (${dat.customId}) طلب صداقة جديد.</div>`;
+                });
+                container.innerHTML = html;
+            }
         });
     }
 
@@ -1166,6 +1207,8 @@
         if(!confirm("⚠️ حذف جميع الإشعارات؟")) return;
         rtdb.ref(`notifications/${currentUserKey}`).remove().then(() => {
             document.getElementById('notificationsContainer').innerHTML = "لا توجد إشعارات جديدة";
+            let mainBadge = document.getElementById('mainNotificationBadge');
+            if(mainBadge) mainBadge.style.display = 'none';
             alert("🗑️ تم الحذف بنجاح.");
         });
     }
