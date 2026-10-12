@@ -99,80 +99,22 @@
         .room-square-card { background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 14px; padding: 12px 8px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between; box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
         .room-square-avatar { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; border: 2px solid #f59e0b; margin-bottom: 6px; background: #111; }
 
-        #unifiedGiftModal {
-            align-items: flex-end !important;
-            padding: 0 !important;
-        }
+        #unifiedGiftModal { align-items: flex-end !important; padding: 0 !important; }
 
-        .gift-modal-bottom {
-            width: 100% !important;
-            max-width: 420px !important;
-            background: rgba(15, 23, 42, 0.98) !important;
-            border-top: 2px solid #f59e0b !important;
-            border-radius: 20px 20px 0 0 !important;
-            padding: 14px !important;
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.85);
-        }
+        .gift-modal-bottom { width: 100% !important; max-width: 420px !important; background: rgba(15, 23, 42, 0.98) !important; border-top: 2px solid #f59e0b !important; border-radius: 20px 20px 0 0 !important; padding: 14px !important; box-shadow: 0 -10px 30px rgba(0,0,0,0.85); }
 
-        .gift-tabs-header {
-            display: flex;
-            background: rgba(30, 41, 59, 0.8);
-            border-radius: 10px;
-            padding: 3px;
-            margin-bottom: 10px;
-            gap: 4px;
-        }
+        .gift-tabs-header { display: flex; background: rgba(30, 41, 59, 0.8); border-radius: 10px; padding: 3px; margin-bottom: 10px; gap: 4px; }
 
-        .gift-tab-btn {
-            flex: 1;
-            padding: 7px;
-            border: none;
-            background: transparent;
-            color: #94a3b8;
-            font-weight: bold;
-            font-size: 11px;
-            border-radius: 8px;
-            cursor: pointer;
-            text-align: center;
-        }
+        .gift-tab-btn { flex: 1; padding: 7px; border: none; background: transparent; color: #94a3b8; font-weight: bold; font-size: 11px; border-radius: 8px; cursor: pointer; text-align: center; }
 
-        .gift-tab-btn.active {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: #fff;
-        }
+        .gift-tab-btn.active { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; }
 
-        .gift-pane-content {
-            display: none;
-            max-height: 250px;
-            overflow-y: auto;
-            padding: 4px;
-        }
-        .gift-pane-content.active {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-        }
+        .gift-pane-content { display: none; max-height: 250px; overflow-y: auto; padding: 4px; }
+        .gift-pane-content.active { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 
-        .gift-card-box {
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 12px;
-            padding: 8px 4px;
-            text-align: center;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            height: 82px;
-        }
+        .gift-card-box { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 8px 4px; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; height: 82px; }
 
-        .gift-card-box.selected-gold {
-            border: 2px solid #f59e0b !important;
-            box-shadow: 0 0 12px #f59e0b, inset 0 0 8px rgba(245, 158, 11, 0.5) !important;
-            background: rgba(245, 158, 11, 0.12) !important;
-        }
+        .gift-card-box.selected-gold { border: 2px solid #f59e0b !important; box-shadow: 0 0 12px #f59e0b, inset 0 0 8px rgba(245, 158, 11, 0.5) !important; background: rgba(245, 158, 11, 0.12) !important; }
 
         @keyframes exclusivePulseAnim {
             0% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(245, 158, 11, 0.6)); }
@@ -180,113 +122,28 @@
             100% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(245, 158, 11, 0.6)); }
         }
 
-        .exclusive-gift-animated {
-            animation: exclusivePulseAnim 2.2s ease-in-out infinite;
-        }
+        .exclusive-gift-animated { animation: exclusivePulseAnim 2.2s ease-in-out infinite; }
 
-        .gift-icon-full {
-            width: 42px;
-            height: 42px;
-            object-fit: contain;
-            display: block;
-        }
+        .gift-icon-full { width: 42px; height: 42px; object-fit: contain; display: block; }
 
-        .gift-price-num {
-            font-size: 11px;
-            color: #f59e0b;
-            font-weight: bold;
-            margin-top: 3px;
-        }
+        .gift-price-num { font-size: 11px; color: #f59e0b; font-weight: bold; margin-top: 3px; }
 
-        .bottom-action-bar {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            margin-top: 10px;
-            padding-top: 8px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
+        .bottom-action-bar { display: flex; align-items: center; justify-content: flex-end; margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(255, 255, 255, 0.1); }
 
         .reply-preview-bar { display: none; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.95); border-left: 3px solid #38bdf8; padding: 4px 8px; border-radius: 6px; margin-bottom: 4px; font-size: 11px; }
 
-        .msg-bubble-container {
-            padding: 6px 10px;
-            border-radius: 8px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 6px;
-            max-width: 85%;
-            word-break: break-word;
-            margin-top: 2px;
-            font-weight: bold;
-        }
+        .msg-bubble-container { padding: 6px 10px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: space-between; gap: 6px; max-width: 85%; word-break: break-word; margin-top: 2px; font-weight: bold; }
 
-        .msg-action-btn {
-            background: none;
-            border: none;
-            color: #ffffff;
-            font-size: 12px;
-            cursor: pointer;
-            padding: 0 2px;
-        }
-        .msg-action-btn:hover {
-            transform: scale(1.15);
-        }
+        .msg-action-btn { background: none; border: none; color: #ffffff; font-size: 12px; cursor: pointer; padding: 0 2px; }
+        .msg-action-btn:hover { transform: scale(1.15); }
 
-        .gift-chat-card {
-            background: rgba(0, 0, 0, 0.7);
-            border: 1px solid rgba(245, 158, 11, 0.5);
-            border-radius: 16px;
-            padding: 12px;
-            margin: 8px 0;
-            width: 100%;
-            max-width: 260px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.7);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        .gift-chat-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
-            margin-bottom: 8px;
-        }
-        .gift-chat-sender {
-            font-size: 12px;
-            font-weight: bold;
-            color: #f43f5e;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .gift-chat-target {
-            font-size: 13px;
-            font-weight: 800;
-            color: #34d399;
-        }
-        .gift-chat-body {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 14px;
-            margin-top: 4px;
-        }
-        .gift-chat-count {
-            font-size: 30px;
-            font-weight: 900;
-            color: #f59e0b;
-            text-shadow: 0 2px 8px rgba(245, 158, 11, 0.6);
-        }
-        .gift-chat-img {
-            width: 65px;
-            height: 65px;
-            object-fit: contain;
-            filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6));
-        }
+        .gift-chat-card { background: rgba(0, 0, 0, 0.7); border: 1px solid rgba(245, 158, 11, 0.5); border-radius: 16px; padding: 12px; margin: 8px 0; width: 100%; max-width: 260px; box-shadow: 0 8px 25px rgba(0,0,0,0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .gift-chat-header { display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 8px; }
+        .gift-chat-sender { font-size: 12px; font-weight: bold; color: #f43f5e; display: flex; align-items: center; gap: 4px; }
+        .gift-chat-target { font-size: 13px; font-weight: 800; color: #34d399; }
+        .gift-chat-body { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 4px; }
+        .gift-chat-count { font-size: 30px; font-weight: 900; color: #f59e0b; text-shadow: 0 2px 8px rgba(245, 158, 11, 0.6); }
+        .gift-chat-img { width: 65px; height: 65px; object-fit: contain; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6)); }
 
         .admin-badge { background: linear-gradient(135deg, #ef4444, #b91c1c); color: #fff; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: bold; border: 1px solid #f87171; cursor: pointer; display: none; margin-bottom: 8px; }
     </style>
@@ -500,7 +357,7 @@
         </div>
     </div>
 
-    <!-- 4. صفحة الملف الشخصي (معدلة للحفظ الفعلي وتحديد الحروف بـ 60) -->
+    <!-- 4. صفحة الملف الشخصي -->
     <div id="profileScreen" class="screen-page">
         <div class="top-nav">
             <h3 style="margin:0; color:#f59e0b; font-size:15px;">👤 الملف الشخصي</h3>
@@ -515,10 +372,7 @@
                 <span id="displayUserId" style="color:#f59e0b; font-size:12px; font-weight:bold;">ID: ---</span>
             </div>
 
-            <!-- حقل الاسم -->
             <input type="text" id="profileNameInput" class="input-box" placeholder="تعديل الاسم" style="margin-top:4px; margin-bottom:6px;">
-
-            <!-- حقل البايو (محدد بـ 60 حرفاً كحد أقصى) -->
             <input type="text" id="profileBioInput" class="input-box" placeholder="اكتب البايو الخاص بك (60 حرف كحد أقصى)" maxlength="60" oninput="if(this.value.length > 60) this.value = this.value.slice(0, 60);" style="margin-top:2px; margin-bottom:6px; font-size:11px;">
 
             <div id="agentStatusBadge" style="margin-top: 4px; display: none;"><span style="background:rgba(56,189,248,0.2); border:1px solid #38bdf8; color:#38bdf8; padding:2px 8px; border-radius:6px; font-size:10px; font-weight:bold;">⭐ وكيل معتمد</span></div>
@@ -529,7 +383,7 @@
         </div>
     </div>
 
-    <!-- 4. مكررة/مستقلة: صفحة الأصدقاء والبحث -->
+    <!-- 4. صفحة الأصدقاء والبحث -->
     <div id="friendsScreen" class="screen-page">
         <div class="top-nav">
             <h3 style="margin:0; color:#38bdf8; font-size:15px;">👥 قائمة الأصدقاء والبحث</h3>
@@ -1101,7 +955,6 @@
             let remaining = cooldown - elapsed;
 
             if(userData.lastSpinTime && remaining > 0) {
-                // العداد يعمل بالتنازلي -> لون أخضر نابض
                 powerBtn.className = "power-btn green-pulse";
                 powerBtn.disabled = true;
                 let hours = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -1110,7 +963,6 @@
                 display.innerText = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
             } else {
                 display.innerText = "24:00:00";
-                // منتهي أو لم يبدأ -> لون أحمر
                 powerBtn.className = "power-btn red-pulse";
                 powerBtn.disabled = false;
                 clearInterval(timerInterval);
@@ -1232,6 +1084,7 @@
         });
     }
 
+    // تصحيح دالة إرسال طلب الصداقة لإرساله إلى المستلم فقط
     function sendFriendRequest() {
         let sId = document.getElementById('searchIdInput').value.trim();
         let resArea = document.getElementById('searchResultArea');
@@ -1250,6 +1103,7 @@
                     return resArea.innerText = "⚠️ هذا المستخدم مضاف لديك بالفعل!";
                 }
 
+                // حفظ الطلب في حساب المستلم حصراً (targetKey)
                 rtdb.ref(`friend_requests/${targetKey}/${currentUserKey}`).set({
                     name: userData.name, customId: userData.customId, timestamp: Date.now()
                 }).then(() => { 
@@ -1269,6 +1123,7 @@
                 return alert("⚠️ هذا المستخدم مضاف لديك بالفعل!");
             }
 
+            // حفظ الطلب في حساب المستلم حصراً (visitedProfileTargetKey)
             rtdb.ref(`friend_requests/${visitedProfileTargetKey}/${currentUserKey}`).set({
                 name: userData.name, customId: userData.customId, timestamp: Date.now()
             }).then(() => { alert("✅ تم إرسال طلب الصداقة بنجاح!"); });
@@ -1513,7 +1368,6 @@
         }
     }
 
-    // دالة حفظ الملف الشخصي الفعلية والمباشرة في قاعدة البيانات
     function saveProfileData() {
         let newName = document.getElementById('profileNameInput').value.trim();
         let newBio = document.getElementById('profileBioInput').value.trim();
@@ -1527,7 +1381,7 @@
         }
 
         saveToDB().then(() => { 
-            base64Image = ''; // تفريغ المؤقت بعد الحفظ الناجح
+            base64Image = '';
             updateUI(); 
             alert('✅ تم حفظ التعديلات بنجاح!'); 
         }).catch(err => {
