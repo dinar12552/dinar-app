@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق دينار المستقر مع الصوت المباشر</title>
+    <title>تطبيق دينار المستقر</title>
 
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -95,67 +95,9 @@
         .room-settings-btn { background: rgba(168, 85, 247, 0.25); border: 1px solid #a855f7; color: #fff; padding: 0 8px; border-radius: 8px; font-size: 11px; cursor: pointer; height: 38px; display: flex; align-items: center; justify-content: center; }
         .room-settings-btn:hover { background: rgba(168, 85, 247, 0.45); }
 
-        .ctrl-audio-btn { background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.2); color: #fff; width: 38px; height: 38px; border-radius: 8px; font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .ctrl-audio-btn.muted { background: rgba(239, 68, 68, 0.3); border-color: #ef4444; color: #ef4444; }
-
         .rooms-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 8px; max-height: 55vh; overflow-y: auto; padding: 2px; }
         .room-square-card { background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 14px; padding: 12px 8px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between; box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
         .room-square-avatar { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; border: 2px solid #f59e0b; margin-bottom: 6px; background: #111; }
-
-        .mics-bar-container { display: flex; justify-content: space-around; align-items: center; background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 14px; padding: 10px 4px; margin-bottom: 8px; gap: 4px; }
-        .mic-slot { display: flex; flex-direction: column; align-items: center; cursor: pointer; width: 62px; position: relative; }
-        
-        .mic-circle-icon { 
-            width: 48px; 
-            height: 48px; 
-            border-radius: 50%; 
-            background: rgba(255, 255, 255, 0.12); 
-            border: 1px solid rgba(255, 255, 255, 0.25); 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            box-shadow: inset 0 2px 5px rgba(255,255,255,0.15), 0 4px 10px rgba(0,0,0,0.4);
-            overflow: hidden;
-            position: relative;
-        }
-        .mic-circle-icon.occupied {
-            border: 2px solid #10b981;
-            box-shadow: 0 0 12px rgba(16, 185, 129, 0.4);
-        }
-        .mic-circle-icon.speaking {
-            border: 2px solid #38bdf8 !important;
-            box-shadow: 0 0 18px #38bdf8 !important;
-            animation: micPulseWave 0.5s infinite alternate !important;
-        }
-        @keyframes micPulseWave {
-            0% { transform: scale(1); box-shadow: 0 0 8px #38bdf8; }
-            100% { transform: scale(1.12); box-shadow: 0 0 22px #38bdf8, 0 0 30px #0ea5e9; }
-        }
-
-        .mic-svg-icon {
-            width: 22px;
-            height: 22px;
-            fill: #ffffff;
-            opacity: 0.85;
-        }
-        .mic-num-label { 
-            font-size: 13px; 
-            color: #ffffff; 
-            margin-top: 5px; 
-            font-weight: bold; 
-            text-align: center;
-            letter-spacing: 0.5px;
-        }
-        .mic-name-txt { 
-            font-size: 8px; 
-            color: #94a3b8; 
-            margin-top: 1px; 
-            white-space: nowrap; 
-            overflow: hidden; 
-            text-overflow: ellipsis; 
-            max-width: 60px; 
-            text-align: center; 
-        }
 
         #unifiedGiftModal {
             align-items: flex-end !important;
@@ -335,19 +277,6 @@
             object-fit: contain;
             filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6));
         }
-
-        .mic-permission-bar {
-            background: rgba(16, 185, 129, 0.2);
-            border: 1px solid #10b981;
-            border-radius: 8px;
-            padding: 6px;
-            margin-bottom: 6px;
-            text-align: center;
-            font-size: 11px;
-            color: #34d399;
-            cursor: pointer;
-            font-weight: bold;
-        }
     </style>
 </head>
 <body>
@@ -419,7 +348,7 @@
         </div>
 
         <div class="card">
-            <h4 style="margin:0 0 6px 0; color:#10b981; font-size:13px;">💬 غرف الدردشة العامة</h4>
+            <h4 style="margin:0 0 6px 0; color:#10b981; font-size:13px;">💬 غرف الدردشة الكتابية</h4>
             <button class="action-btn btn-green" onclick="openIsolatedPublicRooms()">غرف الدردشة 💬</button>
         </div>
 
@@ -589,10 +518,10 @@
         </div>
     </div>
 
-    <!-- 6. صفحة غرف الدردشة المستقلة -->
+    <!-- 6. صفحة غرف الدردشة الكتابية المستقلة -->
     <div id="isolatedChatScreen" class="screen-page">
         <div class="top-nav">
-            <h3 style="margin:0; color:#10b981; font-size:15px;">💬 غرف الدردشة</h3>
+            <h3 style="margin:0; color:#10b981; font-size:15px;">💬 غرف الدردشة الكتابية</h3>
             <button class="nav-btn back" onclick="exitIsolatedChat()">⬅️ الرئيسية</button>
         </div>
 
@@ -608,7 +537,7 @@
             <div id="isolatedRoomsContainer" class="rooms-grid">جاري التحميل بأمان...</div>
         </div>
 
-        <div id="isolatedActiveRoomArea" class="card" style="display:none; flex-direction:column; height:68vh; padding:8px;">
+        <div id="isolatedActiveRoomArea" class="card" style="display:none; flex-direction:column; height:74vh; padding:8px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
                 <div style="display:flex; align-items:center; gap:6px;">
                     <img id="activeRoomAvatarDisplay" src="https://via.placeholder.com/30" style="width:30px; height:30px; border-radius:50%; object-fit:cover; border:1px solid #f59e0b;" alt="الغرفة">
@@ -624,50 +553,6 @@
                 </div>
             </div>
 
-            <div id="micPermissionBar" class="mic-permission-bar" onclick="preGrantMicPermission()">
-                🎙️ اضغط هنا لتفعيل المايك والموافقة على إذن الصوت لتطبيقات الموبايل
-            </div>
-
-            <div class="mics-bar-container" id="micsBarContainer">
-                <div class="mic-slot" onclick="handleMicClick(5)">
-                    <div class="mic-circle-icon" id="micIconBox_5">
-                        <svg class="mic-svg-icon" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
-                    </div>
-                    <div class="mic-num-label">5</div>
-                    <div class="mic-name-txt" id="micName_5">مايك 5</div>
-                </div>
-                <div class="mic-slot" onclick="handleMicClick(4)">
-                    <div class="mic-circle-icon" id="micIconBox_4">
-                        <svg class="mic-svg-icon" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
-                    </div>
-                    <div class="mic-num-label">4</div>
-                    <div class="mic-name-txt" id="micName_4">مايك 4</div>
-                </div>
-                <div class="mic-slot" onclick="handleMicClick(3)">
-                    <div class="mic-circle-icon" id="micIconBox_3">
-                        <svg class="mic-svg-icon" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
-                    </div>
-                    <div class="mic-num-label">3</div>
-                    <div class="mic-name-txt" id="micName_3">مايك 3</div>
-                </div>
-                <div class="mic-slot" onclick="handleMicClick(2)">
-                    <div class="mic-circle-icon" id="micIconBox_2">
-                        <svg class="mic-svg-icon" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
-                    </div>
-                    <div class="mic-num-label">2</div>
-                    <div class="mic-name-txt" id="micName_2">مايك 2</div>
-                </div>
-                <div class="mic-slot" onclick="handleMicClick(1)">
-                    <div class="mic-circle-icon" id="micIconBox_1">
-                        <svg class="mic-svg-icon" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
-                    </div>
-                    <div class="mic-num-label">1</div>
-                    <div class="mic-name-txt" id="micName_1">مايك 1</div>
-                </div>
-            </div>
-
-            <div id="audioContainer" style="display:none;"></div>
-
             <div id="isolatedMessagesBox" style="flex:1; overflow-y:auto; background:rgba(0,0,0,0.3); background-size:cover; background-position:center; padding:8px; border-radius:8px; font-size:11px; margin-bottom:8px; text-align:right;"></div>
 
             <div id="replyPreviewBar" class="reply-preview-bar">
@@ -681,9 +566,6 @@
             <div style="display:flex; gap:4px; align-items:center;">
                 <button class="gift-box-btn" onclick="openUnifiedGiftBox('all', 'الكل (عام)')" title="صندوق الهدايا العامة">🎁</button>
                 <button id="roomSettingsBtn" class="room-settings-btn" style="display:none;" onclick="openRoomSettingsModal()" title="تخصيص الغرفة">🎨</button>
-                
-                <button id="myMicToggleBtn" class="ctrl-audio-btn" onclick="toggleMyAudioMic()" title="كتم/إلغاء مايكك">🎙️</button>
-                <button id="roomAudioToggleBtn" class="ctrl-audio-btn" onclick="toggleRoomAudio()" title="كتم/إلغاء صوت الغرفة">🔊</button>
 
                 <input type="text" id="isolatedMsgInput" class="input-box" placeholder="اكتب رسالة..." style="margin:0; flex:1;">
                 <button class="action-btn btn-gold" style="width:55px; padding:0; height:38px;" onclick="sendIsolatedMsg()">إرسال</button>
@@ -691,17 +573,6 @@
         </div>
     </div>
 
-</div>
-
-<div id="leaveMicModal" class="modal">
-    <div class="modal-content" style="text-align:center;">
-        <h4 style="color:#ef4444; margin-top:0;" id="leaveMicTitle">مغادرة المايك</h4>
-        <p style="font-size:12px; color:#cbd5e1;">هل تريد مغادرة المايك والنزول؟</p>
-        <div style="display:flex; gap:8px; margin-top:12px;">
-            <button class="action-btn" style="background:#ef4444; color:#fff;" onclick="confirmLeaveMic()">مغادرة المايك 🚪</button>
-            <button class="action-btn btn-blue" onclick="closeLeaveMicModal()">لا ✖</button>
-        </div>
-    </div>
 </div>
 
 <div id="userProfileModal" class="modal">
@@ -929,21 +800,6 @@
     let pendingSelectedGift = null;
     let selectedTargetUserKey = 'all';
     let selectedTargetUserName = 'الكل (عام)';
-
-    let pendingMicNum = null;
-    let userCurrentMicNum = null;
-
-    let isMyMicMuted = false;
-    let isRoomAudioMuted = false;
-
-    // متغيرات الصوت الـ WebRTC الحي
-    let localStream = null;
-    let audioContext = null;
-    let analyser = null;
-    let microphoneNode = null;
-    let animationFrameId = null;
-    let peerConnections = {};
-    const rtcConfig = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
 
     window.addEventListener('load', () => {
         try {
@@ -1584,7 +1440,6 @@
         isolatedActiveRoomId = roomId;
         activeRoomCreatorKey = creatorKey;
         cancelReplyMode();
-        userCurrentMicNum = null;
 
         document.getElementById('chatRoomsListArea').style.display = 'none';
         document.getElementById('isolatedActiveRoomArea').style.display = 'flex';
@@ -1612,65 +1467,6 @@
         });
 
         rtdb.ref(`room_occupants/${isolatedActiveRoomId}/${currentUserKey}`).set({ name: userData.name });
-
-        rtdb.ref(`room_mics/${isolatedActiveRoomId}`).on('value', snap => {
-            let micsData = snap.val() || {};
-            let isUserStillOnMic = false;
-
-            for(let i=1; i<=5; i++) {
-                let iconBox = document.getElementById(`micIconBox_${i}`);
-                let txtBox = document.getElementById(`micName_${i}`);
-                let micInfo = micsData[i];
-
-                if(micInfo && micInfo.name) {
-                    if(micInfo.userKey === currentUserKey) {
-                        isUserStillOnMic = true;
-                    }
-                    let displayName = micInfo.isMuted ? `${micInfo.name} 🔇` : micInfo.name;
-                    iconBox.innerHTML = `<img src="${micInfo.avatar || 'https://via.placeholder.com/48'}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;" alt="صورة">`;
-                    iconBox.className = "mic-circle-icon occupied" + (micInfo.isSpeaking ? " speaking" : "");
-                    txtBox.innerText = displayName;
-
-                    if(micInfo.userKey !== currentUserKey) {
-                        setupPeerConnection(micInfo.userKey);
-                    }
-                } else {
-                    iconBox.innerHTML = `<svg class="mic-svg-icon" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>`;
-                    iconBox.className = "mic-circle-icon";
-                    txtBox.innerText = `مايك ${i}`;
-                }
-            }
-
-            if (!isUserStillOnMic && userCurrentMicNum !== null) {
-                stopLocalAudioStream();
-                userCurrentMicNum = null;
-            }
-        });
-
-        rtdb.ref(`room_signals/${isolatedActiveRoomId}/${currentUserKey}`).on('child_added', async snap => {
-            let data = snap.val();
-            let fromUser = data.from;
-            if (!peerConnections[fromUser]) {
-                createPeerConnection(fromUser, false);
-            }
-            let pc = peerConnections[fromUser];
-
-            if (data.type === 'offer') {
-                await pc.setRemoteDescription(new RTCSessionDescription(data.offer));
-                let answer = await pc.createAnswer();
-                await pc.setLocalDescription(answer);
-                rtdb.ref(`room_signals/${isolatedActiveRoomId}/${fromUser}`).push({
-                    type: 'answer', answer: answer, from: currentUserKey
-                });
-            } else if (data.type === 'answer') {
-                await pc.setRemoteDescription(new RTCSessionDescription(data.answer));
-            } else if (data.type === 'candidate') {
-                if (data.candidate) {
-                    await pc.addIceCandidate(new RTCIceCandidate(data.candidate));
-                }
-            }
-            snap.ref.remove();
-        });
 
         rtdb.ref(`room_messages/${isolatedActiveRoomId}`).on('value', snap => {
             let box = document.getElementById('isolatedMessagesBox');
@@ -1702,13 +1498,12 @@
                     let bgStyle = isMe ? "background:#ef4444; color:#ffffff;" : "background:#10b981; color:#ffffff;";
 
                     let quotedHtml = msg.replyTo ? `<div style="background:rgba(0,0,0,0.25); border-right:2px solid #38bdf8; padding:3px 6px; border-radius:4px; margin-bottom:4px; font-size:10px; color:#cbd5e1; text-align:right;"><b style="color:#38bdf8;">${msg.replyTo.senderName}:</b> ${msg.replyTo.text}</div>` : '';
-                    let displayedText = isRoomAudioMuted && msg.isVoiceNote ? "[صوت مكتوم]" : msg.text;
 
                     html += `<div style="text-align:${isMe?'left':'right'}; margin-bottom:5px;">
                         <div style="font-size:9px; color:#38bdf8; cursor:pointer;" onclick="openVisitedUserProfileByKeyDirect('${msg.sender}')"><b>${msg.senderName}</b> ${giftBtnHtml}</div>
                         <div class="msg-bubble-container" style="${bgStyle}">
                             <div style="display:flex; align-items:center; gap:2px;">${replyBtn}</div>
-                            <div style="flex:1; text-align:right;">${quotedHtml}<span>${displayedText}</span></div>
+                            <div style="flex:1; text-align:right;">${quotedHtml}<span>${msg.text}</span></div>
                             <div>${deleteMsgBtn}</div>
                         </div>
                     </div>`;
@@ -1726,226 +1521,6 @@
         });
     }
 
-    function preGrantMicPermission() {
-        navigator.mediaDevices.getUserMedia({ audio: true, video: false })
-            .then(stream => {
-                localStream = stream;
-                setupAudioAnalyzer();
-                alert("✅ تم إعطاء إذن استخدام المايك بنجاح! يمكن الآن الصعود على أي مايك.");
-                document.getElementById('micPermissionBar').style.display = 'none';
-            })
-            .catch(err => {
-                alert("⚠️ يرجى السماح باستخدام المايك من إعدادات الهاتف للتطبيق.");
-            });
-    }
-
-    function requestMicrophoneAccess(callback) {
-        if (localStream) {
-            callback(localStream);
-            return;
-        }
-        navigator.mediaDevices.getUserMedia({ audio: true, video: false })
-            .then(stream => {
-                localStream = stream;
-                setupAudioAnalyzer();
-                callback(localStream);
-            })
-            .catch(err => {
-                alert("⚠️ يرجى الضغط على زر تفعيل المايك بالأعلى أو إعطاء الإذن من إعدادات الموبايل.");
-            });
-    }
-
-    function setupAudioAnalyzer() {
-        if (!localStream) return;
-        try {
-            if (audioContext && audioContext.state !== 'closed') audioContext.close();
-            audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            analyser = audioContext.createAnalyser();
-            microphoneNode = audioContext.createMediaStreamSource(localStream);
-            microphoneNode.connect(analyser);
-            analyser.fftSize = 256;
-            
-            let dataArray = new Uint8Array(analyser.frequencyBinCount);
-            
-            function checkSpeaking() {
-                if (!localStream || isMyMicMuted || userCurrentMicNum === null || !isolatedActiveRoomId) {
-                    animationFrameId = requestAnimationFrame(checkSpeaking);
-                    return;
-                }
-                analyser.getByteFrequencyData(dataArray);
-                let sum = 0;
-                for (let i = 0; i < dataArray.length; i++) { sum += dataArray[i]; }
-                let average = sum / dataArray.length;
-                let isSpeakingNow = average > 6;
-
-                rtdb.ref(`room_mics/${isolatedActiveRoomId}/${userCurrentMicNum}`).update({ isSpeaking: isSpeakingNow });
-                animationFrameId = requestAnimationFrame(checkSpeaking);
-            }
-            checkSpeaking();
-        } catch(e) {}
-    }
-
-    function startLocalAudioStream(micNum) {
-        userCurrentMicNum = micNum;
-        isMyMicMuted = false;
-        let btn = document.getElementById('myMicToggleBtn');
-        btn.className = "ctrl-audio-btn";
-        btn.innerHTML = "🎙️";
-
-        rtdb.ref(`room_mics/${isolatedActiveRoomId}`).once('value').then(snap => {
-            let mics = snap.val() || {};
-            Object.keys(mics).forEach(mKey => {
-                let m = mics[mKey];
-                if (m && m.userKey && m.userKey !== currentUserKey) {
-                    createPeerConnection(m.userKey, true);
-                }
-            });
-        });
-    }
-
-    function stopLocalAudioStream() {
-        if (animationFrameId) cancelAnimationFrame(animationFrameId);
-        if (audioContext && audioContext.state !== 'closed') audioContext.close();
-        audioContext = null; analyser = null; microphoneNode = null;
-
-        Object.keys(peerConnections).forEach(key => {
-            if (peerConnections[key]) {
-                peerConnections[key].close();
-                delete peerConnections[key];
-            }
-        });
-        if (userCurrentMicNum && isolatedActiveRoomId) {
-            rtdb.ref(`room_mics/${isolatedActiveRoomId}/${userCurrentMicNum}`).update({ isSpeaking: false });
-        }
-    }
-
-    function createPeerConnection(remoteUserKey, isInitiator) {
-        if (peerConnections[remoteUserKey]) return peerConnections[remoteUserKey];
-
-        let pc = new RTCPeerConnection(rtcConfig);
-        peerConnections[remoteUserKey] = pc;
-
-        if (localStream) {
-            localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
-        }
-
-        pc.onicecandidate = event => {
-            if (event.candidate) {
-                rtdb.ref(`room_signals/${isolatedActiveRoomId}/${remoteUserKey}`).push({
-                    type: 'candidate', candidate: event.candidate, from: currentUserKey
-                });
-            }
-        };
-
-        pc.ontrack = event => {
-            let audioContainer = document.getElementById('audioContainer');
-            let remoteAudio = document.createElement('audio');
-            remoteAudio.srcObject = event.streams[0];
-            remoteAudio.autoplay = true;
-            if (isRoomAudioMuted) remoteAudio.muted = true;
-            audioContainer.appendChild(remoteAudio);
-        };
-
-        if (isInitiator) {
-            pc.createOffer().then(offer => {
-                return pc.setLocalDescription(offer).then(() => {
-                    rtdb.ref(`room_signals/${isolatedActiveRoomId}/${remoteUserKey}`).push({
-                        type: 'offer', offer: offer, from: currentUserKey
-                    });
-                });
-            });
-        }
-
-        return pc;
-    }
-
-    function setupPeerConnection(remoteUserKey) {
-        if (userCurrentMicNum !== null && !peerConnections[remoteUserKey]) {
-            createPeerConnection(remoteUserKey, false);
-        }
-    }
-
-    function toggleMyAudioMic() {
-        if (userCurrentMicNum === null) return alert("⚠️ أنت لست جالساً على مايك حالياً لكتمه!");
-        isMyMicMuted = !isMyMicMuted;
-        let btn = document.getElementById('myMicToggleBtn');
-        if (isMyMicMuted) {
-            btn.className = "ctrl-audio-btn muted";
-            btn.innerHTML = "🔇";
-            if (localStream) localStream.getAudioTracks()[0].enabled = false;
-        } else {
-            btn.className = "ctrl-audio-btn";
-            btn.innerHTML = "🎙️";
-            if (localStream) localStream.getAudioTracks()[0].enabled = true;
-        }
-
-        rtdb.ref(`room_mics/${isolatedActiveRoomId}/${userCurrentMicNum}`).update({ isMuted: isMyMicMuted, isSpeaking: false });
-    }
-
-    function toggleRoomAudio() {
-        isRoomAudioMuted = !isRoomAudioMuted;
-        let btn = document.getElementById('roomAudioToggleBtn');
-        let audioContainer = document.getElementById('audioContainer');
-        if (audioContainer) {
-            let audios = audioContainer.getElementsByTagName('audio');
-            for(let aud of audios) { aud.muted = isRoomAudioMuted; }
-        }
-
-        if (isRoomAudioMuted) {
-            btn.className = "ctrl-audio-btn muted";
-            btn.innerHTML = "🔕";
-            alert("🔕 تم كتم صوت الغرفة (لن تسمع أصوات المتحدثين الآن).");
-        } else {
-            btn.className = "ctrl-audio-btn";
-            btn.innerHTML = "🔊";
-            alert("🔊 تم تفعيل صوت الغرفة.");
-        }
-    }
-
-    function handleMicClick(micNum) {
-        if (!isolatedActiveRoomId) return;
-
-        rtdb.ref(`room_mics/${isolatedActiveRoomId}/${micNum}`).once('value').then(snap => {
-            let micInfo = snap.val();
-
-            if (micInfo && micInfo.name) {
-                if (micInfo.userKey === currentUserKey) {
-                    pendingMicNum = micNum;
-                    document.getElementById('leaveMicTitle').innerText = `مغادرة المايك ${micNum}`;
-                    document.getElementById('leaveMicModal').style.display = 'flex';
-                } else {
-                    alert(`⚠️ هذا المايك محجوز حالياً بواسطة: ${micInfo.name}`);
-                }
-            } else {
-                if (userCurrentMicNum !== null) {
-                    return alert(`⚠️ أنت جالس مسبقاً على المايك رقم ${userCurrentMicNum}! غادره أولاً من خلال النزول منه ثم اصعد هنا.`);
-                }
-                
-                requestMicrophoneAccess((stream) => {
-                    startLocalAudioStream(micNum);
-                    rtdb.ref(`room_mics/${isolatedActiveRoomId}/${micNum}`).set({
-                        userKey: currentUserKey, name: userData.name,
-                        avatar: userData.avatar || 'https://via.placeholder.com/48',
-                        isMuted: false, isSpeaking: false, timestamp: Date.now()
-                    });
-                });
-            }
-        });
-    }
-
-    function closeLeaveMicModal() { document.getElementById('leaveMicModal').style.display = 'none'; pendingMicNum = null; }
-
-    function confirmLeaveMic() {
-        if (pendingMicNum === null || !isolatedActiveRoomId) return;
-        rtdb.ref(`room_mics/${isolatedActiveRoomId}/${pendingMicNum}`).set({
-            userKey: null, name: null, avatar: null, isMuted: false, isSpeaking: false
-        }).then(() => {
-            closeLeaveMicModal();
-            stopLocalAudioStream();
-            userCurrentMicNum = null;
-        });
-    }
-
     function deleteRoomMessage(roomId, msgKey) { rtdb.ref(`room_messages/${roomId}/${msgKey}`).remove(); }
 
     function confirmDeleteRoom() {
@@ -1955,9 +1530,7 @@
             rtdb.ref(`public_rooms/${rId}`).remove();
             rtdb.ref(`room_messages/${rId}`).remove();
             rtdb.ref(`room_occupants/${rId}`).remove();
-            rtdb.ref(`room_mics/${rId}`).remove();
             rtdb.ref(`room_bans/${rId}`).remove();
-            rtdb.ref(`room_signals/${rId}`).remove();
 
             userData.hasCreatedRoom = false;
             userData.createdRoomId = '';
@@ -1967,30 +1540,16 @@
 
     function exitIsolatedActiveRoom() {
         cancelReplyMode();
-        stopLocalAudioStream();
         if(isolatedActiveRoomId && rtdb) {
             let rId = isolatedActiveRoomId;
-            for(let i=1; i<=5; i++) {
-                rtdb.ref(`room_mics/${rId}/${i}`).once('value').then(s => {
-                    if(s.exists() && s.val().userKey === currentUserKey) {
-                        rtdb.ref(`room_mics/${rId}/${i}`).set({
-                            userKey: null, name: null, avatar: null, isMuted: false, isSpeaking: false
-                        });
-                    }
-                });
-            }
-
             rtdb.ref(`room_occupants/${rId}/${currentUserKey}`).remove();
             rtdb.ref(`public_rooms/${rId}`).off();
             rtdb.ref(`room_messages/${rId}`).off();
             rtdb.ref(`room_occupants/${rId}`).off();
-            rtdb.ref(`room_mics/${rId}`).off();
-            rtdb.ref(`room_signals/${rId}/${currentUserKey}`).remove();
 
             isolatedActiveRoomId = '';
             activeRoomCreatorKey = '';
             currentRoomOccupantsCount = 0;
-            userCurrentMicNum = null;
         }
         let activeArea = document.getElementById('isolatedActiveRoomArea');
         let listArea = document.getElementById('chatRoomsListArea');
