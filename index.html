@@ -174,6 +174,17 @@
             background: rgba(245, 158, 11, 0.12) !important;
         }
 
+        /* تحريك وتوهج الهدايا الحصرية 🌟 */
+        @keyframes exclusivePulseAnim {
+            0% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(245, 158, 11, 0.6)); }
+            50% { transform: scale(1.12); filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.9)) brightness(1.15); }
+            100% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(245, 158, 11, 0.6)); }
+        }
+
+        .exclusive-gift-animated {
+            animation: exclusivePulseAnim 2.2s ease-in-out infinite;
+        }
+
         .gift-icon-full {
             width: 42px;
             height: 42px;
@@ -365,7 +376,7 @@
             </div>
             <div class="card" style="flex: 1; margin: 0;">
                 <h4 style="margin:0 0 6px 0; color:#38bdf8; font-size:13px;">👔 الوكلاء</h4>
-                <button class="action-btn btn-blue" onclick="navigateTo('agentsScreen')">الوكلاء 👔</button>
+                <button class="action-btn btn-blue" onclick="navigateTo('agentsScreen')">وكلاء دينار 👔</button>
             </div>
         </div>
     </div>
@@ -745,32 +756,32 @@
 
         <div id="exclusiveGiftsContent" class="gift-pane-content">
             <div class="gift-card-box" id="giftBox_10" onclick="highlightGift('الأسد 🦁', 1000, 'https://cdn-icons-png.flaticon.com/512/1998/1998612.png', 'giftBox_10')">
-                <img src="https://cdn-icons-png.flaticon.com/512/1998/1998612.png" class="gift-icon-full" alt="أسد">
+                <img src="https://cdn-icons-png.flaticon.com/512/1998/1998612.png" class="gift-icon-full exclusive-gift-animated" alt="أسد">
                 <div class="gift-price-num">1000 🪙</div>
             </div>
             <div class="gift-card-box" id="giftBox_11" onclick="highlightGift('عجلة فيراري 🏎️', 1500, 'https://cdn-icons-png.flaticon.com/512/741/741407.png', 'giftBox_11')">
-                <img src="https://cdn-icons-png.flaticon.com/512/741/741407.png" class="gift-icon-full" alt="فيراري">
+                <img src="https://cdn-icons-png.flaticon.com/512/741/741407.png" class="gift-icon-full exclusive-gift-animated" alt="فيراري">
                 <div class="gift-price-num">1500 🪙</div>
             </div>
             <div class="gift-card-box" id="giftBox_12" onclick="highlightGift('دب قطبي 🐻‍❄️', 800, 'https://cdn-icons-png.flaticon.com/512/235/235380.png', 'giftBox_12')">
-                <img src="https://cdn-icons-png.flaticon.com/512/235/235380.png" class="gift-icon-full" alt="دب">
+                <img src="https://cdn-icons-png.flaticon.com/512/235/235380.png" class="gift-icon-full exclusive-gift-animated" alt="دب">
                 <div class="gift-price-num">800 🪙</div>
             </div>
             <div class="gift-card-box" id="giftBox_13" onclick="highlightGift('فضاء حقيقي 🌌', 1400, 'https://cdn-icons-png.flaticon.com/512/1146/1146869.png', 'giftBox_13')">
-                <img src="https://cdn-icons-png.flaticon.com/512/1146/1146869.png" class="gift-icon-full" alt="فضاء">
+                <img src="https://cdn-icons-png.flaticon.com/512/1146/1146869.png" class="gift-icon-full exclusive-gift-animated" alt="فضاء">
                 <div class="gift-price-num">1400 🪙</div>
             </div>
             <div class="gift-card-box" id="giftBox_14" onclick="highlightGift('ذئب 🐺', 750, 'https://cdn-icons-png.flaticon.com/512/3069/3069172.png', 'giftBox_14')">
-                <img src="https://cdn-icons-png.flaticon.com/512/3069/3069172.png" class="gift-icon-full" alt="ذئب">
+                <img src="https://cdn-icons-png.flaticon.com/512/3069/3069172.png" class="gift-icon-full exclusive-gift-animated" alt="ذئب">
                 <div class="gift-price-num">750 🪙</div>
             </div>
             <div class="gift-card-box" id="giftBox_15" onclick="highlightGift('نرد الزار 🎲', 150, 'https://cdn-icons-png.flaticon.com/512/1041/1041888.png', 'giftBox_15')">
-                <img src="https://cdn-icons-png.flaticon.com/512/1041/1041888.png" class="gift-icon-full" alt="نرد">
+                <img src="https://cdn-icons-png.flaticon.com/512/1041/1041888.png" class="gift-icon-full exclusive-gift-animated" alt="نرد">
                 <div class="gift-price-num">150 🪙</div>
             </div>
         </div>
 
-        <div class="bottom-action-bar">
+        <div class="bottom-action-bar" id="giftSendActionBar">
             <button onclick="confirmSendPendingGift()" style="background:linear-gradient(135deg, #10b981, #059669); color:#fff; border:none; padding:6px 18px; border-radius:8px; font-size:12px; font-weight:bold; cursor:pointer; box-shadow:0 3px 10px rgba(16,185,129,0.4);">إرسال 🚀</button>
         </div>
     </div>
@@ -1845,7 +1856,19 @@
         let targetDisplayLabel = document.getElementById('activeTargetDisplayLabel');
         if (targetDisplayLabel) targetDisplayLabel.innerHTML = `🎯 يتم الإرسال إلى: <b>${targetName}</b>`;
         
-        document.getElementById('unifiedGiftModal').style.display = 'flex';
+        rtdb.ref(`room_occupants/${isolatedActiveRoomId}`).once('value').then(snap => {
+            let occupants = snap.val() || {};
+            let occupantsKeys = Object.keys(occupants);
+            let sendBar = document.getElementById('giftSendActionBar');
+
+            if (occupantsKeys.length <= 1 || (targetKey === currentUserKey)) {
+                if(sendBar) sendBar.style.display = 'none';
+                if(targetDisplayLabel) targetDisplayLabel.innerHTML = `🎯 أنت وحدك في الغرفة (وضع المشاهدة فقط للعرض)`;
+            } else {
+                if(sendBar) sendBar.style.display = 'flex';
+            }
+            document.getElementById('unifiedGiftModal').style.display = 'flex';
+        });
     }
 
     function openTargetSelectorModal() {
@@ -1876,7 +1899,16 @@
         selectedTargetUserKey = targetKey;
         selectedTargetUserName = targetName;
         let targetDisplayLabel = document.getElementById('activeTargetDisplayLabel');
-        if (targetDisplayLabel) targetDisplayLabel.innerHTML = `🎯 يتم الإرسال إلى: <b>${targetName}</b>`;
+        let sendBar = document.getElementById('giftSendActionBar');
+
+        if (targetKey === currentUserKey) {
+            if(sendBar) sendBar.style.display = 'none';
+            if(targetDisplayLabel) targetDisplayLabel.innerHTML = `⚠️ لا يمكنك إرسال هدية لنفسك!`;
+        } else {
+            if(sendBar) sendBar.style.display = 'flex';
+            if(targetDisplayLabel) targetDisplayLabel.innerHTML = `🎯 يتم الإرسال إلى: <b>${targetName}</b>`;
+        }
+
         let titleEl = document.getElementById('giftModalMainTitle');
         if (titleEl) titleEl.innerText = targetKey === 'all' ? 'صندوق الهدايا العامة' : `إرسال هدية إلى: ${targetName}`;
         closeTargetSelectorModal();
@@ -1904,6 +1936,7 @@
 
     function confirmSendPendingGift() {
         if (!pendingSelectedGift) return alert('⚠️ اختر هدية أولاً من الصندوق!');
+        if (selectedTargetUserKey === currentUserKey) return alert('⚠️ لا يمكنك إرسال هدية لنفسك!');
 
         let cost = pendingSelectedGift.cost;
         let giftName = pendingSelectedGift.name;
