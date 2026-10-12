@@ -500,7 +500,7 @@
         </div>
     </div>
 
-    <!-- 4. صفحة الملف الشخصي (معدلة حسب طلبك: صورة، ثم ID، ثم البايو 60 حرف، ثم زر الحفظ) -->
+    <!-- 4. صفحة الملف الشخصي (معدلة للحفظ الفعلي وتحديد الحروف بـ 60) -->
     <div id="profileScreen" class="screen-page">
         <div class="top-nav">
             <h3 style="margin:0; color:#f59e0b; font-size:15px;">👤 الملف الشخصي</h3>
@@ -515,13 +515,15 @@
                 <span id="displayUserId" style="color:#f59e0b; font-size:12px; font-weight:bold;">ID: ---</span>
             </div>
 
-            <!-- حقل البايو (60 حرف كحد أقصى) -->
-            <input type="text" id="profileBioInput" class="input-box" placeholder="اكتب البايو الخاص بك (60 حرف كحد أقصى)" maxlength="60" style="margin-top:2px; margin-bottom:6px; font-size:11px;">
+            <!-- حقل الاسم -->
+            <input type="text" id="profileNameInput" class="input-box" placeholder="تعديل الاسم" style="margin-top:4px; margin-bottom:6px;">
+
+            <!-- حقل البايو (محدد بـ 60 حرفاً كحد أقصى) -->
+            <input type="text" id="profileBioInput" class="input-box" placeholder="اكتب البايو الخاص بك (60 حرف كحد أقصى)" maxlength="60" oninput="if(this.value.length > 60) this.value = this.value.slice(0, 60);" style="margin-top:2px; margin-bottom:6px; font-size:11px;">
 
             <div id="agentStatusBadge" style="margin-top: 4px; display: none;"><span style="background:rgba(56,189,248,0.2); border:1px solid #38bdf8; color:#38bdf8; padding:2px 8px; border-radius:6px; font-size:10px; font-weight:bold;">⭐ وكيل معتمد</span></div>
 
             <div style="margin-top:8px; text-align:right;">
-                <input type="text" id="profileNameInput" class="input-box" placeholder="تعديل الاسم" style="margin-top:4px; margin-bottom:6px;">
                 <button class="action-btn btn-gold" onclick="saveProfileData()">حفظ التعديلات 💾</button>
             </div>
         </div>
@@ -673,7 +675,7 @@
     </div>
 </div>
 
-<!-- بروفايل المستخدم المرئي عند زيارته (معدل: صورة -> ID -> بايو -> زر الإضافة إذا لم يكن صديقاً) -->
+<!-- بروفايل المستخدم المرئي عند زيارته -->
 <div id="userProfileModal" class="modal">
     <div class="modal-content" style="text-align:center;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -684,7 +686,6 @@
         <img id="visitedUserAvatar" src="https://via.placeholder.com/85" style="width:85px; height:85px; border-radius:50%; object-fit:cover; border:3px solid #f59e0b; margin:0 auto 4px auto; display:block; background:#222;" alt="صورة المستخدم">
         <span id="visitedUserCustomId" style="color:#f59e0b; font-size:12px; font-weight:bold; display:block; margin-bottom:4px;">ID: ---</span>
         
-        <!-- حقل عرض البايو الخاص بالمستخدم الزائر -->
         <div id="visitedUserBio" style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:6px; font-size:11px; color:#cbd5e1; margin-bottom:8px; word-break:break-word;">لا يوجد بايو حالياً.</div>
 
         <h3 id="visitedUserName" style="margin:0 0 2px 0; color:#fff; font-size:15px;">اسم المستخدم</h3>
@@ -1044,7 +1045,6 @@
     function updateUI() {
         document.getElementById('userPoints').innerText = userData.points || 0;
         document.getElementById('displayUserId').innerText = `ID: ${userData.customId || '---'}`;
-        document.getElementById('profileNameDisplay').innerText = userData.name || 'مستخدم';
         document.getElementById('profileNameInput').value = userData.name || '';
         document.getElementById('profileBioInput').value = userData.bio || '';
         if(userData.avatar) document.getElementById('avatarPreview').src = userData.avatar;
@@ -1101,6 +1101,7 @@
             let remaining = cooldown - elapsed;
 
             if(userData.lastSpinTime && remaining > 0) {
+                // العداد يعمل بالتنازلي -> لون أخضر نابض
                 powerBtn.className = "power-btn green-pulse";
                 powerBtn.disabled = true;
                 let hours = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -1109,6 +1110,7 @@
                 display.innerText = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
             } else {
                 display.innerText = "24:00:00";
+                // منتهي أو لم يبدأ -> لون أحمر
                 powerBtn.className = "power-btn red-pulse";
                 powerBtn.disabled = false;
                 clearInterval(timerInterval);
@@ -1379,7 +1381,6 @@
 
     function navigateBackFromProfile() { document.getElementById('userProfileModal').style.display = 'none'; navigateTo('mainScreen'); }
 
-    // عرض البروفايل للزائر مع فحص إذا كانوا أصدقاء أم لا لإخفاء/إظهار زر الإضافة
     function openVisitedUserProfileByKey(targetUserKey, cameFromChat = false) {
         if(!targetUserKey || !rtdb) return;
         visitedProfileTargetKey = targetUserKey;
@@ -1408,7 +1409,6 @@
                 banBtn.style.display = 'none';
             }
 
-            // فحص هل هم أصدقاء مسبقاً؟ إذا نعم، لا يظهر زر إضافة صديق
             rtdb.ref(`friends/${currentUserKey}/${targetUserKey}`).once('value').then(fSnap => {
                 if (fSnap.exists() || targetUserKey === currentUserKey) {
                     addFriendBtn.style.display = 'none';
@@ -1513,13 +1513,26 @@
         }
     }
 
+    // دالة حفظ الملف الشخصي الفعلية والمباشرة في قاعدة البيانات
     function saveProfileData() {
         let newName = document.getElementById('profileNameInput').value.trim();
         let newBio = document.getElementById('profileBioInput').value.trim();
+        
+        if(newBio.length > 60) newBio = newBio.substring(0, 60);
+
         if(newName) userData.name = newName;
-        if(newBio !== undefined) userData.bio = newBio.substring(0, 60);
-        if(base64Image) userData.avatar = base64Image;
-        saveToDB().then(() => { updateUI(); alert('✅ تم حفظ التعديلات!'); });
+        if(newBio !== undefined) userData.bio = newBio;
+        if(base64Image) {
+            userData.avatar = base64Image;
+        }
+
+        saveToDB().then(() => { 
+            base64Image = ''; // تفريغ المؤقت بعد الحفظ الناجح
+            updateUI(); 
+            alert('✅ تم حفظ التعديلات بنجاح!'); 
+        }).catch(err => {
+            alert('❌ حدث خطأ أثناء الحفظ، حاول مرة أخرى.');
+        });
     }
 
     function openWithdrawModal() { document.getElementById('withdrawModal').style.display = 'flex'; }
@@ -1552,7 +1565,6 @@
         });
     }
 
-    // دوال الوكلاء
     function openAgentApplyModal() { document.getElementById('agentApplyModal').style.display = 'flex'; }
     function closeAgentApplyModal() { document.getElementById('agentApplyModal').style.display = 'none'; }
 
@@ -1603,7 +1615,6 @@
         });
     }
 
-    // لوحة تحكم المدير الخاصة
     function openAdminPanelModal() {
         if(currentEmail !== 'msaftwtn@gmail.com') return alert('⚠️ غير مسموح بالدخول.');
         document.getElementById('adminPanelModal').style.display = 'flex';
@@ -1948,7 +1959,6 @@
             let occupantsKeys = Object.keys(occupants);
             let sendBar = document.getElementById('giftSendActionBar');
 
-            // فحص منع التلاعب: إذا كان المتواجدين في الغرفة أقل من 2 مستخدمين (شخص واحد فقط)، يمنع الإرسال تماماً
             if (occupantsKeys.length < 2) {
                 if(sendBar) sendBar.style.display = 'none';
                 if(targetDisplayLabel) targetDisplayLabel.innerHTML = `⚠️ لا يمكنك إرسال هدايا وأنت وحدك في الغرفة!`;
