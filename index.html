@@ -814,7 +814,8 @@
         <div class="modal-header" style="display:flex; justify-content:space-between; align-items:center;">
             <h3 id="chatTitle" style="color:#10b981; margin:0; font-size:13px; cursor:pointer;" onclick="openVisitedUserProfileFromChat()" title="اضغط لزيارة الملف الشخصي">الدردشة 👤</h3>
             <div style="display:flex; gap:6px; align-items:center;">
-                <button onclick="blockCurrentFriend()" style="background:rgba(239,68,68,0.2); border:1px solid #ef4444; color:#ef4444; font-size:10px; padding:3px 8px; border-radius:6px; cursor:pointer;" title="حظر المستخدم">🚫 حظر</button>
+                <button onclick="deleteFriendConnection()" style="background:rgba(245,158,11,0.2); border:1px solid #f59e0b; color:#f59e0b; font-size:10px; padding:3px 6px; border-radius:6px; cursor:pointer;" title="حذف الصديق">❌ حذف الصديق</button>
+                <button onclick="blockCurrentFriend()" style="background:rgba(239,68,68,0.2); border:1px solid #ef4444; color:#ef4444; font-size:10px; padding:3px 6px; border-radius:6px; cursor:pointer;" title="حظر المستخدم">🚫 حظر</button>
                 <button style="background:none; border:none; color:#ef4444; font-size:18px; cursor:pointer;" onclick="closeChatModal()">✖</button>
             </div>
         </div>
@@ -1206,7 +1207,7 @@
                 let html = container.innerHTML === "لا توجد إشعارات جديدة" ? "" : container.innerHTML;
                 snap.forEach(req => {
                     let dat = req.val();
-                    html += `<div style="border-bottom:1px solid rgba(255,255,255,0.08); padding:6px 0; color:#38bdf8;">👥 أرسل لك <b>${dat.name}</b> (${dat.customId}) طلب صداقة جديد.</div>`;
+                    html += `<div style="border-bottom:1px solid rgba(255,255,255,0.08); padding:6px 0; color:#38bdf8;">👥 لديك طلب صداقة من <b>${dat.name}</b> (${dat.customId}).</div>`;
                 });
                 container.innerHTML = html;
             }
@@ -1224,7 +1225,7 @@
         });
     }
 
-    // [تم التصحيح هنا]: إرسال طلب الصداقة للمستخدم المستهدف حصراً ليظهر عنده للقبول أو الرفض
+    // إرسال الطلب بحيث يظهر حصراً عند المستلم (ولا يظهر زر قبول/رفض عند المرسل نهائياً)
     function sendFriendRequest() {
         let sId = document.getElementById('searchIdInput').value.trim();
         let resArea = document.getElementById('searchResultArea');
@@ -1238,10 +1239,13 @@
             if(!targetKey) return resArea.innerText = "❌ لم يتم العثور على مستخدم";
             if(targetKey === currentUserKey) return resArea.innerText = "⚠️ لا يمكنك إضافة نفسك!";
 
-            // الحفظ في قاعدة بيانات المستهدف وليس المستخدم الحالي
+            // ينحفظ الطلب حصراً عند حساب الطرف الثاني (المستلم) فقط
             rtdb.ref(`friend_requests/${targetKey}/${currentUserKey}`).set({
                 name: userData.name, customId: userData.customId, timestamp: Date.now()
-            }).then(() => { document.getElementById('searchIdInput').value = ''; resArea.innerText = "✅ تم إرسال طلب الصداقة بنجاح إلى المستخدم!"; });
+            }).then(() => { 
+                document.getElementById('searchIdInput').value = ''; 
+                resArea.innerText = "✅ تم إرسال طلب الصداقة بنجاح!"; 
+            });
         });
     }
 
@@ -1251,7 +1255,7 @@
 
         rtdb.ref(`friend_requests/${visitedProfileTargetKey}/${currentUserKey}`).set({
             name: userData.name, customId: userData.customId, timestamp: Date.now()
-        }).then(() => { alert("✅ تم إرسال طلب الصداقة بنجاح إلى المستخدم!"); });
+        }).then(() => { alert("✅ تم إرسال طلب الصداقة بنجاح!"); });
     }
 
     function loadFriendSystem() {
@@ -1260,13 +1264,13 @@
         rtdb.ref(`friend_requests/${currentUserKey}`).on('value', snap => {
             let container = document.getElementById('friendRequestsContainer');
             if(!container) return;
-            if(!snap.exists()) { container.innerHTML = "لا توجد طلبات صداقة جديدة"; return; }
+            if(!snap.exists()) { container.innerHTML = "لا توجد طلبات صداقة"; return; }
             let html = '';
             snap.forEach(req => {
                 let dat = req.val();
                 let senderKey = req.key;
                 html += `<div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.03); padding:6px; border-radius:6px; margin-bottom:4px;">
-                    <span><b>${dat.name}</b> (${dat.customId})</span>
+                    <span>لديك طلب صداقة من <b>${dat.name}</b> (${dat.customId})</span>
                     <div style="display:flex; gap:4px;">
                         <button onclick="acceptFriend('${senderKey}', '${dat.name}', '${dat.customId}')" style="background:#10b981; color:#fff; border:none; padding:3px 8px; border-radius:4px; cursor:pointer;">قبول</button>
                         <button onclick="rejectFriend('${senderKey}')" style="background:#ef4444; color:#fff; border:none; padding:3px 8px; border-radius:4px; cursor:pointer;">رفض</button>
@@ -1303,7 +1307,7 @@
     function clearRequestsList() {
         if(!currentUserKey || !rtdb) return;
         rtdb.ref(`friend_requests/${currentUserKey}`).remove().then(() => {
-            document.getElementById('friendRequestsContainer').innerHTML = "لا توجد طلبات صداقة جديدة";
+            document.getElementById('friendRequestsContainer').innerHTML = "لا توجد طلبات صداقة";
             alert('🗑️ تم تنظيف قائمة الطلبات.');
         });
     }
@@ -1436,6 +1440,18 @@
         closeChatModal();
         loadFriendSystem();
         alert("🚫 تم الحظر بنجاح.");
+    }
+
+    // ميزة حذف الصديق الجديدة تماماً بجانب زر الحظر
+    function deleteFriendConnection() {
+        if (!activeChatFriendKey || !currentUserKey) return;
+        if (!confirm("⚠️ هل أنت متأكد من إزالة هذا الشخص من قائمة الأصدقاء؟")) return;
+
+        rtdb.ref(`friends/${currentUserKey}/${activeChatFriendKey}`).remove();
+        rtdb.ref(`friends/${activeChatFriendKey}/${currentUserKey}`).remove();
+        closeChatModal();
+        loadFriendSystem();
+        alert("❌ تم حذف الصديق بنجاح.");
     }
 
     function sendChatMessage() {
