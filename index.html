@@ -971,7 +971,6 @@
                 currentEmail = email;
                 try { localStorage.setItem('dinarUserKey', currentUserKey); } catch(e){}
                 
-                // تحديث الـ ID للإدارة تلقائياً إذا كان هو حساب المدير
                 if (email === 'msaftwtn@gmail.com' && snap.val().customId !== '1') {
                     rtdb.ref('users/' + currentUserKey).update({ customId: '1' });
                 }
@@ -998,7 +997,6 @@
             if(check.exists()) { btn.disabled = false; btn.innerText = "تأكيد الحساب ✨"; return alert("⚠️ مسجل سابقاً!"); }
 
             let defaultName = email.split('@')[0];
-            // إذا كان حساب الإدارة حصراً يأخذ ID رقم 1، والبقية أرقام عشوائية
             let assignedId = (email === 'msaftwtn@gmail.com') ? '1' : Math.floor(100000 + Math.random() * 900000).toString();
 
             const newUser = { name: defaultName, email: email, password: pass, customId: assignedId, points: 0, lastSpinTime: 0, activeCounter: 'لا يوجد', hasCreatedRoom: false, createdRoomId: '', lastWithdrawTime: 0, isAgent: false };
@@ -1021,7 +1019,6 @@
                 userData = snap.val();
                 currentEmail = userData.email || '';
                 
-                // تصحيح فورية لو كان المدير بحساب قديم ولم يمتلك ID: 1
                 if(currentEmail === 'msaftwtn@gmail.com' && userData.customId !== '1') {
                     userData.customId = '1';
                     rtdb.ref('users/' + currentUserKey).update({ customId: '1' });
@@ -1227,6 +1224,7 @@
         });
     }
 
+    // [تم التصحيح هنا]: إرسال طلب الصداقة للمستخدم المستهدف حصراً ليظهر عنده للقبول أو الرفض
     function sendFriendRequest() {
         let sId = document.getElementById('searchIdInput').value.trim();
         let resArea = document.getElementById('searchResultArea');
@@ -1240,9 +1238,10 @@
             if(!targetKey) return resArea.innerText = "❌ لم يتم العثور على مستخدم";
             if(targetKey === currentUserKey) return resArea.innerText = "⚠️ لا يمكنك إضافة نفسك!";
 
+            // الحفظ في قاعدة بيانات المستهدف وليس المستخدم الحالي
             rtdb.ref(`friend_requests/${targetKey}/${currentUserKey}`).set({
                 name: userData.name, customId: userData.customId, timestamp: Date.now()
-            }).then(() => { document.getElementById('searchIdInput').value = ''; resArea.innerText = "✅ تم إرسال طلب الصداقة بنجاح!"; });
+            }).then(() => { document.getElementById('searchIdInput').value = ''; resArea.innerText = "✅ تم إرسال طلب الصداقة بنجاح إلى المستخدم!"; });
         });
     }
 
@@ -1252,7 +1251,7 @@
 
         rtdb.ref(`friend_requests/${visitedProfileTargetKey}/${currentUserKey}`).set({
             name: userData.name, customId: userData.customId, timestamp: Date.now()
-        }).then(() => { alert("✅ تم إرسال طلب الصداقة بنجاح!"); });
+        }).then(() => { alert("✅ تم إرسال طلب الصداقة بنجاح إلى المستخدم!"); });
     }
 
     function loadFriendSystem() {
@@ -1579,7 +1578,6 @@
     }
 
     function loadAdminData() {
-        // سحب الأرباح
         rtdb.ref('admin_withdrawals').on('value', snap => {
             let area = document.getElementById('adminWithdrawalsArea');
             if(!snap.exists()) { area.innerHTML = "لا توجد طلبات سحب حالياً."; return; }
@@ -1595,7 +1593,6 @@
             area.innerHTML = html;
         });
 
-        // طلبات شحن العدادات
         rtdb.ref('admin_supports').on('value', snap => {
             let area = document.getElementById('adminSupportsArea');
             if(!snap.exists()) { area.innerHTML = "لا توجد طلبات شراء عدادات حالياً."; return; }
@@ -1612,7 +1609,6 @@
             area.innerHTML = html;
         });
 
-        // طلبات الوكلاء
         rtdb.ref('agent_requests').on('value', snap => {
             let area = document.getElementById('adminAgentsArea');
             if(!snap.exists()) { area.innerHTML = "لا توجد طلبات وكلاء جديدة."; return; }
