@@ -1747,7 +1747,7 @@
                 let sum = 0;
                 for (let i = 0; i < dataArray.length; i++) { sum += dataArray[i]; }
                 let average = sum / dataArray.length;
-                let isSpeakingNow = average > 12;
+                let isSpeakingNow = average > 10; // تم تحسين حساسية التقاط الصوت للذبذبة
 
                 rtdb.ref(`room_mics/${isolatedActiveRoomId}/${userCurrentMicNum}`).update({ isSpeaking: isSpeakingNow });
                 animationFrameId = requestAnimationFrame(checkSpeaking);
@@ -1908,7 +1908,6 @@
 
     function confirmLeaveMic() {
         if (pendingMicNum === null || !isolatedActiveRoomId) return;
-        // التعديل الجذري هنا لإزالة بيانات المايك بالكامل من قاعدة البيانات وتفريغه
         rtdb.ref(`room_mics/${isolatedActiveRoomId}/${pendingMicNum}`).set({
             userKey: null, name: null, avatar: null, isMuted: false, isSpeaking: false
         }).then(() => {
@@ -1941,14 +1940,15 @@
         cancelReplyMode();
         stopLocalAudioStream();
         if(isolatedActiveRoomId && rtdb) {
+            // التعديل هنا: إزالة المستخدم فوراً من قائمة الحضور occupants عند الخروج لكي لا يبقى معلقاً
+            rtdb.ref(`room_occupants/${isolatedActiveRoomId}/${currentUserKey}`).remove();
+
             rtdb.ref(`public_rooms/${isolatedActiveRoomId}`).off();
             rtdb.ref(`room_messages/${isolatedActiveRoomId}`).off();
             rtdb.ref(`room_occupants/${isolatedActiveRoomId}`).off();
             rtdb.ref(`room_mics/${isolatedActiveRoomId}`).off();
             rtdb.ref(`room_signals/${isolatedActiveRoomId}/${currentUserKey}`).remove();
-            rtdb.ref(`room_occupants/${isolatedActiveRoomId}/${currentUserKey}`).remove();
             
-            // التعديل هنا: عند الخروج يتم تفريغ أي مايك يشغله المستخدم بالكامل لكي لا تبقى معلقة
             for(let i=1; i<=5; i++) {
                 rtdb.ref(`room_mics/${isolatedActiveRoomId}/${i}`).once('value').then(s => {
                     if(s.exists() && s.val().userKey === currentUserKey) {
