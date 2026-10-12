@@ -335,6 +335,19 @@
             object-fit: contain;
             filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6));
         }
+
+        .mic-permission-bar {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid #10b981;
+            border-radius: 8px;
+            padding: 6px;
+            margin-bottom: 6px;
+            text-align: center;
+            font-size: 11px;
+            color: #34d399;
+            cursor: pointer;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -609,6 +622,10 @@
                     <button id="deleteRoomBtn" class="action-btn" style="background:#ef4444; color:#fff; width:auto; padding:2px 6px; font-size:10px; display:none;" onclick="confirmDeleteRoom()">🗑️ حذف</button>
                     <button class="action-btn btn-blue" style="width:auto; padding:2px 8px; font-size:10px;" onclick="exitIsolatedActiveRoom()">خروج 🚪</button>
                 </div>
+            </div>
+
+            <div id="micPermissionBar" class="mic-permission-bar" onclick="preGrantMicPermission()">
+                🎙️ اضغط هنا لتفعيل المايك والموافقة على إذن الصوت لتطبيقات الموبايل
             </div>
 
             <div class="mics-bar-container" id="micsBarContainer">
@@ -1709,6 +1726,19 @@
         });
     }
 
+    function preGrantMicPermission() {
+        navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+            .then(stream => {
+                localStream = stream;
+                setupAudioAnalyzer();
+                alert("✅ تم إعطاء إذن استخدام المايك بنجاح! يمكن الآن الصعود على أي مايك.");
+                document.getElementById('micPermissionBar').style.display = 'none';
+            })
+            .catch(err => {
+                alert("⚠️ يرجى السماح باستخدام المايك من إعدادات الهاتف للتطبيق.");
+            });
+    }
+
     function requestMicrophoneAccess(callback) {
         if (localStream) {
             callback(localStream);
@@ -1721,7 +1751,7 @@
                 callback(localStream);
             })
             .catch(err => {
-                alert("⚠️ يرجى السماح بالوصول للميكروفون من إعدادات المتصفح.");
+                alert("⚠️ يرجى الضغط على زر تفعيل المايك بالأعلى أو إعطاء الإذن من إعدادات الموبايل.");
             });
     }
 
@@ -1746,7 +1776,7 @@
                 let sum = 0;
                 for (let i = 0; i < dataArray.length; i++) { sum += dataArray[i]; }
                 let average = sum / dataArray.length;
-                let isSpeakingNow = average > 6; // حساسية عالية جداً لتتفاعل مع كل حرف وصوت
+                let isSpeakingNow = average > 6;
 
                 rtdb.ref(`room_mics/${isolatedActiveRoomId}/${userCurrentMicNum}`).update({ isSpeaking: isSpeakingNow });
                 animationFrameId = requestAnimationFrame(checkSpeaking);
@@ -1940,7 +1970,6 @@
         stopLocalAudioStream();
         if(isolatedActiveRoomId && rtdb) {
             let rId = isolatedActiveRoomId;
-            // تفريغ المايك الذي يشغله المستخدم فوراً عند خروجه من الغرفة
             for(let i=1; i<=5; i++) {
                 rtdb.ref(`room_mics/${rId}/${i}`).once('value').then(s => {
                     if(s.exists() && s.val().userKey === currentUserKey) {
