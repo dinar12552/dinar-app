@@ -32,6 +32,19 @@
         }
 
         .auth-card { background: rgba(30, 41, 59, 0.85); backdrop-filter: blur(16px); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 24px; padding: 24px 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.8); text-align: center; width: 100%; position: relative; z-index: 10; }
+        
+        /* حركة فخمة لشعار الدائرة فقط */
+        @keyframes logoFloat {
+            0% { transform: translateY(0px) scale(1); filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.4)); }
+            50% { transform: translateY(-8px) scale(1.03); filter: drop-shadow(0 0 20px rgba(245, 158, 11, 0.8)); }
+            100% { transform: translateY(0px) scale(1); filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.4)); }
+        }
+        .animated-logo-container {
+            animation: logoFloat 3.5s ease-in-out infinite;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
         .tab-switch { display: flex; background: rgba(15, 23, 42, 0.8); border-radius: 12px; padding: 4px; margin-bottom: 16px; }
         .tab-btn { flex: 1; padding: 8px; border: none; background: transparent; color: #94a3b8; font-weight: bold; font-size: 12px; border-radius: 8px; cursor: pointer; }
         .tab-btn.active { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; }
@@ -155,6 +168,14 @@
     <!-- 1. واجهة تسجيل الدخول والإنشاء -->
     <div id="authScreen" class="screen-page active">
         <div class="auth-card">
+            <!-- الشعار المتحرك فقط -->
+            <div class="animated-logo-container">
+                <div style="width: 75px; height: 75px; border-radius: 50%; background: radial-gradient(circle, #3d2b00 0%, #1a1200 100%); border: 2px solid #f59e0b; display: flex; flex-direction: column; justify-content: center; align-items: center; margin: 0 auto; box-shadow: 0 0 15px rgba(245,158,11,0.5);">
+                    <span style="font-size: 24px; font-weight: 900; color: #f59e0b;">D</span>
+                    <span style="font-size: 11px; font-weight: bold; color: #fff;">Dinar</span>
+                </div>
+            </div>
+            
             <h2 style="color: #f59e0b; margin:0 0 5px 0;">منصة دينار</h2>
             <p style="color: #94a3b8; font-size: 12px; margin-bottom:15px;">تسجيل الدخول أو إنشاء حساب جديد</p>
             <div class="tab-switch">
@@ -162,6 +183,7 @@
                 <button class="tab-btn" id="signupTabBtn" onclick="switchAuthTab('signup')">حساب جديد</button>
             </div>
 
+            <!-- الحقول ثابتة تماماً بدون أي حركات مزعجة -->
             <div id="loginForm">
                 <input type="email" id="loginEmail" class="input-box" placeholder="البريد الإلكتروني">
                 <input type="password" id="loginPass" class="input-box" placeholder="كلمة المرور">
