@@ -81,6 +81,30 @@
         .btn-purple { background: linear-gradient(135deg, #a855f7, #7e22ce); color: #fff; }
         .btn-green { background: linear-gradient(135deg, #10b981, #059669); color: #fff; }
 
+        /* تعديل تصميم الأزرار الرئيسية لتصبح مربعة الشكل ومتساوية تماماً */
+        .grid-buttons-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .square-menu-btn {
+            aspect-ratio: 1 / 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+            border-radius: 14px;
+            border: none;
+            font-weight: bold;
+            font-size: 11px;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
         .shop-tabs { display: flex; gap: 5px; margin-bottom: 10px; }
         .shop-tab-btn { flex: 1; padding: 7px; background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #94a3b8; font-weight: bold; font-size: 11px; cursor: pointer; text-align: center; }
         .shop-tab-btn.active-gold { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; }
@@ -96,26 +120,6 @@
         .large-avatar { width: 85px; height: 85px; border-radius: 50%; object-fit: cover; display: block; background: #222; cursor: pointer; }
         .large-avatar:hover { opacity: 0.85; transform: scale(1.02); }
 
-        @keyframes diamondShine {
-            0% { box-shadow: 0 0 5px #38bdf8, 0 0 10px #0ea5e9, inset 0 0 5px #38bdf8; }
-            50% { box-shadow: 0 0 12px #ffffff, 0 0 20px #38bdf8, inset 0 0 10px #ffffff; }
-            100% { box-shadow: 0 0 5px #38bdf8, 0 0 10px #0ea5e9, inset 0 0 5px #38bdf8; }
-        }
-        @keyframes goldShine {
-            0% { box-shadow: 0 0 5px #f59e0b, 0 0 10px #d97706, inset 0 0 5px #f59e0b; }
-            50% { box-shadow: 0 0 12px #fef08a, 0 0 20px #f59e0b, inset 0 0 10px #fef08a; }
-            100% { box-shadow: 0 0 5px #f59e0b, 0 0 10px #d97706, inset 0 0 5px #f59e0b; }
-        }
-        @keyframes bronzeShine {
-            0% { box-shadow: 0 0 5px #d97706, 0 0 10px #b45309, inset 0 0 5px #d97706; }
-            50% { box-shadow: 0 0 12px #fed7aa, 0 0 20px #d97706, inset 0 0 10px #fed7aa; }
-            100% { box-shadow: 0 0 5px #d97706, 0 0 10px #b45309, inset 0 0 5px #d97706; }
-        }
-
-        .avatar-ring-diamond { border: 3px solid #38bdf8; animation: diamondShine 2s infinite ease-in-out; }
-        .avatar-ring-gold { border: 3px solid #f59e0b; animation: goldShine 2s infinite ease-in-out; }
-        .avatar-ring-bronze { border: 3px solid #d97706; animation: bronzeShine 2s infinite ease-in-out; }
-
         .profile-gifts-section { margin-top: 10px; text-align: right; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 8px; }
         .profile-gifts-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; max-height: 140px; overflow-y: auto; padding: 2px; }
         .profile-gift-mini-card { background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 8px; padding: 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; height: 55px; }
@@ -129,10 +133,7 @@
         .modal-content { background: #121826; border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 16px; width: 100%; max-width: 380px; padding: 16px; max-height: 90vh; overflow-y: auto; }
 
         .gift-box-btn { background: rgba(245, 158, 11, 0.25); border: 1px solid #f59e0b; color: #fff; padding: 0 8px; border-radius: 8px; font-size: 11px; cursor: pointer; height: 38px; display: flex; align-items: center; justify-content: center; }
-        .gift-box-btn:hover { background: rgba(245, 158, 11, 0.45); }
-
         .room-settings-btn { background: rgba(168, 85, 247, 0.25); border: 1px solid #a855f7; color: #fff; padding: 0 8px; border-radius: 8px; font-size: 11px; cursor: pointer; height: 38px; display: flex; align-items: center; justify-content: center; }
-        .room-settings-btn:hover { background: rgba(168, 85, 247, 0.45); }
 
         .rooms-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 8px; max-height: 55vh; overflow-y: auto; padding: 2px; }
         .room-square-card { background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 14px; padding: 12px 8px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between; box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
@@ -254,48 +255,60 @@
                 <span style="color: #94a3b8; font-size: 10px; margin-bottom: 2px;">الرصيد الحالي</span>
                 <div><span id="userPoints" style="color: #84cc16; font-size: 16px; font-weight: 800;">0</span> <span style="font-size:10px; color:#84cc16;">نقطة</span></div>
                 <div style="margin-top:2px;"><span id="userGems" style="color: #38bdf8; font-size: 13px; font-weight: bold;">0</span> <span style="font-size:9px; color:#38bdf8;">جوهرة</span></div>
-                <div style="display: flex; gap: 4px; justify-content: center; margin-top: 4px;">
-                    <button class="action-btn btn-blue" style="width:auto; padding:2px 6px; font-size:9px;" onclick="convertGemsToPoints()">💎 تبديل</button>
-                    <button class="action-btn btn-gold" style="width:auto; padding:2px 6px; font-size:9px;" onclick="openWithdrawModal()">💸 سحب</button>
-                </div>
             </div>
         </div>
 
-        <div class="card" style="padding: 6px 8px;">
-            <button class="action-btn btn-gold" style="padding: 10px;" onclick="navigateTo('leaderboardScreen')">فتح لوحة الشرف 👑</button>
+        <!-- الصف الأول من الأزرار المربعة (لوحة الشرف، عجلة الحظ، غرف الدردشة) -->
+        <div class="grid-buttons-row">
+            <button class="square-menu-btn btn-gold" onclick="navigateTo('leaderboardScreen')">
+                <span style="font-size: 20px; margin-bottom: 4px;">👑</span>
+                <span>لوحة الشرف</span>
+            </button>
+            <button class="square-menu-btn btn-purple" onclick="navigateTo('wheelScreen')">
+                <span style="font-size: 20px; margin-bottom: 4px;">🎡</span>
+                <span>عجلة الحظ</span>
+            </button>
+            <button class="square-menu-btn btn-green" onclick="openIsolatedPublicRooms()">
+                <span style="font-size: 20px; margin-bottom: 4px;">💬</span>
+                <span>غرف الدردشة</span>
+            </button>
         </div>
 
-        <div class="card" style="padding: 6px 8px;">
-            <button class="action-btn btn-purple" style="padding: 10px;" onclick="navigateTo('wheelScreen')">عجلة الحظ</button>
+        <!-- الصف الثاني من الأزرار المربعة (متجر العدادات، زر سحب الأرباح المربع بالوسط، صندوق الإشعارات) -->
+        <div class="grid-buttons-row">
+            <button class="square-menu-btn btn-gold" onclick="navigateTo('shopScreen')">
+                <span style="font-size: 20px; margin-bottom: 4px;">🛒</span>
+                <span>متجر العدادات</span>
+            </button>
+            <button class="square-menu-btn btn-gold" onclick="openWithdrawModal()">
+                <span style="font-size: 20px; margin-bottom: 4px;">💸</span>
+                <span>سحب الأرباح</span>
+            </button>
+            <button class="square-menu-btn btn-gold" onclick="openNotificationsPage()" style="position: relative;">
+                <span style="font-size: 20px; margin-bottom: 4px;">🔔</span>
+                <span>الإشعارات</span>
+                <span id="mainNotificationBadge" class="notification-badge" style="top:6px; right:6px;"></span>
+            </button>
         </div>
 
-        <div class="card" style="padding: 6px 8px;">
-            <button class="action-btn btn-green" style="padding: 10px;" onclick="openIsolatedPublicRooms()">غرف الدردشة 💬</button>
-        </div>
-
-        <div style="display: flex; gap: 8px; margin-bottom: 10px;">
-            <div class="card" style="flex: 1; margin: 0; padding: 6px 8px;">
-                <button class="action-btn btn-gold" style="padding: 10px;" onclick="navigateTo('shopScreen')">متجر العدادات 🛒</button>
-            </div>
-            <div class="card" style="flex: 1; margin: 0; padding: 6px 8px;">
-                <button class="action-btn btn-blue" style="padding: 10px;" onclick="navigateTo('agentsScreen')">وكلاء دينار 👔</button>
-            </div>
-        </div>
-
-        <div style="display: flex; gap: 8px; margin-bottom: 10px;">
-            <div class="card" style="flex: 1; margin: 0; padding: 6px 8px; position: relative;">
-                <button class="action-btn btn-gold" style="padding: 10px; position:relative;" onclick="openNotificationsPage()">
-                    صندوق الإشعارات
-                    <span id="mainNotificationBadge" class="notification-badge" style="top:2px; right:8px;"></span>
-                </button>
-            </div>
-            <div class="card" style="flex: 1; margin: 0; padding: 6px 8px;">
-                <button class="action-btn btn-blue" style="padding: 10px;" onclick="navigateTo('friendsScreen')">قائمة الأصدقاء 🔍</button>
-            </div>
+        <!-- الصف الثالث من الأزرار المربعة (وكلاء دينار، زر تبديل الجواهر المربع بالوسط، قائمة الأصدقاء) -->
+        <div class="grid-buttons-row" style="margin-bottom: 0;">
+            <button class="square-menu-btn btn-blue" onclick="navigateTo('agentsScreen')">
+                <span style="font-size: 20px; margin-bottom: 4px;">👔</span>
+                <span>وكلاء دينار</span>
+            </button>
+            <button class="square-menu-btn btn-blue" onclick="convertGemsToPoints()">
+                <span style="font-size: 20px; margin-bottom: 4px;">💎</span>
+                <span>تبديل الجواهر</span>
+            </button>
+            <button class="square-menu-btn btn-blue" onclick="navigateTo('friendsScreen')">
+                <span style="font-size: 20px; margin-bottom: 4px;">👥</span>
+                <span>قائمة الأصدقاء</span>
+            </button>
         </div>
     </div>
 
-    <!-- صفحة لوحة الشرف (Leaderboard) المستقلة -->
+    <!-- صفحة لوحة الشرف (Leaderboard) المستقلة بدون ساعة أو إطارات -->
     <div id="leaderboardScreen" class="screen-page">
         <div class="top-nav">
             <h3 style="margin:0; color:#f59e0b; font-size:15px;">🏆 لوحة الشرف الأسبوعية</h3>
@@ -303,11 +316,6 @@
         </div>
 
         <div class="card" style="text-align: right; background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(245, 158, 11, 0.4);">
-            <!-- ساعة العد التنازلي بدون كتابة فقط الساعة -->
-            <div style="display: flex; justify-content: center; align-items: center; background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 12px; padding: 8px; margin-bottom: 10px; box-shadow: inset 0 2px 6px rgba(0,0,0,0.6);">
-                <span id="weeklyCountdownTimer" style="font-family: monospace; font-size: 15px; font-weight: bold; color: #f59e0b; letter-spacing: 1px;">06 أيام : 12 ساعة : 45 دقيقة : 30 ثانية</span>
-            </div>
-
             <div class="shop-tabs" style="margin-bottom: 10px;">
                 <button class="shop-tab-btn active-gold" id="lbTab1" onclick="switchLeaderboardTab('gifts')">🎁 الشحن والهدايا</button>
                 <button class="shop-tab-btn" id="lbTab2" onclick="switchLeaderboardTab('agents')">👔 نشاط الوكلاء</button>
@@ -486,7 +494,6 @@
                 <button class="action-btn btn-gold" onclick="saveProfileData()">حفظ التعديلات 💾</button>
             </div>
 
-            <!-- قسم الهدايا المستلمة بالملف الشخصي -->
             <div class="profile-gifts-section">
                 <h4 style="margin:0 0 6px 0; color:#f59e0b; font-size:12px;">🎁 هدايا الملف الشخصي المستلمة</h4>
                 <div id="profileReceivedGiftsGrid" class="profile-gifts-grid">
@@ -881,13 +888,12 @@
     let currentEmail = '';
     let currentUserKey = '';
     let rtdb = null;
-    let userData = { points: 0, gems: 0, lastSpinTime: 0, activeCounter: 'لا يوجد', customId: '', name: '', avatar: '', bio: '', hasCreatedRoom: false, createdRoomId: '', lastWithdrawTime: 0, isAgent: false, isBanned: false, activeRing: '', ringExpire: 0 };
+    let userData = { points: 0, gems: 0, lastSpinTime: 0, activeCounter: 'لا يوجد', customId: '', name: '', avatar: '', bio: '', hasCreatedRoom: false, createdRoomId: '', lastWithdrawTime: 0, isAgent: false, isBanned: false };
     let base64Image = '';
     let activeChatFriendKey = '';
     let activeChatFriendName = '';
     let visitedProfileTargetKey = '';
     let timerInterval = null;
-    let leaderboardTimerInterval = null;
     let pendingCounterName = '';
     let isolatedActiveRoomId = '';
     let currentRoomOccupantsCount = 0;
@@ -952,9 +958,6 @@
         if(screenId === 'profileScreen') loadProfileReceivedGifts(currentUserKey, 'profileReceivedGiftsGrid');
         if(screenId === 'leaderboardScreen') {
             loadLeaderboardData();
-            startWeeklyLeaderboardCountdown();
-        } else {
-            if(leaderboardTimerInterval) clearInterval(leaderboardTimerInterval);
         }
     }
 
@@ -1041,7 +1044,7 @@
             let defaultName = email.split('@')[0];
             let assignedId = (email === 'msaftwtn@gmail.com') ? '1' : Math.floor(100000 + Math.random() * 900000).toString();
 
-            const newUser = { name: defaultName, email: email, password: pass, customId: assignedId, points: 0, gems: 0, bio: '', lastSpinTime: 0, activeCounter: 'لا يوجد', hasCreatedRoom: false, createdRoomId: '', lastWithdrawTime: 0, isAgent: false, isBanned: false, activeRing: '', ringExpire: 0, weeklyGiftsSent: 0, weeklyWheelPoints: 0, weeklyAgentPoints: 0 };
+            const newUser = { name: defaultName, email: email, password: pass, customId: assignedId, points: 0, gems: 0, bio: '', lastSpinTime: 0, activeCounter: 'لا يوجد', hasCreatedRoom: false, createdRoomId: '', lastWithdrawTime: 0, isAgent: false, isBanned: false, weeklyGiftsSent: 0, weeklyWheelPoints: 0, weeklyAgentPoints: 0 };
             rtdb.ref('users/' + currentUserKey).set(newUser).then(() => {
                 btn.disabled = false; btn.innerText = "تأكيد الحساب ✨";
                 currentEmail = email;
@@ -1087,15 +1090,9 @@
                     rtdb.ref('users/' + currentUserKey).update({ customId: userData.customId });
                 }
 
-                if (userData.ringExpire && Date.now() > userData.ringExpire) {
-                    userData.activeRing = '';
-                    userData.ringExpire = 0;
-                    rtdb.ref('users/' + currentUserKey).update({ activeRing: '', ringExpire: 0 });
-                }
-
                 updateUI();
                 checkActiveTimer();
-                checkWeeklyLeaderboardReset();
+                checkAndRunAutomatedFridayDistribution();
             }
         });
 
@@ -1118,12 +1115,6 @@
         document.getElementById('profileBioInput').value = userData.bio || '';
         if(userData.avatar) document.getElementById('avatarPreview').src = userData.avatar;
         document.getElementById('activeCounterInfo').innerText = userData.activeCounter || 'لا يوجد';
-
-        let ringBox = document.getElementById('profileAvatarRingBox');
-        ringBox.className = 'large-avatar-container';
-        if (userData.activeRing === 'diamond') ringBox.classList.add('avatar-ring-diamond');
-        else if (userData.activeRing === 'gold') ringBox.classList.add('avatar-ring-gold');
-        else if (userData.activeRing === 'bronze') ringBox.classList.add('avatar-ring-bronze');
 
         let agentBadge = document.getElementById('agentStatusBadge');
         if (userData.isAgent) agentBadge.style.display = 'block';
@@ -1156,7 +1147,6 @@
 
     function handleLogout() {
         if(timerInterval) clearInterval(timerInterval);
-        if(leaderboardTimerInterval) clearInterval(leaderboardTimerInterval);
         try { localStorage.removeItem('dinarUserKey'); } catch(e){}
         currentEmail = ''; currentUserKey = '';
         navigateTo('authScreen');
@@ -1306,47 +1296,13 @@
         document.getElementById('lbContentWheel').style.display = tab === 'wheel' ? 'block' : 'none';
     }
 
-    function startWeeklyLeaderboardCountdown() {
-        if(leaderboardTimerInterval) clearInterval(leaderboardTimerInterval);
-        
-        function updateTimer() {
-            let now = new Date();
-            let day = now.getDay(); // الجمعة = 5
-            let target = new Date(now);
-            
-            // حساب القادم يوم الجمعة الساعة 6:00 صباحاً
-            target.setDate(now.getDate() + ((5 + 7 - day) % 7));
-            target.setHours(6, 0, 0, 0);
-            
-            if (now >= target) {
-                target.setDate(target.getDate() + 7);
-            }
-
-            let diff = target - now;
-            if (diff < 0) diff = 0;
-
-            let days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            let hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            let minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            let seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-            let timerEl = document.getElementById('weeklyCountdownTimer');
-            if (timerEl) {
-                timerEl.innerText = `${days} أيام : ${String(hours).padStart(2, '0')} ساعة : ${String(minutes).padStart(2, '0')} دقيقة : ${String(seconds).padStart(2, '0')} ثانية`;
-            }
-        }
-
-        updateTimer();
-        leaderboardTimerInterval = setInterval(updateTimer, 1000);
-    }
-
     function loadLeaderboardData() {
         rtdb.ref('users').once('value').then(snap => {
             if(!snap.exists()) return;
             let users = [];
             snap.forEach(u => {
                 let dat = u.val();
-                users.push({ key: u.key, name: dat.name || 'مستخدم', customId: dat.customId || '---', avatar: dat.avatar || '', activeRing: dat.activeRing || '', gifts: dat.weeklyGiftsSent || 0, agents: dat.weeklyAgentPoints || 0, wheel: dat.weeklyWheelPoints || 0 });
+                users.push({ key: u.key, name: dat.name || 'مستخدم', customId: dat.customId || '---', avatar: dat.avatar || '', gifts: dat.weeklyGiftsSent || 0, agents: dat.weeklyAgentPoints || 0, wheel: dat.weeklyWheelPoints || 0 });
             });
 
             let giftsList = [...users].sort((a,b) => b.gifts - a.gifts).slice(0, 10);
@@ -1373,17 +1329,11 @@
             let rank = index + 1;
             let crownIcon = rank === 1 ? '👑 ' : (rank === 2 ? '🥈 ' : (rank === 3 ? '🥉 ' : ''));
             
-            // دقة هندسية صارمة: الأطارات المضيئة فقط لأول ثلاثة مراكز (#1, #2, #3)
-            let ringClass = '';
-            if (rank === 1) ringClass = 'avatar-ring-diamond';
-            else if (rank === 2) ringClass = 'avatar-ring-gold';
-            else if (rank === 3) ringClass = 'avatar-ring-bronze';
-
             html += `
             <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.03); padding:8px; border-radius:10px; margin-bottom:6px; border:1px solid rgba(255,255,255,0.05);">
                 <div style="display:flex; align-items:center; gap:8px;">
                     <span style="font-weight:900; font-size:12px; color:#f59e0b; width:22px; text-align:center;">#${rank}</span>
-                    <div class="large-avatar-container ${ringClass}" style="width:38px; height:38px; margin:0;">
+                    <div class="large-avatar-container" style="width:38px; height:38px; margin:0;">
                         <img src="${item.avatar || 'https://via.placeholder.com/38'}" style="width:38px; height:38px; border-radius:50%; object-fit:cover;" alt="صورة">
                     </div>
                     <div>
@@ -1400,60 +1350,46 @@
         container.innerHTML = html;
     }
 
-    function checkWeeklyLeaderboardReset() {
+    function checkAndRunAutomatedFridayDistribution() {
         let now = new Date();
-        let day = now.getDay();
-        let hour = now.getHours();
+        let day = now.getDay(); // 5 = الجمعة
+        let hour = now.getHours(); // 6 = السادسة صباحاً
 
         if (day === 5 && hour === 6 && currentEmail === 'msaftwtn@gmail.com') {
-            let lastResetDate = localStorage.getItem('dinarLastWeeklyReset');
+            let lastResetDate = localStorage.getItem('dinarLastFridayReset');
             let todayStr = now.toDateString();
             if (lastResetDate !== todayStr) {
-                localStorage.setItem('dinarLastWeeklyReset', todayStr);
-                executeWeeklyRewardsDistribution();
+                localStorage.setItem('dinarLastFridayReset', todayStr);
+                executeAutomatedWeeklyRewards();
             }
         }
     }
 
-    function executeWeeklyRewardsDistribution() {
+    function executeAutomatedWeeklyRewards() {
         rtdb.ref('users').once('value').then(snap => {
             if(!snap.exists()) return;
             let users = [];
             snap.forEach(u => { users.push({ key: u.key, ...u.val() }); });
 
             let categories = [ { key: 'weeklyGiftsSent', name: 'الهدايا' }, { key: 'weeklyAgentPoints', name: 'الوكلاء' }, { key: 'weeklyWheelPoints', name: 'العجلة' } ];
-            let monthMs = 30 * 24 * 60 * 60 * 1000;
-            let expireTime = Date.now() + monthMs;
 
             categories.forEach(cat => {
                 let sorted = [...users].sort((a,b) => (b[cat.key] || 0) - (a[cat.key] || 0));
                 
                 if (sorted[0] && sorted[0][cat.key] > 0) {
                     let u1 = sorted[0];
-                    rtdb.ref(`users/${u1.key}`).update({
-                        gems: (u1.gems || 0) + 1000,
-                        activeRing: 'diamond',
-                        ringExpire: expireTime
-                    });
-                    rtdb.ref(`notifications/${u1.key}`).push({ text: `🎉 مبروك! حصلت على المركز الأول في تصنيف (${cat.name}) وجائزة 1000 جوهرة + إطار ماسي مضيء لمدة شهر!`, timestamp: Date.now() });
+                    rtdb.ref(`users/${u1.key}`).update({ gems: (u1.gems || 0) + 1000 });
+                    rtdb.ref(`notifications/${u1.key}`).push({ text: `🎉 مبروك! حصلت على المركز الأول أوتوماتيكياً في تصنيف (${cat.name}) وجائزة 1000 جوهرة!`, timestamp: Date.now() });
                 }
                 if (sorted[1] && sorted[1][cat.key] > 0) {
                     let u2 = sorted[1];
-                    rtdb.ref(`users/${u2.key}`).update({
-                        gems: (u2.gems || 0) + 500,
-                        activeRing: 'gold',
-                        ringExpire: expireTime
-                    });
-                    rtdb.ref(`notifications/${u2.key}`).push({ text: `🎉 مبروك! حصلت على المركز الثاني في تصنيف (${cat.name}) وجائزة 500 جوهرة + إطار ذهبي مضيء لمدة شهر!`, timestamp: Date.now() });
+                    rtdb.ref(`users/${u2.key}`).update({ gems: (u2.gems || 0) + 500 });
+                    rtdb.ref(`notifications/${u2.key}`).push({ text: `🎉 مبروك! حصلت على المركز الثاني أوتوماتيكياً في تصنيف (${cat.name}) وجائزة 500 جوهرة!`, timestamp: Date.now() });
                 }
                 if (sorted[2] && sorted[2][cat.key] > 0) {
                     let u3 = sorted[2];
-                    rtdb.ref(`users/${u3.key}`).update({
-                        gems: (u3.gems || 0) + 250,
-                        activeRing: 'bronze',
-                        ringExpire: expireTime
-                    });
-                    rtdb.ref(`notifications/${u3.key}`).push({ text: `🎉 مبروك! حصلت على المركز الثالث في تصنيف (${cat.name}) وجائزة 250 جوهرة + إطار برونزي مضيء لمدة شهر!`, timestamp: Date.now() });
+                    rtdb.ref(`users/${u3.key}`).update({ gems: (u3.gems || 0) + 250 });
+                    rtdb.ref(`notifications/${u3.key}`).push({ text: `🎉 مبروك! حصلت على المركز الثالث أوتوماتيكياً في تصنيف (${cat.name}) وجائزة 250 جوهرة!`, timestamp: Date.now() });
                 }
             });
 
@@ -1674,12 +1610,6 @@
             document.getElementById('visitedUserCustomId').innerText = `ID: ${uData.customId || '---'}`;
             document.getElementById('visitedUserAvatar').src = uData.avatar ? uData.avatar : 'https://via.placeholder.com/85';
             document.getElementById('visitedUserBio').innerText = uData.bio ? uData.bio : 'لا يوجد بايو حالياً.';
-
-            let visitedRingBox = document.getElementById('visitedAvatarRingBox');
-            visitedRingBox.className = 'large-avatar-container';
-            if (uData.activeRing === 'diamond') visitedRingBox.classList.add('avatar-ring-diamond');
-            else if (uData.activeRing === 'gold') visitedRingBox.classList.add('avatar-ring-gold');
-            else if (uData.activeRing === 'bronze') visitedRingBox.classList.add('avatar-ring-bronze');
 
             let visitedAgentBadge = document.getElementById('visitedAgentBadge');
             if (uData.isAgent) visitedAgentBadge.style.display = 'block';
