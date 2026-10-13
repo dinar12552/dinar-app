@@ -33,7 +33,6 @@
 
         .auth-card { background: rgba(30, 41, 59, 0.85); backdrop-filter: blur(16px); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 24px; padding: 24px 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.8); text-align: center; width: 100%; position: relative; z-index: 10; }
         
-        /* حركة فخمة لشعار الدائرة فقط */
         @keyframes logoFloat {
             0% { transform: translateY(0px) scale(1); filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.4)); }
             50% { transform: translateY(-8px) scale(1.03); filter: drop-shadow(0 0 20px rgba(245, 158, 11, 0.8)); }
@@ -45,10 +44,10 @@
             margin-bottom: 10px;
         }
 
-        .tab-switch { display: flex; background: rgba(15, 23, 42, 0.8); border-radius: 12px; padding: 4px; margin-bottom: 16px; }
-        .tab-btn { flex: 1; padding: 8px; border: none; background: transparent; color: #94a3b8; font-weight: bold; font-size: 12px; border-radius: 8px; cursor: pointer; }
+        .tab-switch { display: flex; background: rgba(15, 23, 42, 0.8); border-radius: 12px; padding: 4px; margin-bottom: 16px; direction: rtl; }
+        .tab-btn { flex: 1; padding: 8px; border: none; background: transparent; color: #94a3b8; font-weight: bold; font-size: 12px; border-radius: 8px; cursor: pointer; text-align: center; }
         .tab-btn.active { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; }
-        .input-box, .select-box { width: 100%; padding: 11px; margin-bottom: 10px; background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; color: #fff; font-size: 12px; outline: none; }
+        .input-box, .select-box { width: 100%; padding: 11px; margin-bottom: 10px; background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; color: #fff; font-size: 12px; outline: none; text-align: right; }
 
         .top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .nav-btn { background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); color: #f59e0b; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; position: relative; }
@@ -113,20 +112,13 @@
         .room-square-avatar { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; border: 2px solid #f59e0b; margin-bottom: 6px; background: #111; }
 
         #unifiedGiftModal { align-items: flex-end !important; padding: 0 !important; }
-
         .gift-modal-bottom { width: 100% !important; max-width: 420px !important; background: rgba(15, 23, 42, 0.98) !important; border-top: 2px solid #f59e0b !important; border-radius: 20px 20px 0 0 !important; padding: 14px !important; box-shadow: 0 -10px 30px rgba(0,0,0,0.85); }
-
         .gift-tabs-header { display: flex; background: rgba(30, 41, 59, 0.8); border-radius: 10px; padding: 3px; margin-bottom: 10px; gap: 4px; }
-
         .gift-tab-btn { flex: 1; padding: 7px; border: none; background: transparent; color: #94a3b8; font-weight: bold; font-size: 11px; border-radius: 8px; cursor: pointer; text-align: center; }
-
         .gift-tab-btn.active { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; }
-
         .gift-pane-content { display: none; max-height: 250px; overflow-y: auto; padding: 4px; }
         .gift-pane-content.active { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-
         .gift-card-box { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 8px 4px; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; height: 82px; }
-
         .gift-card-box.selected-gold { border: 2px solid #f59e0b !important; box-shadow: 0 0 12px #f59e0b, inset 0 0 8px rgba(245, 158, 11, 0.5) !important; background: rgba(245, 158, 11, 0.12) !important; }
 
         @keyframes exclusivePulseAnim {
@@ -134,19 +126,12 @@
             50% { transform: scale(1.12); filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.9)) brightness(1.15); }
             100% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(245, 158, 11, 0.6)); }
         }
-
         .exclusive-gift-animated { animation: exclusivePulseAnim 2.2s ease-in-out infinite; }
-
         .gift-icon-full { width: 42px; height: 42px; object-fit: contain; display: block; }
-
         .gift-price-num { font-size: 11px; color: #f59e0b; font-weight: bold; margin-top: 3px; }
-
         .bottom-action-bar { display: flex; align-items: center; justify-content: flex-end; margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(255, 255, 255, 0.1); }
-
         .reply-preview-bar { display: none; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.95); border-left: 3px solid #38bdf8; padding: 4px 8px; border-radius: 6px; margin-bottom: 4px; font-size: 11px; }
-
         .msg-bubble-container { padding: 6px 10px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: space-between; gap: 6px; max-width: 85%; word-break: break-word; margin-top: 2px; font-weight: bold; }
-
         .msg-action-btn { background: none; border: none; color: #ffffff; font-size: 12px; cursor: pointer; padding: 0 2px; }
         .msg-action-btn:hover { transform: scale(1.15); }
 
@@ -159,6 +144,13 @@
         .gift-chat-img { width: 65px; height: 65px; object-fit: contain; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6)); }
 
         .admin-badge { background: linear-gradient(135deg, #ef4444, #b91c1c); color: #fff; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: bold; border: 1px solid #f87171; cursor: pointer; display: none; margin-bottom: 8px; }
+
+        /* ستايل جدول الأسعار الفخم (المستوحى من تصميمك الإبداعي) */
+        .pricing-notebook-table { background: #f1f5f9; color: #0f172a; border-radius: 12px; overflow: hidden; margin-top: 12px; border: 1px solid #cbd5e1; box-shadow: 0 10px 25px rgba(0,0,0,0.3); text-align: center; }
+        .notebook-header { background: #e2e8f0; padding: 10px; border-bottom: 2px dashed #94a3b8; display: flex; justify-content: space-between; align-items: center; }
+        .notebook-grid-header { display: grid; grid-template-columns: 1fr 1fr 1fr; background: #cbd5e1; font-weight: bold; font-size: 11px; padding: 6px 2px; color: #1e293b; border-bottom: 1px solid #94a3b8; }
+        .notebook-row { display: grid; grid-template-columns: 1fr 1fr 1fr; font-size: 11px; padding: 6px 2px; border-bottom: 1px dashed #cbd5e1; font-family: monospace; font-weight: bold; color: #334155; }
+        .notebook-row:nth-child(even) { background: rgba(255,255,255,0.5); }
     </style>
 </head>
 <body>
@@ -168,7 +160,6 @@
     <!-- 1. واجهة تسجيل الدخول والإنشاء -->
     <div id="authScreen" class="screen-page active">
         <div class="auth-card">
-            <!-- الشعار المتحرك فقط -->
             <div class="animated-logo-container">
                 <div style="width: 75px; height: 75px; border-radius: 50%; background: radial-gradient(circle, #3d2b00 0%, #1a1200 100%); border: 2px solid #f59e0b; display: flex; flex-direction: column; justify-content: center; align-items: center; margin: 0 auto; box-shadow: 0 0 15px rgba(245,158,11,0.5);">
                     <span style="font-size: 24px; font-weight: 900; color: #f59e0b;">D</span>
@@ -178,12 +169,12 @@
             
             <h2 style="color: #f59e0b; margin:0 0 5px 0;">منصة دينار</h2>
             <p style="color: #94a3b8; font-size: 12px; margin-bottom:15px;">تسجيل الدخول أو إنشاء حساب جديد</p>
+            
             <div class="tab-switch">
                 <button class="tab-btn active" id="loginTabBtn" onclick="switchAuthTab('login')">تسجيل الدخول</button>
                 <button class="tab-btn" id="signupTabBtn" onclick="switchAuthTab('signup')">حساب جديد</button>
             </div>
 
-            <!-- الحقول ثابتة تماماً بدون أي حركات مزعجة -->
             <div id="loginForm">
                 <input type="email" id="loginEmail" class="input-box" placeholder="البريد الإلكتروني">
                 <input type="password" id="loginPass" class="input-box" placeholder="كلمة المرور">
@@ -209,7 +200,6 @@
             <button id="adminPanelMainBtn" class="admin-badge" onclick="openAdminPanelModal()">👑 لوحة تحكم الإدارة الخاصة</button>
         </div>
 
-        <!-- خانة الوكيل المعتمد لشحن النقاط عبر الـ ID -->
         <div id="agentChargingCard" class="card" style="display:none; border: 1px solid #38bdf8;">
             <h4 style="margin:0 0 6px 0; color:#38bdf8; font-size:13px;">⚡ لوحة الوكيل: شحن نقاط المستخدمين</h4>
             <input type="text" id="agentTargetIdInput" class="input-box" placeholder="أدخل ID المستخدم (أرقام فقط)">
@@ -277,7 +267,7 @@
         </div>
     </div>
 
-    <!-- صفحة وكلاء دينار المحدثة -->
+    <!-- صفحة وكلاء دينار -->
     <div id="agentsScreen" class="screen-page">
         <div class="top-nav">
             <h3 style="margin:0; color:#38bdf8; font-size:15px;">👔 وكلاء دينار</h3>
@@ -289,7 +279,7 @@
             <p style="font-size: 11px; color: #cbd5e1; line-height: 1.5; margin-bottom: 10px;">
                 لكي تصبح وكيلاً معتمداً وتظهر كوكيل رسمي أمام جميع المستخدمين، الشروط هي:<br>
                 1. دفع رسم الاعتماد: <b>1.000.000 مليون</b> عبر تحويل زين كاش للإدارة (<b>9647881592421</b>).<br>
-                2. إرفاق صور بطاقة السكن (الأمامية والخلفية) والبطاقة الموحدة (الأمامية والخلفية).
+                2. إرفاق صور بطاقة السكن (الأمامية والخلفية) والبطاقة الوطنية (الأمامية والخلفية).
             </p>
             <button class="action-btn btn-gold" onclick="openAgentApplyModal()">تقديم طلب وكالة جديد 📝</button>
         </div>
@@ -300,7 +290,7 @@
         </div>
     </div>
 
-    <!-- صفحة متجر العدادات المستقلة -->
+    <!-- صفحة متجر العدادات مع إضافة جدول الأسعار الفخم الخاص بك -->
     <div id="shopScreen" class="screen-page">
         <div class="top-nav">
             <h3 style="margin:0; color:#f59e0b; font-size:15px;">🛒 متجر العدادات</h3>
@@ -369,6 +359,31 @@
                     <button class="action-btn btn-purple" onclick="buyCounter('40.000 نقطة', 8000000)">شراء / تفعيل</button>
                 </div>
             </div>
+
+            <!-- جدول الأسعار الإبداعي الخاص بك المدمج بالمتجر -->
+            <div class="pricing-notebook-table">
+                <div class="notebook-header">
+                    <span style="font-weight:900; font-size:12px; color:#1e293b;">Dinar</span>
+                    <span style="font-size:11px; color:#f59e0b; font-weight:bold;">👑 اسعار العدادات</span>
+                </div>
+                <div class="notebook-grid-header">
+                    <span>السعر بالدينار العراقي</span>
+                    <span>السعر بالنقاط</span>
+                    <span>العداد اليومي</span>
+                </div>
+                <div class="notebook-row"><span>6.000</span><span>20.000</span><span>100</span></div>
+                <div class="notebook-row"><span>12.000</span><span>40.000</span><span>200</span></div>
+                <div class="notebook-row"><span>30.000</span><span>100.000</span><span>500</span></div>
+                <div class="notebook-row"><span>60.000</span><span>200.000</span><span>1.000</span></div>
+                <div class="notebook-row"><span>120.000</span><span>400.000</span><span>2.000</span></div>
+                <div class="notebook-row"><span>180.000</span><span>600.000</span><span>3.000</span></div>
+                <div class="notebook-row"><span>240.000</span><span>800.000</span><span>4.000</span></div>
+                <div class="notebook-row"><span>300.000</span><span>1.000.000</span><span>5.000</span></div>
+                <div class="notebook-row"><span>600.000</span><span>2.000.000</span><span>10.000</span></div>
+                <div class="notebook-row"><span>1.200.000</span><span>4.000.000</span><span>20.000</span></div>
+                <div class="notebook-row"><span>1.800.000</span><span>6.000.000</span><span>30.000</span></div>
+                <div class="notebook-row"><span>2.400.000</span><span>8.000.000</span><span>40.000</span></div>
+            </div>
         </div>
     </div>
 
@@ -413,7 +428,7 @@
         </div>
     </div>
 
-    <!-- 4. صفحة الأصدقاء والبحث -->
+    <!-- 5. صفحة الأصدقاء والبحث -->
     <div id="friendsScreen" class="screen-page">
         <div class="top-nav">
             <h3 style="margin:0; color:#38bdf8; font-size:15px;">👥 قائمة الأصدقاء والبحث</h3>
@@ -445,7 +460,7 @@
         </div>
     </div>
 
-    <!-- 5. صفحة الإشعارات المستقلة -->
+    <!-- 6. صفحة الإشعارات المستقلة -->
     <div id="notificationsScreen" class="screen-page">
         <div class="top-nav">
             <h3 style="margin:0; color:#f59e0b; font-size:15px;">🔔 صندوق الإشعارات</h3>
@@ -459,7 +474,7 @@
         </div>
     </div>
 
-    <!-- 6. صفحة غرف الدردشة الكتابية المستقلة -->
+    <!-- 7. صفحة غرف الدردشة الكتابية المستقلة -->
     <div id="isolatedChatScreen" class="screen-page">
         <div class="top-nav">
             <h3 style="margin:0; color:#10b981; font-size:15px;">💬 غرف الدردشة الكتابية</h3>
@@ -524,7 +539,6 @@
             <button style="background:none; border:none; color:#ef4444; font-size:18px; cursor:pointer;" onclick="closeAdminPanelModal()">✖</button>
         </div>
 
-        <!-- أزرار التحكم الفوري (الدكّات) -->
         <div style="background:rgba(255,255,255,0.03); padding:8px; border-radius:8px; margin-bottom:10px; display:flex; flex-direction:column; gap:6px;">
             <div style="display:flex; justify-content:space-between; align-items:center;">
                 <span style="font-size:11px; color:#cbd5e1;">حالة سحب الأرباح عامة:</span>
@@ -548,7 +562,7 @@
     </div>
 </div>
 
-<!-- نافذة تقديم طلب وكالة المحدثة -->
+<!-- نافذة تقديم طلب وكالة -->
 <div id="agentApplyModal" class="modal">
     <div class="modal-content" style="text-align:right;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
@@ -577,7 +591,7 @@
     </div>
 </div>
 
-<!-- بروفايل المستخدم المرئي عند زيارته -->
+<!-- بروفايل المستخدم المرئي -->
 <div id="userProfileModal" class="modal">
     <div class="modal-content" style="text-align:center;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -803,7 +817,6 @@
     let newRoomAvatarBase64 = '';
     let newRoomBgBase64 = '';
     
-    // متغيرات صور الوكيل الأربعة الجديدة
     let agentResidenceFrontBase64 = '';
     let agentResidenceBackBase64 = '';
     let agentNationalFrontBase64 = '';
@@ -1530,7 +1543,6 @@
     function openAgentApplyModal() { document.getElementById('agentApplyModal').style.display = 'flex'; }
     function closeAgentApplyModal() { document.getElementById('agentApplyModal').style.display = 'none'; }
 
-    // معالجة معاينة صور الوكيل الأربعة بدقة تامة
     function previewAgentDoc(event, type) {
         const file = event.target.files[0];
         if (file) {
