@@ -95,7 +95,6 @@
         .large-avatar { width: 85px; height: 85px; border-radius: 50%; object-fit: cover; border: 3px solid #f59e0b; margin: 0 auto 6px auto; display: block; background: #222; cursor: pointer; }
         .large-avatar:hover { opacity: 0.85; transform: scale(1.02); }
 
-        /* ستايل شبكة الهدايا في الملف الشخصي (مربعات صغار 3×3 مثل اللودو) */
         .profile-gifts-section { margin-top: 10px; text-align: right; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 8px; }
         .profile-gifts-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; max-height: 140px; overflow-y: auto; padding: 2px; }
         .profile-gift-mini-card { background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 8px; padding: 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; height: 55px; }
@@ -405,7 +404,7 @@
         <div class="card" style="padding:15px 10px; text-align:center;">
             <div class="wheel-pointer"></div>
             <div class="wheel-box" id="wheelGraphic"></div>
-            <div style="font-size: 13px; color: #f59e0b; font-weight: bold; margin: 6px 0;">تدوير العجلة 100</div>
+            <div style="font-size: 13px; color: #f59e0b; font-weight: bold; margin: 6px 0;">تدوير العجلة 100 جوهرة 💎</div>
             <button id="spinBtn" class="action-btn btn-purple" style="padding:8px; margin-top:3px;" onclick="spinWheel()">تدوير العجلة</button>
             <div id="wheelMsg" style="margin-top:6px; font-size:12px; color:#38bdf8; font-weight:bold;"></div>
         </div>
@@ -624,7 +623,6 @@
         <h3 id="visitedUserName" style="margin:0 0 2px 0; color:#fff; font-size:15px;">اسم المستخدم</h3>
         <div id="visitedAgentBadge" style="margin-top: 4px; display: none;"><span style="background:rgba(56,189,248,0.2); border:1px solid #38bdf8; color:#38bdf8; padding:2px 8px; border-radius:6px; font-size:10px; font-weight:bold;">⭐ وكيل معتمد</span></div>
 
-        <!-- قسم الهدايا المستلمة للمستخدم المزار (مربعات صغار 3×3) -->
         <div class="profile-gifts-section" style="margin-top:8px;">
             <h4 style="margin:0 0 4px 0; color:#f59e0b; font-size:11px;">🎁 هدايا الملف الشخصي</h4>
             <div id="visitedReceivedGiftsGrid" class="profile-gifts-grid">
@@ -828,7 +826,7 @@
     let currentEmail = '';
     let currentUserKey = '';
     let rtdb = null;
-    let userData = { points: 0, gems: 0, lastSpinTime: 0, activeCounter: 'لا يوجد', customId: '', name: '', avatar: '', bio: '', hasCreatedRoom: false, createdRoomId: '', lastWithdrawTime: 0, isAgent: false };
+    let userData = { points: 0, gems: 0, lastSpinTime: 0, activeCounter: 'لا يوجد', customId: '', name: '', avatar: '', bio: '', hasCreatedRoom: false, createdRoomId: '', lastWithdrawTime: 0, isAgent: false, isBanned: false };
     let base64Image = '';
     let activeChatFriendKey = '';
     let activeChatFriendName = '';
@@ -922,10 +920,15 @@
         rtdb.ref('users/' + currentUserKey).once('value').then(snap => {
             btn.disabled = false; btn.innerText = "دخول الحساب 🚀";
             if(snap.exists() && snap.val().password === pass) {
+                let uDat = snap.val();
+                if (uDat.isBanned) {
+                    return alert("🚫 تم حظر هذا الحساب نهائياً بسبب محاولة تلاعب أو تحايل على النظام!");
+                }
+
                 currentEmail = email;
                 try { localStorage.setItem('dinarUserKey', currentUserKey); } catch(e){}
                 
-                if (email === 'msaftwtn@gmail.com' && snap.val().customId !== '1') {
+                if (email === 'msaftwtn@gmail.com' && uDat.customId !== '1') {
                     rtdb.ref('users/' + currentUserKey).update({ customId: '1' });
                 }
 
@@ -953,7 +956,7 @@
             let defaultName = email.split('@')[0];
             let assignedId = (email === 'msaftwtn@gmail.com') ? '1' : Math.floor(100000 + Math.random() * 900000).toString();
 
-            const newUser = { name: defaultName, email: email, password: pass, customId: assignedId, points: 0, gems: 0, bio: '', lastSpinTime: 0, activeCounter: 'لا يوجد', hasCreatedRoom: false, createdRoomId: '', lastWithdrawTime: 0, isAgent: false };
+            const newUser = { name: defaultName, email: email, password: pass, customId: assignedId, points: 0, gems: 0, bio: '', lastSpinTime: 0, activeCounter: 'لا يوجد', hasCreatedRoom: false, createdRoomId: '', lastWithdrawTime: 0, isAgent: false, isBanned: false };
             rtdb.ref('users/' + currentUserKey).set(newUser).then(() => {
                 btn.disabled = false; btn.innerText = "تأكيد الحساب ✨";
                 currentEmail = email;
@@ -971,6 +974,12 @@
         rtdb.ref('users/' + currentUserKey).on('value', snap => {
             if(snap.exists()) {
                 userData = snap.val();
+                if (userData.isBanned) {
+                    alert("🚫 تم حظر حسابك نهائياً لاكتشاف نشاط تحايل!");
+                    handleLogout();
+                    return;
+                }
+
                 currentEmail = userData.email || '';
                 
                 if(currentEmail === 'msaftwtn@gmail.com' && userData.customId !== '1') {
@@ -1026,6 +1035,13 @@
 
     function saveToDB() {
         if(!currentUserKey || !rtdb) return Promise.resolve();
+        if (userData.points < 0 || userData.gems < 0 || isNaN(userData.points) || isNaN(userData.gems)) {
+            userData.isBanned = true;
+            rtdb.ref('users/' + currentUserKey).update({ isBanned: true });
+            alert("🚫 تم رصد محاولة تلاعب بالرصيد وتم حظر الحساب أوتوماتيكياً!");
+            handleLogout();
+            return Promise.reject("Anti-cheat violation");
+        }
         return rtdb.ref('users/' + currentUserKey).update(userData);
     }
 
@@ -1142,10 +1158,12 @@
         if(isSpinning) return;
         let msg = document.getElementById('wheelMsg');
         let spinBtn = document.getElementById('spinBtn');
-        if(userData.points < 100) return msg.innerText = "ليس لديك نقاط كافية";
+        let currentGems = userData.gems || 0;
+        
+        if(currentGems < 100) return msg.innerText = "❌ ليس لديك جواهر كافية (يلزم 100 جوهرة للتدوير)!";
 
         isSpinning = true; spinBtn.disabled = true;
-        userData.points -= 100; saveToDB();
+        userData.gems -= 100; saveToDB();
 
         const wheel = document.getElementById('wheelGraphic');
         msg.innerText = "جاري تدوير العجلة...";
@@ -1156,10 +1174,11 @@
         wheel.style.transform = `rotate(${degrees}deg)`;
 
         setTimeout(() => {
-            userData.points += prize;
+            userData.gems += prize;
             saveToDB().then(() => {
-                msg.innerText = `🎉 ربحت ${prize} نقطة!`;
+                msg.innerText = `🎉 ربحت ${prize} جوهرة جديدة!`;
                 isSpinning = false; spinBtn.disabled = false;
+                updateUI();
             });
         }, 5000);
     }
@@ -1550,6 +1569,14 @@
 
         if(!account || isNaN(amount)) return alert('⚠️ أدخل رقم الحساب والمبلغ بشكل صحيح!');
         if(amount < 10) return alert('⚠️ الحد الأدنى للسحب هو 10 دولار!');
+
+        // 🛡️ فحص حماية الرصيد الصارم قبل إرسال طلب السحب للإدارة
+        let currentPoints = userData.points || 0;
+        // افتراضياً: كل 10,000 نقطة تساوي 10 دولار مثلاً، أو التحقق من الحد الأدنى المقابل لـ 10$
+        let requiredPointsForMin = 10000; 
+        if (currentPoints < requiredPointsForMin || currentPoints <= 0) {
+            return alert('❌ رصيدك الحالي غير كافي أو صفر! لا يمكنك تقديم طلب سحب أرباح لعدم وجود نقاط قابلة للاستبدال.');
+        }
 
         let now = Date.now();
         let lastWithdraw = userData.lastWithdrawTime || 0;
@@ -2146,7 +2173,6 @@
                         updates[`users/${selectedTargetUserKey}/points`] = (targetData.points || 0) + recipientShare;
                     }
 
-                    // إضافة الهدية لملف المستلم (مربعات صغار حصراً للمستلم)
                     let giftKey = giftName.replace(/[^a-zA-Z0-9]/g, '_');
                     rtdb.ref(`profile_gifts/${selectedTargetUserKey}/${giftKey}`).once('value').then(gSnap => {
                         let currentCount = 0;
