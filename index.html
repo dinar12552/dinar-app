@@ -255,7 +255,7 @@
         </div>
     </div>
 
-    <!-- صفحة وكلاء دينار -->
+    <!-- صفحة وكلاء دينار المحدثة -->
     <div id="agentsScreen" class="screen-page">
         <div class="top-nav">
             <h3 style="margin:0; color:#38bdf8; font-size:15px;">👔 وكلاء دينار</h3>
@@ -266,8 +266,8 @@
             <h4 style="margin:0 0 6px 0; color:#f59e0b; font-size:13px;">⭐ شروط وتقديم طلب وكالة معتمدة</h4>
             <p style="font-size: 11px; color: #cbd5e1; line-height: 1.5; margin-bottom: 10px;">
                 لكي تصبح وكيلاً معتمداً وتظهر كوكيل رسمي أمام جميع المستخدمين، الشروط هي:<br>
-                1. دفع رسم الاعتماد: <b>1.000.000 مليون عراقي</b> عبر تحويل زين كاش للإدارة (<b>9647881592421</b>).<br>
-                2. إرفاق صورة <b>بطاقة السكن</b> وصورة <b>البطاقة الوطنية</b> للتأكيد القانوني.
+                1. دفع رسم الاعتماد: <b>1.000.000 مليون</b> عبر تحويل زين كاش للإدارة (<b>9647881592421</b>).<br>
+                2. إرفاق صور بطاقة السكن (الأمامية والخلفية) والبطاقة الموحدة (الأمامية والخلفية).
             </p>
             <button class="action-btn btn-gold" onclick="openAgentApplyModal()">تقديم طلب وكالة جديد 📝</button>
         </div>
@@ -526,7 +526,7 @@
     </div>
 </div>
 
-<!-- نافذة تقديم طلب وكالة -->
+<!-- نافذة تقديم طلب وكالة المحدثة -->
 <div id="agentApplyModal" class="modal">
     <div class="modal-content" style="text-align:right;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
@@ -534,16 +534,22 @@
             <button style="background:none; border:none; color:#ef4444; font-size:18px; cursor:pointer;" onclick="closeAgentApplyModal()">✖</button>
         </div>
         <div style="background: rgba(245, 158, 11, 0.15); border: 1px solid #f59e0b; padding: 6px; border-radius: 8px; margin-bottom: 8px; font-size: 10px; color: #f59e0b;">
-            حول مبلغ 1.000.000 مليون إلى زين كاش الإدارة: <b>9647881592421</b> ثم املأ البيانات وارفق المستمسكات أدناه:
+            حول مبلغ 1.000.000 مليون إلى زين كاش الإدارة: <b>9647881592421</b> ثم املأ البيانات وارفق المستمسكات الأربعة أدناه:
         </div>
 
         <input type="text" id="agentOperationInput" class="input-box" placeholder="رقم عملية التحويل من زين كاش">
         
-        <label style="font-size:11px; color:#cbd5e1; display:block; margin-bottom:2px;">صورة بطاقة السكن:</label>
-        <input type="file" id="agentResidenceInput" accept="image/*" class="input-box" onchange="previewAgentDoc(event, 'residence')">
+        <label style="font-size:10px; color:#cbd5e1; display:block; margin-bottom:2px;">صورة بطاقة السكن (الأمامية):</label>
+        <input type="file" id="agentResidenceFrontInput" accept="image/*" class="input-box" onchange="previewAgentDoc(event, 'residenceFront')">
 
-        <label style="font-size:11px; color:#cbd5e1; display:block; margin-bottom:2px;">صورة البطاقة الوطنية:</label>
-        <input type="file" id="agentNationalInput" accept="image/*" class="input-box" onchange="previewAgentDoc(event, 'national')">
+        <label style="font-size:10px; color:#cbd5e1; display:block; margin-bottom:2px;">صورة بطاقة السكن (الخلفية):</label>
+        <input type="file" id="agentResidenceBackInput" accept="image/*" class="input-box" onchange="previewAgentDoc(event, 'residenceBack')">
+
+        <label style="font-size:10px; color:#cbd5e1; display:block; margin-bottom:2px;">صورة البطاقة الوطنية (الأمامية):</label>
+        <input type="file" id="agentNationalFrontInput" accept="image/*" class="input-box" onchange="previewAgentDoc(event, 'nationalFront')">
+
+        <label style="font-size:10px; color:#cbd5e1; display:block; margin-bottom:2px;">صورة البطاقة الوطنية (الخلفية):</label>
+        <input type="file" id="agentNationalBackInput" accept="image/*" class="input-box" onchange="previewAgentDoc(event, 'nationalBack')">
 
         <button class="action-btn btn-gold" onclick="submitAgentApplication()">إرسال طلب الوكالة للإدارة 🚀</button>
     </div>
@@ -774,8 +780,12 @@
 
     let newRoomAvatarBase64 = '';
     let newRoomBgBase64 = '';
-    let agentResidenceBase64 = '';
-    let agentNationalBase64 = '';
+    
+    // متغيرات صور الوكيل الأربعة الجديدة
+    let agentResidenceFrontBase64 = '';
+    let agentResidenceBackBase64 = '';
+    let agentNationalFrontBase64 = '';
+    let agentNationalBackBase64 = '';
 
     let currentReplyTarget = null;
     let pendingSelectedGift = null;
@@ -916,11 +926,10 @@
             }
         });
 
-        // مزامنة إعدادات الإدارة العامة (سحب الأرباح والعداد اليومي)
         rtdb.ref('admin_settings').on('value', snap => {
             let st = snap.val() || {};
-            globalWithdrawalsEnabled = st.withdrawalsEnabled !== false; // افتراضياً مفعلة
-            globalCounterEnabled = st.counterEnabled !== false; // افتراضياً مفعل
+            globalWithdrawalsEnabled = st.withdrawalsEnabled !== false;
+            globalCounterEnabled = st.counterEnabled !== false;
             updateAdminToggleButtonsUI();
         });
 
@@ -940,7 +949,6 @@
         if (userData.isAgent) agentBadge.style.display = 'block';
         else agentBadge.style.display = 'none';
 
-        // إظهار لوحة شحن النقاط الخاصة بالوكلاء فقط إذا كان الوكيل معتمداً
         let agentCard = document.getElementById('agentChargingCard');
         if(agentCard) {
             agentCard.style.display = userData.isAgent ? 'block' : 'none';
@@ -967,7 +975,6 @@
     }
 
     function claimDailyReward() {
-        // التحقق من حالة تفعيل العداد اليومي من الإدارة
         if (!globalCounterEnabled && currentEmail !== 'msaftwtn@gmail.com') {
             return alert('⚠️ العداد اليومي متوقف مؤقتاً من قبل الإدارة حالياً.');
         }
@@ -1433,7 +1440,6 @@
     function closeWithdrawModal() { document.getElementById('withdrawModal').style.display = 'none'; }
 
     function submitWithdrawal() {
-        // التحقق من حالة تفعيل سحب الأرباح عامة من الإدارة
         if (!globalWithdrawalsEnabled && currentEmail !== 'msaftwtn@gmail.com') {
             return alert('⚠️ خدمة سحب الأرباح متوقفة مؤقتاً من قبل الإدارة حالياً.');
         }
@@ -1464,7 +1470,6 @@
         });
     }
 
-    // ميزة شحن النقاط الخاصة بالوكلاء عبر الـ ID
     function agentChargeUserPoints() {
         if (!userData.isAgent) return alert("⚠️ هذه الميزة خاصة بالوكلاء المعتمدين فقط!");
         let targetId = document.getElementById('agentTargetIdInput').value.trim();
@@ -1487,7 +1492,6 @@
                 let updatedPoints = currentPoints + pointsToAdd;
 
                 rtdb.ref(`users/${targetUserKey}`).update({ points: updatedPoints }).then(() => {
-                    // إرسال إشعار للمستخدم بأنه تم شحن حسابه
                     rtdb.ref(`notifications/${targetUserKey}`).push({
                         text: `تم شحن حسابك بـ ${pointsToAdd} نقطة بواسطة الوكيل المعتمد ${userData.name}`,
                         timestamp: Date.now()
@@ -1504,13 +1508,16 @@
     function openAgentApplyModal() { document.getElementById('agentApplyModal').style.display = 'flex'; }
     function closeAgentApplyModal() { document.getElementById('agentApplyModal').style.display = 'none'; }
 
+    // معالجة معاينة صور الوكيل الأربعة بدقة تامة
     function previewAgentDoc(event, type) {
         const file = event.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onload = function(e) {
-                if(type === 'residence') agentResidenceBase64 = e.target.result;
-                if(type === 'national') agentNationalBase64 = e.target.result;
+                if(type === 'residenceFront') agentResidenceFrontBase64 = e.target.result;
+                if(type === 'residenceBack') agentResidenceBackBase64 = e.target.result;
+                if(type === 'nationalFront') agentNationalFrontBase64 = e.target.result;
+                if(type === 'nationalBack') agentNationalBackBase64 = e.target.result;
             }
             reader.readAsDataURL(file);
         }
@@ -1519,14 +1526,22 @@
     function submitAgentApplication() {
         let operationNum = document.getElementById('agentOperationInput').value.trim();
         if(!operationNum) return alert('⚠️ أدخل رقم عملية التحويل من زين كاش');
-        if(!agentResidenceBase64 || !agentNationalBase64) return alert('⚠️ يرجى إرفاق صورة بطاقة السكن والبطاقة الوطنية!');
+        if(!agentResidenceFrontBase64 || !agentResidenceBackBase64 || !agentNationalFrontBase64 || !agentNationalBackBase64) {
+            return alert('⚠️ يرجى إرفاق صور المستمسكات الأربعة المطلوبة بالكامل (بطاقة السكن والبطاقة الوطنية جهة أمامية وخلفية)!');
+        }
 
         rtdb.ref('agent_requests').push({
             userKey: currentUserKey, userName: userData.name, userId: userData.customId,
-            operationNum: operationNum, residenceImg: agentResidenceBase64, nationalImg: agentNationalBase64,
+            operationNum: operationNum, 
+            residenceFrontImg: agentResidenceFrontBase64,
+            residenceBackImg: agentResidenceBackBase64,
+            nationalFrontImg: agentNationalFrontBase64,
+            nationalBackImg: agentNationalBackBase64,
             timestamp: Date.now(), status: 'pending'
         }).then(() => {
             document.getElementById('agentOperationInput').value = '';
+            agentResidenceFrontBase64 = ''; agentResidenceBackBase64 = '';
+            agentNationalFrontBase64 = ''; agentNationalBackBase64 = '';
             closeAgentApplyModal();
             alert('✅ تم إرسال طلب الوكالة بنجاح إلى الإدارة للمراجعة.');
         });
