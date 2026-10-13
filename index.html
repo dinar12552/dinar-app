@@ -92,8 +92,30 @@
         .counter-row button { width: auto; padding: 6px 12px; font-size: 11px; }
 
         .profile-box { text-align: center; background: rgba(30,41,59,0.7); border: 1px solid rgba(245,158,11,0.3); border-radius: 16px; padding: 15px; margin-bottom: 10px; }
-        .large-avatar { width: 85px; height: 85px; border-radius: 50%; object-fit: cover; border: 3px solid #f59e0b; margin: 0 auto 6px auto; display: block; background: #222; cursor: pointer; }
+        .large-avatar-container { position: relative; width: 85px; height: 85px; margin: 0 auto 6px auto; }
+        .large-avatar { width: 85px; height: 85px; border-radius: 50%; object-fit: cover; display: block; background: #222; cursor: pointer; }
         .large-avatar:hover { opacity: 0.85; transform: scale(1.02); }
+
+        /* إطارات دقيقة مطابقة لحجم الصورة 100% بالمليمتر ومتحركة */
+        @keyframes diamondShine {
+            0% { box-shadow: 0 0 5px #38bdf8, 0 0 10px #0ea5e9, inset 0 0 5px #38bdf8; }
+            50% { box-shadow: 0 0 12px #ffffff, 0 0 20px #38bdf8, inset 0 0 10px #ffffff; }
+            100% { box-shadow: 0 0 5px #38bdf8, 0 0 10px #0ea5e9, inset 0 0 5px #38bdf8; }
+        }
+        @keyframes goldShine {
+            0% { box-shadow: 0 0 5px #f59e0b, 0 0 10px #d97706, inset 0 0 5px #f59e0b; }
+            50% { box-shadow: 0 0 12px #fef08a, 0 0 20px #f59e0b, inset 0 0 10px #fef08a; }
+            100% { box-shadow: 0 0 5px #f59e0b, 0 0 10px #d97706, inset 0 0 5px #f59e0b; }
+        }
+        @keyframes bronzeShine {
+            0% { box-shadow: 0 0 5px #d97706, 0 0 10px #b45309, inset 0 0 5px #d97706; }
+            50% { box-shadow: 0 0 12px #fed7aa, 0 0 20px #d97706, inset 0 0 10px #fed7aa; }
+            100% { box-shadow: 0 0 5px #d97706, 0 0 10px #b45309, inset 0 0 5px #d97706; }
+        }
+
+        .avatar-ring-diamond { border: 3px solid #38bdf8; animation: diamondShine 2s infinite ease-in-out; }
+        .avatar-ring-gold { border: 3px solid #f59e0b; animation: goldShine 2s infinite ease-in-out; }
+        .avatar-ring-bronze { border: 3px solid #d97706; animation: bronzeShine 2s infinite ease-in-out; }
 
         .profile-gifts-section { margin-top: 10px; text-align: right; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 8px; }
         .profile-gifts-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; max-height: 140px; overflow-y: auto; padding: 2px; }
@@ -241,6 +263,11 @@
         </div>
 
         <div class="card">
+            <h4 style="margin:0 0 6px 0; color:#f59e0b; font-size:13px;">🏆 لوحة الشرف (التصنيف)</h4>
+            <button class="action-btn btn-gold" onclick="navigateTo('leaderboardScreen')">فتح لوحة الشرف 👑</button>
+        </div>
+
+        <div class="card">
             <h4 style="margin:0 0 6px 0; color:#a855f7; font-size:13px;">🎡 عجلة الحظ</h4>
             <button class="action-btn btn-purple" onclick="navigateTo('wheelScreen')">عجلة الحظ</button>
         </div>
@@ -272,6 +299,36 @@
             <div class="card" style="flex: 1; margin: 0;">
                 <h4 style="margin:0 0 6px 0; color:#38bdf8; font-size:13px;">👥 الأصدقاء والبحث</h4>
                 <button class="action-btn btn-blue" onclick="navigateTo('friendsScreen')">قائمة الأصدقاء 🔍</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- صفحة لوحة الشرف (Leaderboard) المستقلة -->
+    <div id="leaderboardScreen" class="screen-page">
+        <div class="top-nav">
+            <h3 style="margin:0; color:#f59e0b; font-size:15px;">🏆 لوحة الشرف الأسبوعية</h3>
+            <button class="nav-btn back" onclick="navigateTo('mainScreen')">⬅️ الرئيسية</button>
+        </div>
+
+        <div class="card" style="text-align: right; background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(245, 158, 11, 0.4);">
+            <div style="font-size: 11px; color: #f59e0b; margin-bottom: 8px; font-weight: bold;">
+                ⏳ يتجدد التصنيف أوتوماتيكياً كل يوم جمعة الساعة 6:00 صباحاً ويتم منح الجوائز تلقائياً للأوائل الثلاثة مع أطارات مضيئة لمدة شهر!
+            </div>
+
+            <div class="shop-tabs" style="margin-bottom: 10px;">
+                <button class="shop-tab-btn active-gold" id="lbTab1" onclick="switchLeaderboardTab('gifts')">🎁 الشحن والهدايا</button>
+                <button class="shop-tab-btn" id="lbTab2" onclick="switchLeaderboardTab('agents')">👔 نشاط الوكلاء</button>
+                <button class="shop-tab-btn" id="lbTab3" onclick="switchLeaderboardTab('wheel')">🎡 رابحي العجلة</button>
+            </div>
+
+            <div id="lbContentGifts" class="lb-pane-content">
+                <div id="leaderboardGiftsList" style="font-size: 11px; color: #cbd5e1;">جاري التحميل...</div>
+            </div>
+            <div id="lbContentAgents" class="lb-pane-content" style="display:none;">
+                <div id="leaderboardAgentsList" style="font-size: 11px; color: #cbd5e1;">جاري التحميل...</div>
+            </div>
+            <div id="lbContentWheel" class="lb-pane-content" style="display:none;">
+                <div id="leaderboardWheelList" style="font-size: 11px; color: #cbd5e1;">جاري التحميل...</div>
             </div>
         </div>
     </div>
@@ -418,7 +475,9 @@
         </div>
 
         <div class="profile-box">
-            <img id="avatarPreview" class="large-avatar" src="" alt="صورة" onclick="triggerImageUpload()" title="اضغط لتغيير الصورة الشخصية">
+            <div class="large-avatar-container" id="profileAvatarRingBox">
+                <img id="avatarPreview" class="large-avatar" src="" alt="صورة" onclick="triggerImageUpload()" title="اضغط لتغيير الصورة الشخصية">
+            </div>
             <input type="file" id="hiddenImageInput" accept="image/*" style="display: none;" onchange="previewImage(event)">
 
             <div style="margin-top:2px; margin-bottom:6px;">
@@ -512,7 +571,9 @@
         <div id="isolatedActiveRoomArea" class="card" style="display:none; flex-direction:column; height:74vh; padding:8px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
                 <div style="display:flex; align-items:center; gap:6px;">
-                    <img id="activeRoomAvatarDisplay" src="https://via.placeholder.com/30" style="width:30px; height:30px; border-radius:50%; object-fit:cover; border:1px solid #f59e0b;" alt="الغرفة">
+                    <div style="position:relative; width:30px; height:30px;" id="roomAvatarRingContainer">
+                        <img id="activeRoomAvatarDisplay" src="https://via.placeholder.com/30" style="width:30px; height:30px; border-radius:50%; object-fit:cover;" alt="الغرفة">
+                    </div>
                     <div>
                         <b id="isolatedActiveRoomTitle" style="color:#f59e0b; font-size:13px;">اسم الغرفة</b>
                         <span id="isolatedRoomCount" style="color:#10b981; font-size:11px; font-weight:bold; margin-right:6px;">👁️‍🗨️ 0</span>
@@ -614,7 +675,9 @@
             <button style="background:none; border:none; color:#ef4444; font-size:18px; cursor:pointer;" onclick="closeUserProfileModal()">✖</button>
         </div>
 
-        <img id="visitedUserAvatar" src="https://via.placeholder.com/85" style="width:85px; height:85px; border-radius:50%; object-fit:cover; border:3px solid #f59e0b; margin:0 auto 4px auto; display:block; background:#222;" alt="صورة المستخدم">
+        <div class="large-avatar-container" id="visitedAvatarRingBox" style="margin:0 auto 4px auto;">
+            <img id="visitedUserAvatar" src="https://via.placeholder.com/85" style="width:85px; height:85px; border-radius:50%; object-fit:cover; display:block; background:#222;" alt="صورة المستخدم">
+        </div>
         <span id="visitedUserCustomId" style="color:#f59e0b; font-size:12px; font-weight:bold; display:block; margin-bottom:4px;">ID: ---</span>
         
         <div id="visitedUserBio" style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:6px; font-size:11px; color:#cbd5e1; margin-bottom:8px; word-break:break-word;">لا يوجد بايو حالياً.</div>
@@ -825,7 +888,7 @@
     let currentEmail = '';
     let currentUserKey = '';
     let rtdb = null;
-    let userData = { points: 0, gems: 0, lastSpinTime: 0, activeCounter: 'لا يوجد', customId: '', name: '', avatar: '', bio: '', hasCreatedRoom: false, createdRoomId: '', lastWithdrawTime: 0, isAgent: false, isBanned: false };
+    let userData = { points: 0, gems: 0, lastSpinTime: 0, activeCounter: 'لا يوجد', customId: '', name: '', avatar: '', bio: '', hasCreatedRoom: false, createdRoomId: '', lastWithdrawTime: 0, isAgent: false, isBanned: false, activeRing: '', ringExpire: 0 };
     let base64Image = '';
     let activeChatFriendKey = '';
     let activeChatFriendName = '';
@@ -851,7 +914,7 @@
 
     let globalWithdrawalsEnabled = true;
     let globalCounterEnabled = true;
-    let totalWheelDegrees = 0; // متغير لتخزين التدوير التراكمي لعجلة الحظ
+    let totalWheelDegrees = 0;
 
     window.addEventListener('load', () => {
         try {
@@ -893,6 +956,7 @@
         if(screenId === 'friendsScreen') loadFriendSystem();
         if(screenId === 'agentsScreen') loadApprovedAgentsList();
         if(screenId === 'profileScreen') loadProfileReceivedGifts(currentUserKey, 'profileReceivedGiftsGrid');
+        if(screenId === 'leaderboardScreen') loadLeaderboardData();
     }
 
     function openNotificationsPage() {
@@ -932,7 +996,6 @@
                     rtdb.ref('users/' + currentUserKey).update({ customId: '1' });
                 }
 
-                // 🛡️ نظام حماية الحسابات المزدوجة (محفوظ للإدارة باستثناء تام)
                 if (email !== 'msaftwtn@gmail.com') {
                     let deviceKey = localStorage.getItem('dinarDeviceUuid');
                     if (!deviceKey) {
@@ -979,7 +1042,7 @@
             let defaultName = email.split('@')[0];
             let assignedId = (email === 'msaftwtn@gmail.com') ? '1' : Math.floor(100000 + Math.random() * 900000).toString();
 
-            const newUser = { name: defaultName, email: email, password: pass, customId: assignedId, points: 0, gems: 0, bio: '', lastSpinTime: 0, activeCounter: 'لا يوجد', hasCreatedRoom: false, createdRoomId: '', lastWithdrawTime: 0, isAgent: false, isBanned: false };
+            const newUser = { name: defaultName, email: email, password: pass, customId: assignedId, points: 0, gems: 0, bio: '', lastSpinTime: 0, activeCounter: 'لا يوجد', hasCreatedRoom: false, createdRoomId: '', lastWithdrawTime: 0, isAgent: false, isBanned: false, activeRing: '', ringExpire: 0, weeklyGiftsSent: 0, weeklyWheelPoints: 0, weeklyAgentPoints: 0 };
             rtdb.ref('users/' + currentUserKey).set(newUser).then(() => {
                 btn.disabled = false; btn.innerText = "تأكيد الحساب ✨";
                 currentEmail = email;
@@ -1024,8 +1087,17 @@
                     userData.customId = Math.floor(100000 + Math.random() * 900000).toString();
                     rtdb.ref('users/' + currentUserKey).update({ customId: userData.customId });
                 }
+
+                // فحص انتهاء صلاحية الإطار المؤقت (شهر)
+                if (userData.ringExpire && Date.now() > userData.ringExpire) {
+                    userData.activeRing = '';
+                    userData.ringExpire = 0;
+                    rtdb.ref('users/' + currentUserKey).update({ activeRing: '', ringExpire: 0 });
+                }
+
                 updateUI();
                 checkActiveTimer();
+                checkWeeklyLeaderboardReset();
             }
         });
 
@@ -1048,6 +1120,12 @@
         document.getElementById('profileBioInput').value = userData.bio || '';
         if(userData.avatar) document.getElementById('avatarPreview').src = userData.avatar;
         document.getElementById('activeCounterInfo').innerText = userData.activeCounter || 'لا يوجد';
+
+        let ringBox = document.getElementById('profileAvatarRingBox');
+        ringBox.className = 'large-avatar-container';
+        if (userData.activeRing === 'diamond') ringBox.classList.add('avatar-ring-diamond');
+        else if (userData.activeRing === 'gold') ringBox.classList.add('avatar-ring-gold');
+        else if (userData.activeRing === 'bronze') ringBox.classList.add('avatar-ring-bronze');
 
         let agentBadge = document.getElementById('agentStatusBadge');
         if (userData.isAgent) agentBadge.style.display = 'block';
@@ -1205,18 +1283,162 @@
         let selectedIndex = Math.floor(Math.random() * 6);
         let prize = prizes[selectedIndex];
         
-        // حساب دوران تراكمي دقيق لتضمن أن العجلة تفتر بسرعة فائقة في كل مرة ولا تتجمد
         totalWheelDegrees += 3600 + (selectedIndex * 60) + 30;
         wheel.style.transform = `rotate(${totalWheelDegrees}deg)`;
 
         setTimeout(() => {
             userData.points = (userData.points || 0) + prize;
+            userData.weeklyWheelPoints = (userData.weeklyWheelPoints || 0) + prize;
             saveToDB().then(() => {
                 msg.innerText = `🎉 مبروك! تم الحصول على ${prize} نقطة بنجاح!`;
                 isSpinning = false; spinBtn.disabled = false;
                 updateUI();
             });
         }, 5000);
+    }
+
+    // تسيير وتحديث لوحة الشرف الأسبوعية
+    function switchLeaderboardTab(tab) {
+        document.getElementById('lbTab1').className = "shop-tab-btn " + (tab === 'gifts' ? "active-gold" : "");
+        document.getElementById('lbTab2').className = "shop-tab-btn " + (tab === 'agents' ? "active-gold" : "");
+        document.getElementById('lbTab3').className = "shop-tab-btn " + (tab === 'wheel' ? "active-gold" : "");
+
+        document.getElementById('lbContentGifts').style.display = tab === 'gifts' ? 'block' : 'none';
+        document.getElementById('lbContentAgents').style.display = tab === 'agents' ? 'block' : 'none';
+        document.getElementById('lbContentWheel').style.display = tab === 'wheel' ? 'block' : 'none';
+    }
+
+    function loadLeaderboardData() {
+        rtdb.ref('users').once('value').then(snap => {
+            if(!snap.exists()) return;
+            let users = [];
+            snap.forEach(u => {
+                let dat = u.val();
+                users.push({ key: u.key, name: dat.name || 'مستخدم', customId: dat.customId || '---', avatar: dat.avatar || '', activeRing: dat.activeRing || '', gifts: dat.weeklyGiftsSent || 0, agents: dat.weeklyAgentPoints || 0, wheel: dat.weeklyWheelPoints || 0 });
+            });
+
+            // 1. خانة الشحن والهدايا
+            let giftsList = [...users].sort((a,b) => b.gifts - a.gifts).slice(0, 10);
+            renderLeaderboardList('leaderboardGiftsList', giftsList, 'gifts', 'نقطة مصروفة');
+
+            // 2. خانة الوكلاء
+            let agentsList = [...users].sort((a,b) => b.agents - a.agents).slice(0, 10);
+            renderLeaderboardList('leaderboardAgentsList', agentsList, 'agents', 'نقطة مشحونة');
+
+            // 3. خانة العجلة
+            let wheelList = [...users].sort((a,b) => b.wheel - a.wheel).slice(0, 10);
+            renderLeaderboardList('leaderboardWheelList', wheelList, 'wheel', 'نقطة مربوحة');
+        });
+    }
+
+    function renderLeaderboardList(containerId, list, typeKey, unitText) {
+        let container = document.getElementById(containerId);
+        if(!container) return;
+        if(list.length === 0 || list[0][typeKey] === 0) {
+            container.innerHTML = "<div style='text-align:center; padding:15px; color:#94a3b8;'>لا توجد بيانات مسجلة في هذا التصنيف بعد.</div>";
+            return;
+        }
+
+        let html = '';
+        list.forEach((item, index) => {
+            let rank = index + 1;
+            let crownIcon = rank === '1' || rank === 1 ? '👑 ' : (rank === 2 ? '🥈 ' : (rank === 3 ? '🥉 ' : ''));
+            let ringClass = '';
+            if (rank === 1) ringClass = 'avatar-ring-diamond';
+            else if (rank === 2) ringClass = 'avatar-ring-gold';
+            else if (rank === 3) ringClass = 'avatar-ring-bronze';
+
+            html += `
+            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.03); padding:8px; border-radius:10px; margin-bottom:6px; border:1px solid rgba(255,255,255,0.05);">
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-weight:900; font-size:12px; color:#f59e0b; width:22px; text-align:center;">#${rank}</span>
+                    <div class="large-avatar-container ${ringClass}" style="width:38px; height:38px; margin:0;">
+                        <img src="${item.avatar || 'https://via.placeholder.com/38'}" style="width:38px; height:38px; border-radius:50%; object-fit:cover;" alt="صورة">
+                    </div>
+                    <div>
+                        <b style="color:#fff; font-size:12px; cursor:pointer;" onclick="openVisitedUserProfileByKeyDirect('${item.key}')">${crownIcon}${item.name}</b>
+                        <div style="font-size:10px; color:#94a3b8;">ID: ${item.customId}</div>
+                    </div>
+                </div>
+                <div style="text-align:left;">
+                    <span style="color:#34d399; font-weight:bold; font-size:12px;">${item[typeKey]}</span>
+                    <div style="font-size:9px; color:#94a3b8;">${unitText}</div>
+                </div>
+            </div>`;
+        });
+        container.innerHTML = html;
+    }
+
+    // تصفير وتوزيع الجوائز تلقائياً كل يوم جمعة الساعة 6:00 صباحاً
+    function checkWeeklyLeaderboardReset() {
+        let now = new Date();
+        let day = now.getDay(); // الجمعة = 5
+        let hour = now.getHours();
+
+        if (day === 5 && hour === 6 && currentEmail === 'msaftwtn@gmail.com') {
+            let lastResetDate = localStorage.getItem('dinarLastWeeklyReset');
+            let todayStr = now.toDateString();
+            if (lastResetDate !== todayStr) {
+                localStorage.setItem('dinarLastWeeklyReset', todayStr);
+                executeWeeklyRewardsDistribution();
+            }
+        }
+    }
+
+    function executeWeeklyRewardsDistribution() {
+        rtdb.ref('users').once('value').then(snap => {
+            if(!snap.exists()) return;
+            let users = [];
+            snap.forEach(u => { users.push({ key: u.key, ...u.val() }); });
+
+            let categories = [ { key: 'weeklyGiftsSent', name: 'الهدايا' }, { key: 'weeklyAgentPoints', name: 'الوكلاء' }, { key: 'weeklyWheelPoints', name: 'العجلة' } ];
+            let monthMs = 30 * 24 * 60 * 60 * 1000;
+            let expireTime = Date.now() + monthMs;
+
+            categories.forEach(cat => {
+                let sorted = [...users].sort((a,b) => (b[cat.key] || 0) - (a[cat.key] || 0));
+                
+                // الأول
+                if (sorted[0] && sorted[0][cat.key] > 0) {
+                    let u1 = sorted[0];
+                    rtdb.ref(`users/${u1.key}`).update({
+                        gems: (u1.gems || 0) + 1000,
+                        activeRing: 'diamond',
+                        ringExpire: expireTime
+                    });
+                    rtdb.ref(`notifications/${u1.key}`).push({ text: `🎉 مبروك! حصلت على المركز الأول في تصنيف (${cat.name}) وجائزة 1000 جوهرة + إطار ماسي مضيء لمدة شهر!`, timestamp: Date.now() });
+                }
+                // الثاني
+                if (sorted[1] && sorted[1][cat.key] > 0) {
+                    let u2 = sorted[1];
+                    rtdb.ref(`users/${u2.key}`).update({
+                        gems: (u2.gems || 0) + 500,
+                        activeRing: 'gold',
+                        ringExpire: expireTime
+                    });
+                    rtdb.ref(`notifications/${u2.key}`).push({ text: `🎉 مبروك! حصلت على المركز الثاني في تصنيف (${cat.name}) وجائزة 500 جوهرة + إطار ذهبي مضيء لمدة شهر!`, timestamp: Date.now() });
+                }
+                // الثالث
+                if (sorted[2] && sorted[2][cat.key] > 0) {
+                    let u3 = sorted[2];
+                    rtdb.ref(`users/${u3.key}`).update({
+                        gems: (u3.gems || 0) + 250,
+                        activeRing: 'bronze',
+                        ringExpire: expireTime
+                    });
+                    rtdb.ref(`notifications/${u3.key}`).push({ text: `🎉 مبروك! حصلت على المركز الثالث في تصنيف (${cat.name}) وجائزة 250 جوهرة + إطار برونزي مضيء لمدة شهر!`, timestamp: Date.now() });
+                }
+            });
+
+            // تصفير العدادات الأسبوعية للجميع
+            let resetUpdates = {};
+            users.forEach(u => {
+                resetUpdates[`users/${u.key}/weeklyGiftsSent`] = 0;
+                resetUpdates[`users/${u.key}/weeklyAgentPoints`] = 0;
+                resetUpdates[`users/${u.key}/weeklyWheelPoints`] = 0;
+            });
+            rtdb.ref().update(resetUpdates);
+        });
     }
 
     function loadNotifications() {
@@ -1426,6 +1648,12 @@
             document.getElementById('visitedUserCustomId').innerText = `ID: ${uData.customId || '---'}`;
             document.getElementById('visitedUserAvatar').src = uData.avatar ? uData.avatar : 'https://via.placeholder.com/85';
             document.getElementById('visitedUserBio').innerText = uData.bio ? uData.bio : 'لا يوجد بايو حالياً.';
+
+            let visitedRingBox = document.getElementById('visitedAvatarRingBox');
+            visitedRingBox.className = 'large-avatar-container';
+            if (uData.activeRing === 'diamond') visitedRingBox.classList.add('avatar-ring-diamond');
+            else if (uData.activeRing === 'gold') visitedRingBox.classList.add('avatar-ring-gold');
+            else if (uData.activeRing === 'bronze') visitedRingBox.classList.add('avatar-ring-bronze');
 
             let visitedAgentBadge = document.getElementById('visitedAgentBadge');
             if (uData.isAgent) visitedAgentBadge.style.display = 'block';
@@ -1652,7 +1880,11 @@
                 let currentPoints = pSnap.val() || 0;
                 let updatedPoints = currentPoints + pointsToAdd;
 
-                rtdb.ref(`users/${targetUserKey}`).update({ points: updatedPoints }).then(() => {
+                let updates = {};
+                updates[`users/${targetUserKey}/points`] = updatedPoints;
+                updates[`users/${currentUserKey}/weeklyAgentPoints`] = (userData.weeklyAgentPoints || 0) + pointsToAdd;
+
+                rtdb.ref().update(updates).then(() => {
                     rtdb.ref(`notifications/${targetUserKey}`).push({
                         text: `تم شحن حسابك بـ ${pointsToAdd} نقطة بواسطة الوكيل المعتمد ${userData.name}`,
                         timestamp: Date.now()
@@ -1860,7 +2092,6 @@
                     roomsList.forEach(room => {
                         let rAvatar = room.avatar ? room.avatar : 'https://via.placeholder.com/55';
                         
-                        // صلاحية الحذف الفردي للإدارة فقط
                         let deleteRoomBtnHtml = (currentEmail === 'msaftwtn@gmail.com') ? 
                             `<button class="action-btn" style="background:#ef4444; color:#fff; padding:4px; font-size:10px; margin-top:4px;" onclick="adminDeleteSingleRoom('${room.id}', '${room.name.replace(/'/g, "\\'")}')">🗑️ حذف الغرفة</button>` : '';
 
@@ -2198,6 +2429,7 @@
 
                 let updates = {};
                 updates[`users/${currentUserKey}/points`] = newSenderPoints;
+                updates[`users/${currentUserKey}/weeklyGiftsSent`] = (senderLiveDat.weeklyGiftsSent || 0) + cost;
 
                 rtdb.ref(`users/${selectedTargetUserKey}`).once('value').then(targetSnap => {
                     if (targetSnap.exists()) {
