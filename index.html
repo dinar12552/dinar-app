@@ -851,6 +851,7 @@
 
     let globalWithdrawalsEnabled = true;
     let globalCounterEnabled = true;
+    let totalWheelDegrees = 0; // متغير لتخزين التدوير التراكمي لعجلة الحظ
 
     window.addEventListener('load', () => {
         try {
@@ -1203,8 +1204,10 @@
         let prizes = [0, 5, 10, 15, 20, 50];
         let selectedIndex = Math.floor(Math.random() * 6);
         let prize = prizes[selectedIndex];
-        let degrees = 7200 + (selectedIndex * 60) + 30; // سرعة فائقة ودوران لـ 5 ثواني
-        wheel.style.transform = `rotate(${degrees}deg)`;
+        
+        // حساب دوران تراكمي دقيق لتضمن أن العجلة تفتر بسرعة فائقة في كل مرة ولا تتجمد
+        totalWheelDegrees += 3600 + (selectedIndex * 60) + 30;
+        wheel.style.transform = `rotate(${totalWheelDegrees}deg)`;
 
         setTimeout(() => {
             userData.points = (userData.points || 0) + prize;
