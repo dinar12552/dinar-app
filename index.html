@@ -261,36 +261,36 @@
             </div>
         </div>
 
-        <div class="card">
-            <button class="action-btn btn-gold" onclick="navigateTo('leaderboardScreen')">فتح لوحة الشرف 👑</button>
+        <div class="card" style="padding: 6px 8px;">
+            <button class="action-btn btn-gold" style="padding: 10px;" onclick="navigateTo('leaderboardScreen')">فتح لوحة الشرف 👑</button>
         </div>
 
-        <div class="card">
-            <button class="action-btn btn-purple" onclick="navigateTo('wheelScreen')">عجلة الحظ</button>
+        <div class="card" style="padding: 6px 8px;">
+            <button class="action-btn btn-purple" style="padding: 10px;" onclick="navigateTo('wheelScreen')">عجلة الحظ</button>
         </div>
 
-        <div class="card">
-            <button class="action-btn btn-green" onclick="openIsolatedPublicRooms()">غرف الدردشة 💬</button>
-        </div>
-
-        <div style="display: flex; gap: 8px; margin-bottom: 10px;">
-            <div class="card" style="flex: 1; margin: 0;">
-                <button class="action-btn btn-gold" onclick="navigateTo('shopScreen')">متجر العدادات 🛒</button>
-            </div>
-            <div class="card" style="flex: 1; margin: 0;">
-                <button class="action-btn btn-blue" onclick="navigateTo('agentsScreen')">وكلاء دينار 👔</button>
-            </div>
+        <div class="card" style="padding: 6px 8px;">
+            <button class="action-btn btn-green" style="padding: 10px;" onclick="openIsolatedPublicRooms()">غرف الدردشة 💬</button>
         </div>
 
         <div style="display: flex; gap: 8px; margin-bottom: 10px;">
-            <div class="card" style="flex: 1; margin: 0; position: relative;">
-                <button class="action-btn btn-gold" onclick="openNotificationsPage()" style="position:relative;">
+            <div class="card" style="flex: 1; margin: 0; padding: 6px 8px;">
+                <button class="action-btn btn-gold" style="padding: 10px;" onclick="navigateTo('shopScreen')">متجر العدادات 🛒</button>
+            </div>
+            <div class="card" style="flex: 1; margin: 0; padding: 6px 8px;">
+                <button class="action-btn btn-blue" style="padding: 10px;" onclick="navigateTo('agentsScreen')">وكلاء دينار 👔</button>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+            <div class="card" style="flex: 1; margin: 0; padding: 6px 8px; position: relative;">
+                <button class="action-btn btn-gold" style="padding: 10px; position:relative;" onclick="openNotificationsPage()">
                     صندوق الإشعارات
                     <span id="mainNotificationBadge" class="notification-badge" style="top:2px; right:8px;"></span>
                 </button>
             </div>
-            <div class="card" style="flex: 1; margin: 0;">
-                <button class="action-btn btn-blue" onclick="navigateTo('friendsScreen')">قائمة الأصدقاء 🔍</button>
+            <div class="card" style="flex: 1; margin: 0; padding: 6px 8px;">
+                <button class="action-btn btn-blue" style="padding: 10px;" onclick="navigateTo('friendsScreen')">قائمة الأصدقاء 🔍</button>
             </div>
         </div>
     </div>
@@ -303,8 +303,9 @@
         </div>
 
         <div class="card" style="text-align: right; background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(245, 158, 11, 0.4);">
-            <div style="font-size: 11px; color: #f59e0b; margin-bottom: 8px; font-weight: bold;">
-                ⏳ يتجدد التصنيف أوتوماتيكياً كل يوم جمعة الساعة 6:00 صباحاً ويتم منح الجوائز تلقائياً للأوائل الثلاثة مع أطارات مضيئة لمدة شهر!
+            <!-- ساعة العد التنازلي بدون كتابة فقط الساعة -->
+            <div style="display: flex; justify-content: center; align-items: center; background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 12px; padding: 8px; margin-bottom: 10px; box-shadow: inset 0 2px 6px rgba(0,0,0,0.6);">
+                <span id="weeklyCountdownTimer" style="font-family: monospace; font-size: 15px; font-weight: bold; color: #f59e0b; letter-spacing: 1px;">06 أيام : 12 ساعة : 45 دقيقة : 30 ثانية</span>
             </div>
 
             <div class="shop-tabs" style="margin-bottom: 10px;">
@@ -485,7 +486,7 @@
                 <button class="action-btn btn-gold" onclick="saveProfileData()">حفظ التعديلات 💾</button>
             </div>
 
-            <!-- قسم الهدايا المستلمة بالملف الشخصي (مربعات صغار 3×3 مثل اللودو) -->
+            <!-- قسم الهدايا المستلمة بالملف الشخصي -->
             <div class="profile-gifts-section">
                 <h4 style="margin:0 0 6px 0; color:#f59e0b; font-size:12px;">🎁 هدايا الملف الشخصي المستلمة</h4>
                 <div id="profileReceivedGiftsGrid" class="profile-gifts-grid">
@@ -886,6 +887,7 @@
     let activeChatFriendName = '';
     let visitedProfileTargetKey = '';
     let timerInterval = null;
+    let leaderboardTimerInterval = null;
     let pendingCounterName = '';
     let isolatedActiveRoomId = '';
     let currentRoomOccupantsCount = 0;
@@ -948,7 +950,12 @@
         if(screenId === 'friendsScreen') loadFriendSystem();
         if(screenId === 'agentsScreen') loadApprovedAgentsList();
         if(screenId === 'profileScreen') loadProfileReceivedGifts(currentUserKey, 'profileReceivedGiftsGrid');
-        if(screenId === 'leaderboardScreen') loadLeaderboardData();
+        if(screenId === 'leaderboardScreen') {
+            loadLeaderboardData();
+            startWeeklyLeaderboardCountdown();
+        } else {
+            if(leaderboardTimerInterval) clearInterval(leaderboardTimerInterval);
+        }
     }
 
     function openNotificationsPage() {
@@ -1149,6 +1156,7 @@
 
     function handleLogout() {
         if(timerInterval) clearInterval(timerInterval);
+        if(leaderboardTimerInterval) clearInterval(leaderboardTimerInterval);
         try { localStorage.removeItem('dinarUserKey'); } catch(e){}
         currentEmail = ''; currentUserKey = '';
         navigateTo('authScreen');
@@ -1298,6 +1306,40 @@
         document.getElementById('lbContentWheel').style.display = tab === 'wheel' ? 'block' : 'none';
     }
 
+    function startWeeklyLeaderboardCountdown() {
+        if(leaderboardTimerInterval) clearInterval(leaderboardTimerInterval);
+        
+        function updateTimer() {
+            let now = new Date();
+            let day = now.getDay(); // الجمعة = 5
+            let target = new Date(now);
+            
+            // حساب القادم يوم الجمعة الساعة 6:00 صباحاً
+            target.setDate(now.getDate() + ((5 + 7 - day) % 7));
+            target.setHours(6, 0, 0, 0);
+            
+            if (now >= target) {
+                target.setDate(target.getDate() + 7);
+            }
+
+            let diff = target - now;
+            if (diff < 0) diff = 0;
+
+            let days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            let hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            let minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            let seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            let timerEl = document.getElementById('weeklyCountdownTimer');
+            if (timerEl) {
+                timerEl.innerText = `${days} أيام : ${String(hours).padStart(2, '0')} ساعة : ${String(minutes).padStart(2, '0')} دقيقة : ${String(seconds).padStart(2, '0')} ثانية`;
+            }
+        }
+
+        updateTimer();
+        leaderboardTimerInterval = setInterval(updateTimer, 1000);
+    }
+
     function loadLeaderboardData() {
         rtdb.ref('users').once('value').then(snap => {
             if(!snap.exists()) return;
@@ -1330,6 +1372,8 @@
         list.forEach((item, index) => {
             let rank = index + 1;
             let crownIcon = rank === 1 ? '👑 ' : (rank === 2 ? '🥈 ' : (rank === 3 ? '🥉 ' : ''));
+            
+            // دقة هندسية صارمة: الأطارات المضيئة فقط لأول ثلاثة مراكز (#1, #2, #3)
             let ringClass = '';
             if (rank === 1) ringClass = 'avatar-ring-diamond';
             else if (rank === 2) ringClass = 'avatar-ring-gold';
