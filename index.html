@@ -165,7 +165,7 @@
             justify-content: space-between;
         }
 
-        /* شبكة الأزرار المحدثة بناءً على طلبك */
+        /* شبكة الأزرار المحدثة */
         .grid-buttons-custom {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -356,7 +356,7 @@
         </div>
     </div>
 
-    <!-- 2. الشاشة الرئيسية بعد التعديلات الأخيرة (حذف المستوى من الهيدر، وتحديث زر التبديل إلى سجل العمليات) -->
+    <!-- 2. الشاشة الرئيسية -->
     <div id="mainScreen" class="screen-page">
         <div style="text-align: center;">
             <button id="adminPanelMainBtn" class="admin-badge" onclick="openAdminPanelModal()">👑 لوحة تحكم الإدارة الخاصة</button>
@@ -369,7 +369,7 @@
             <button class="action-btn btn-blue" onclick="agentChargeUserPoints()">شحن النقاط للمستخدم 🚀</button>
         </div>
 
-        <!-- الهيدر العلوي بعد إزالة المستوى حسب علامة ❌ -->
+        <!-- الهيدر العلوي -->
         <div class="new-header-bar">
             <div style="display: flex; align-items: center;">
                 <button class="top-logout-btn" onclick="handleLogout()">
@@ -390,7 +390,7 @@
             </div>
         </div>
 
-        <!-- كارد العداد اليومي وعملة الكوين في الوسط -->
+        <!-- كارد العداد اليومي -->
         <div class="top-profile-card">
             <div style="text-align: right;">
                 <div style="font-size: 10px; color: #94a3b8; display:flex; align-items:center; gap:3px;"><span>👑</span> العداد اليومي</div>
@@ -411,7 +411,7 @@
             </div>
         </div>
 
-        <!-- كاردات النقاط والجواهر (مع تثبيت الجواهر حسب علامة ✅) -->
+        <!-- كاردات النقاط والجواهر -->
         <div class="assets-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
             <div class="asset-box">
                 <div style="text-align: right;">
@@ -429,11 +429,11 @@
             </div>
         </div>
 
-        <!-- الأزرار الرئيسية (تم استبدال زر تبديل الجواهر المكرر بـ "سجل العمليات" بناءً على علامة 🔃) -->
+        <!-- الأزرار الرئيسية (تم استبدال سجل العمليات بلعبة حزر الرقم الجديدة) -->
         <div class="grid-buttons-custom">
-            <div class="grid-btn-item" onclick="openOperationsLogModal()">
-                <div class="icon-circle">📊</div>
-                <span>سجل العمليات</span>
+            <div class="grid-btn-item" onclick="openGuessNumberGameModal()">
+                <div class="icon-circle">🎯</div>
+                <span>حزر الرقم</span>
                 <div class="mini-arrow">⌄</div>
             </div>
             <div class="grid-btn-item" onclick="openWithdrawModal()">
@@ -477,7 +477,7 @@
         </div>
     </div>
 
-    <!-- صفحة لوحة الشرف (Leaderboard) -->
+    <!-- صفحة لوحة الشرف -->
     <div id="leaderboardScreen" class="screen-page">
         <div class="top-nav">
             <h3 style="margin:0; color:#f59e0b; font-size:15px;">🏆 التصنيف الأسبوعي (لوحة الشرف)</h3>
@@ -637,7 +637,7 @@
         </div>
     </div>
 
-    <!-- صفحة الملف الشخصي (مع تفعيل نظام البايو الصارم 60 حرف كحد أقصى) -->
+    <!-- صفحة الملف الشخصي -->
     <div id="profileScreen" class="screen-page">
         <div class="top-nav">
             <h3 style="margin:0; color:#f59e0b; font-size:15px;">👤 الملف الشخصي</h3>
@@ -777,21 +777,30 @@
 
 </div>
 
-<!-- نافذة سجل العمليات الجديدة -->
-<div id="operationsLogModal" class="modal">
+<!-- نافذة لعبة "حزر الرقم" الجديدة المدمجة بالكامل -->
+<div id="guessNumberModal" class="modal">
     <div class="modal-content" style="text-align:right; max-width: 380px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <h4 style="margin:0; color:#38bdf8; font-size:14px;">📊 سجل العمليات والأنشطة</h4>
-            <button style="background:none; border:none; color:#ef4444; font-size:18px; cursor:pointer;" onclick="closeOperationsLogModal()">✖</button>
+            <h4 style="margin:0; color:#38bdf8; font-size:15px;">🎯 لعبة حزر الرقم</h4>
+            <button style="background:none; border:none; color:#ef4444; font-size:18px; cursor:pointer;" onclick="closeGuessNumberGameModal()">✖</button>
         </div>
-        <div style="font-size:11px; color:#cbd5e1; line-height: 1.5; margin-bottom: 10px;">
-            هنا يمكنك متابعة آخر عمليات حسابك ونقاطك وجواهرك وهداياك بكل شفافية.
+        
+        <div style="background: rgba(14, 165, 233, 0.1); border: 1px solid rgba(14, 165, 233, 0.3); padding: 8px; border-radius: 8px; margin-bottom: 12px; font-size: 11px; color: #38bdf8; text-align: center;">
+            ✨ أول محاولة مجانية يومياً!<br>بعدها تكلف كل محاولة <b>20 جوهرة 💎</b>.<br>الجوائز المتدرجة: <b>0، 5، 10، 15، 20 نقطة</b>.
         </div>
-        <div id="operationsLogContent" style="max-height: 220px; overflow-y: auto; font-size: 11px; color: #94a3b8; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 8px;">
-            • تم إنشاء الحساب بنجاح.<br>
-            • تم تحديث واجهة التطبيق بسلاسة.<br>
-            • النظام يعمل بكفاءة وأمان تام.
+
+        <div style="font-size: 12px; color: #fff; margin-bottom: 10px; text-align: center;">اختر رقماً من 0 إلى 5:</div>
+
+        <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-bottom: 15px;">
+            <button onclick="submitUserGuess(0)" class="action-btn btn-blue" style="padding: 10px 0; font-size: 13px;">0</button>
+            <button onclick="submitUserGuess(1)" class="action-btn btn-blue" style="padding: 10px 0; font-size: 13px;">1</button>
+            <button onclick="submitUserGuess(2)" class="action-btn btn-blue" style="padding: 10px 0; font-size: 13px;">2</button>
+            <button onclick="submitUserGuess(3)" class="action-btn btn-blue" style="padding: 10px 0; font-size: 13px;">3</button>
+            <button onclick="submitUserGuess(4)" class="action-btn btn-blue" style="padding: 10px 0; font-size: 13px;">4</button>
+            <button onclick="submitUserGuess(5)" class="action-btn btn-blue" style="padding: 10px 0; font-size: 13px;">5</button>
         </div>
+
+        <div id="guessGameMsg" style="font-size: 12px; text-align: center; font-weight: bold; min-height: 25px; color: #f59e0b;"></div>
     </div>
 </div>
 
@@ -1963,7 +1972,6 @@
         }
     }
 
-    // دالة التحقق الصارم لطول البايو (حد أقصى 60 حرف)
     function validateBioLength(input) {
         if (input.value.length > 60) {
             input.value = input.value.substring(0, 60);
@@ -1995,11 +2003,52 @@
         });
     }
 
-    function openOperationsLogModal() {
-        document.getElementById('operationsLogModal').style.display = 'flex';
+    // --- دوال لعبة "حزر الرقم" الجديدة المدمجة بالكامل ---
+    function openGuessNumberGameModal() {
+        document.getElementById('guessGameMsg').innerText = "";
+        document.getElementById('guessNumberModal').style.display = 'flex';
     }
-    function closeOperationsLogModal() {
-        document.getElementById('operationsLogModal').style.display = 'none';
+
+    function closeGuessNumberGameModal() {
+        document.getElementById('guessNumberModal').style.display = 'none';
+    }
+
+    function submitUserGuess(chosenNum) {
+        let todayStr = new Date().toDateString();
+        let lastFreeDate = localStorage.getItem('dinar_guess_free_date');
+        let isFreeAvailable = (lastFreeDate !== todayStr);
+
+        let msgEl = document.getElementById('guessGameMsg');
+
+        if (!isFreeAvailable) {
+            let currentGems = userData.gems || 0;
+            if (currentGems < 20) {
+                msgEl.innerHTML = "<span style='color:#ef4444;'>❌ ليس لديك جواهر كافية! (تحتاج 20 جوهرة)</span>";
+                return;
+            }
+            userData.gems -= 20;
+        } else {
+            localStorage.setItem('dinar_guess_free_date', todayStr);
+        }
+
+        let winningNum = Math.floor(Math.random() * 6); // رقم عشوائي بين 0 و 5
+        let possibleRewards = [0, 5, 10, 15, 20];
+        let wonPoints = possibleRewards[Math.floor(Math.random() * possibleRewards.length)];
+
+        if (chosenNum === winningNum) {
+            if (wonPoints > 0) {
+                userData.points = (userData.points || 0) + wonPoints;
+                msgEl.innerHTML = `<span style='color:#10b981;'>🎉 مبروك! الرقم الصحيح كان (${winningNum}). ربحت ${wonPoints} نقطة!</span>`;
+            } else {
+                msgEl.innerHTML = `<span style='color:#f59e0b;'>⚠️ الرقم الصحيح كان (${winningNum}) وحزرت صح، لكن الحظ هذه المرة أعطاك (0) نقطة!</span>`;
+            }
+        } else {
+            msgEl.innerHTML = `<span style='color:#ef4444;'>❌ للأسف تخمينك خطأ! الرقم الصحيح كان (${winningNum}). حاول مرة أخرى!</span>`;
+        }
+
+        saveToDB().then(() => {
+            updateUI();
+        });
     }
 
     function openWithdrawModal() { document.getElementById('withdrawModal').style.display = 'flex'; }
