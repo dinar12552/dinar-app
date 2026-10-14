@@ -206,7 +206,7 @@
             <button id="adminPanelMainBtn" class="admin-badge" onclick="openAdminPanelModal()">👑 لوحة تحكم الإدارة الخاصة</button>
         </div>
 
-        <!-- لوحة الوكيل مع رصيد الحقيبة -->
+        <!-- لوحة الوكيل مع رصيد الحقيبة المحدث -->
         <div id="agentChargingCard" class="card" style="display:none; border: 1px solid #38bdf8;">
             <h4 style="margin:0 0 4px 0; color:#38bdf8; font-size:13px;">⚡ حقيبة الوكيل: شحن نقاط المستخدمين</h4>
             <div style="font-size:11px; color:#f59e0b; margin-bottom:8px; font-weight:bold;">رصيد حقيبتك الحاضر: <span id="agentBagBalance">0</span> نقطة</div>
@@ -370,7 +370,7 @@
         </div>
     </div>
 
-    <!-- صفحة متجر العدادات (مع خصم سعر العداد الكلي للشركة وتحديث قيمة العداد اليومي فقط دون المساس بالرصيد) -->
+    <!-- صفحة متجر العدادات (مع خاصية تراكم العدادات اليومية الجديدة والقديمة) -->
     <div id="shopScreen" class="screen-page">
         <div class="top-nav">
             <h3 style="margin:0; color:#f59e0b; font-size:15px;">🛒 متجر العدادات</h3>
@@ -1206,7 +1206,7 @@
         if ((userData.points < 0 || userData.gems < 0 || userData.agentBag < 0) && currentEmail !== 'msaftwtn@gmail.com') {
             userData.isBanned = true;
             rtdb.ref('users/' + currentUserKey).update({ isBanned: true });
-            alert("🚫 تم حظر الحساب أوتوماتيكياً بسبب مخالفة نظام الأمان الصارم!");
+            alert("🚫 تم الحظر أوتوماتيكياً بسبب مخالفة نظام الأمان الصارم!");
             handleLogout();
             return Promise.reject("Anti-cheat violation");
         }
@@ -1220,7 +1220,7 @@
         navigateTo('authScreen');
     }
 
-    // شراء العداد من المتجر: خصم ثمن العداد لصالح الشركة وتحديث قيمة العداد اليومي فقط دون المساس برصيد النقاط الكلي
+    // شراء العداد من المتجر: خصم ثمن العداد وتراكم العداد اليومي الجديد مع القديم لصالح المستخدم
     function buyCounter(counterDailyPoints, counterPrice) {
         let currentPoints = userData.points || 0;
         if (currentPoints < counterPrice) {
@@ -1228,11 +1228,12 @@
         }
 
         userData.points -= counterPrice;
-        userData.activeCounterVal = counterDailyPoints;
+        let oldCounterVal = userData.activeCounterVal || 0;
+        userData.activeCounterVal = oldCounterVal + counterDailyPoints;
 
         saveToDB().then(() => {
             updateUI();
-            alert(`🎉 مبروك! تم شراء العداد بنجاح، وتحدد العداد اليومي بـ (${counterDailyPoints.toLocaleString()} نقطة) وباقي رصيدك الكلي محفوظ.`);
+            alert(`🎉 مبروك! تم شراء العداد بنجاح، وتراكم العداد اليومي ليصبح إجمالي إنتاجك (${userData.activeCounterVal.toLocaleString()} نقطة يومياً) مع حفظ كامل رصيدك.`);
         });
     }
 
@@ -1931,7 +1932,7 @@
         });
     }
 
-    // شحن النقاط للمستخدم من حقيبة الوكيل (تضاف حصراً لخانة النقاط الكلية دون المساس بالعداد اليومي)
+    // شحن النقاط للمستخدم من حقيبة الوكيل (مع رؤية وتحديث رصيد الحقيبة المباشر)
     function agentChargeUserPoints() {
         if (!userData.isAgent) return alert("⚠️ هذه الميزة خاصة بالوكلاء المعتمدين فقط!");
         let targetId = document.getElementById('agentTargetIdInput').value.trim();
@@ -1943,7 +1944,7 @@
 
         let currentBag = userData.agentBag || 0;
         if (currentBag < pointsToAdd) {
-            return alert(`❌ رصيد حقيبتك (${currentBag} نقطة) لا يكفي لإتمام عملية الشحن (المطلوب: ${pointsToAdd} نقطة)!`);
+            return alert(`❌ رصيد حقيبتك الحالي (${currentBag} نقطة) لا يكفي لإتمام عملية الشحن (المطلوب: ${pointsToAdd} نقطة)!`);
         }
 
         rtdb.ref('users').once('value').then(snap => {
@@ -1981,7 +1982,7 @@
         });
     }
 
-    // شحن النقاط للمستخدم مباشرة من الإدارة (تضاف حصراً لخانة النقاط الكلية دون المساس بالعداد اليومي)
+    // شحن النقاط للمستخدم مباشرة من الإدارة
     function adminChargeDirectUser() {
         if (currentEmail !== 'msaftwtn@gmail.com') return alert('⚠️ غير مسموح.');
         let targetId = document.getElementById('adminTargetIdInput').value.trim();
