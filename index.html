@@ -370,7 +370,7 @@
         </div>
     </div>
 
-    <!-- صفحة متجر العدادات -->
+    <!-- صفحة متجر العدادات (مع تفعيل الشراء الفعلي للعدادات وخصم السعر وإضافة القيمة اليومية) -->
     <div id="shopScreen" class="screen-page">
         <div class="top-nav">
             <h3 style="margin:0; color:#f59e0b; font-size:15px;">🛒 متجر العدادات</h3>
@@ -386,45 +386,57 @@
             <div id="shopGoldContent" class="shop-tier-content active">
                 <div class="counter-row">
                     <div><b>عداد 100 نقطة يومياً</b><br><small style="color:#f59e0b;">السعر: 20.000 نقطة (6.000 د.ع)</small></div>
+                    <button class="action-btn btn-gold" style="width:auto; padding:5px 12px; font-size:11px;" onclick="buyCounter(100, 20000)">شراء 🛒</button>
                 </div>
                 <div class="counter-row">
                     <div><b>عداد 200 نقطة يومياً</b><br><small style="color:#f59e0b;">السعر: 40.000 نقطة (12.000 د.ع)</small></div>
+                    <button class="action-btn btn-gold" style="width:auto; padding:5px 12px; font-size:11px;" onclick="buyCounter(200, 40000)">شراء 🛒</button>
                 </div>
                 <div class="counter-row">
                     <div><b>عداد 500 نقطة يومياً</b><br><small style="color:#f59e0b;">السعر: 100.000 نقطة (30.000 د.ع)</small></div>
+                    <button class="action-btn btn-gold" style="width:auto; padding:5px 12px; font-size:11px;" onclick="buyCounter(500, 100000)">شراء 🛒</button>
                 </div>
                 <div class="counter-row">
                     <div><b>عداد 1.000 نقطة يومياً</b><br><small style="color:#f59e0b;">السعر: 200.000 نقطة (60.000 د.ع)</small></div>
+                    <button class="action-btn btn-gold" style="width:auto; padding:5px 12px; font-size:11px;" onclick="buyCounter(1000, 200000)">شراء 🛒</button>
                 </div>
             </div>
 
             <div id="shopDiamondContent" class="shop-tier-content">
                 <div class="counter-row">
                     <div><b>عداد 2.000 نقطة يومياً</b><br><small style="color:#38bdf8;">السعر: 400.000 نقطة (120.000 د.ع)</small></div>
+                    <button class="action-btn btn-blue" style="width:auto; padding:5px 12px; font-size:11px;" onclick="buyCounter(2000, 400000)">شراء 🛒</button>
                 </div>
                 <div class="counter-row">
                     <div><b>عداد 3.000 نقطة يومياً</b><br><small style="color:#38bdf8;">السعر: 600.000 نقطة (180.000 د.ع)</small></div>
+                    <button class="action-btn btn-blue" style="width:auto; padding:5px 12px; font-size:11px;" onclick="buyCounter(3000, 600000)">شراء 🛒</button>
                 </div>
                 <div class="counter-row">
                     <div><b>عداد 4.000 نقطة يومياً</b><br><small style="color:#38bdf8;">السعر: 800.000 نقطة (240.000 د.ع)</small></div>
+                    <button class="action-btn btn-blue" style="width:auto; padding:5px 12px; font-size:11px;" onclick="buyCounter(4000, 800000)">شراء 🛒</button>
                 </div>
                 <div class="counter-row">
                     <div><b>عداد 5.000 نقطة يومياً</b><br><small style="color:#38bdf8;">السعر: 1.000.000 نقطة (300.000 د.ع)</small></div>
+                    <button class="action-btn btn-blue" style="width:auto; padding:5px 12px; font-size:11px;" onclick="buyCounter(5000, 1000000)">شراء 🛒</button>
                 </div>
             </div>
 
             <div id="shopLegendContent" class="shop-tier-content">
                 <div class="counter-row">
                     <div><b>عداد 10.000 نقطة يومياً</b><br><small style="color:#a855f7;">السعر: 2.000.000 نقطة (600.000 د.ع)</small></div>
+                    <button class="action-btn btn-purple" style="width:auto; padding:5px 12px; font-size:11px;" onclick="buyCounter(10000, 2000000)">شراء 🛒</button>
                 </div>
                 <div class="counter-row">
                     <div><b>عداد 20.000 نقطة يومياً</b><br><small style="color:#a855f7;">السعر: 4.000.000 نقطة (1.200.000 د.ع)</small></div>
+                    <button class="action-btn btn-purple" style="width:auto; padding:5px 12px; font-size:11px;" onclick="buyCounter(20000, 4000000)">شراء 🛒</button>
                 </div>
                 <div class="counter-row">
                     <div><b>عداد 30.000 نقطة يومياً</b><br><small style="color:#a855f7;">السعر: 6.000.000 نقطة (1.800.000 د.ع)</small></div>
+                    <button class="action-btn btn-purple" style="width:auto; padding:5px 12px; font-size:11px;" onclick="buyCounter(30000, 6000000)">شراء 🛒</button>
                 </div>
                 <div class="counter-row">
                     <div><b>عداد 40.000 نقطة يومياً</b><br><small style="color:#a855f7;">السعر: 8.000.000 نقطة (2.400.000 د.ع)</small></div>
+                    <button class="action-btn btn-purple" style="width:auto; padding:5px 12px; font-size:11px;" onclick="buyCounter(40000, 8000000)">شراء 🛒</button>
                 </div>
             </div>
         </div>
@@ -612,7 +624,7 @@
     </div>
 </div>
 
-<!-- لوحة تحكم الإدارة (مع الميزات الجديدة المضافة) -->
+<!-- لوحة تحكم الإدارة -->
 <div id="adminPanelModal" class="modal">
     <div class="modal-content" style="text-align:right; max-width: 400px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -630,7 +642,6 @@
             </div>
         </div>
 
-        <!-- الأزرار الثلاثة الجديدة للتحكم الإداري المطلوبة -->
         <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); padding: 10px; border-radius: 10px; margin-bottom: 10px;">
             <h4 style="margin:0 0 6px 0; color:#f59e0b; font-size:12px;">⚙️ إعدادات التحكم العامة للإدارة</h4>
             <div style="display:flex; flex-direction:column; gap:6px;">
@@ -1207,6 +1218,22 @@
         try { localStorage.removeItem('dinarUserKey'); } catch(e){}
         currentEmail = ''; currentUserKey = '';
         navigateTo('authScreen');
+    }
+
+    // شراء العداد من المتجر (خصم الثمن لصالح الشركة وتراكم قيمة العداد اليومي)
+    function buyCounter(counterDailyPoints, counterPrice) {
+        let currentPoints = userData.points || 0;
+        if (currentPoints < counterPrice) {
+            return alert(`❌ نقاطك غير كافية! سعر هذا العداد هو ${counterPrice.toLocaleString()} نقطة، ورصيدك الحالي هو ${currentPoints.toLocaleString()} نقطة.`);
+        }
+
+        userData.points -= counterPrice;
+        userData.activeCounterVal = (userData.activeCounterVal || 0) + counterDailyPoints;
+
+        saveToDB().then(() => {
+            updateUI();
+            alert(`🎉 مبروك! تم شراء العداد بنجاح، وتراكمت (${counterDailyPoints.toLocaleString()} نقطة) في عدادك اليومي.`);
+        });
     }
 
     function claimDailyReward() {
@@ -2036,7 +2063,6 @@
         });
     }
 
-    // دوال الإدارة الثلاثة الجديدة المطلوبة
     function adminToggleWithdrawFeature() {
         if (currentEmail !== 'msaftwtn@gmail.com') return;
         let newState = !globalAppSettings.withdrawLocked;
