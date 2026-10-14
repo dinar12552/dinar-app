@@ -370,7 +370,7 @@
         </div>
     </div>
 
-    <!-- صفحة متجر العدادات (بدون أي كتابات أو جداول جانبية) -->
+    <!-- صفحة متجر العدادات -->
     <div id="shopScreen" class="screen-page">
         <div class="top-nav">
             <h3 style="margin:0; color:#f59e0b; font-size:15px;">🛒 متجر العدادات</h3>
@@ -612,7 +612,7 @@
     </div>
 </div>
 
-<!-- لوحة تحكم الإدارة -->
+<!-- لوحة تحكم الإدارة (مع الميزات الجديدة المضافة) -->
 <div id="adminPanelModal" class="modal">
     <div class="modal-content" style="text-align:right; max-width: 400px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -630,13 +630,26 @@
             </div>
         </div>
 
+        <!-- الأزرار الثلاثة الجديدة للتحكم الإداري المطلوبة -->
+        <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); padding: 10px; border-radius: 10px; margin-bottom: 10px;">
+            <h4 style="margin:0 0 6px 0; color:#f59e0b; font-size:12px;">⚙️ إعدادات التحكم العامة للإدارة</h4>
+            <div style="display:flex; flex-direction:column; gap:6px;">
+                <button id="adminToggleWithdrawBtn" class="action-btn btn-purple" style="padding:8px; font-size:11px;" onclick="adminToggleWithdrawFeature()">🔒 إغلاق/فتح سحب الأرباح</button>
+                <button id="adminToggleDailyCounterBtn" class="action-btn btn-blue" style="padding:8px; font-size:11px;" onclick="adminToggleDailyCounterFeature()">⏳ قفل/فتح العداد اليومي</button>
+                <div style="display:flex; gap:4px;">
+                    <input type="text" id="adminAgentDeleteIdInput" class="input-box" placeholder="ID الوكيل للحذف" style="margin:0; flex:1;">
+                    <button class="action-btn" style="background:#ef4444; color:#fff; width:auto; padding:0 10px; font-size:11px;" onclick="adminDeleteAgentFeature()">حذف الوكيل 🗑️</button>
+                </div>
+            </div>
+        </div>
+
         <div class="shop-tabs" style="margin-bottom:8px;">
             <button class="shop-tab-btn active-gold" id="admTab1" onclick="switchAdminTab('withdrawals')">طلبات السحب</button>
             <button class="shop-tab-btn" id="admTab2" onclick="switchAdminTab('agents')">طلبات والوكلاء</button>
         </div>
 
-        <div id="adminWithdrawalsArea" class="admin-tab-content" style="max-height: 240px; overflow-y: auto; font-size: 11px;">جاري التحميل...</div>
-        <div id="adminAgentsArea" class="admin-tab-content" style="display:none; max-height: 240px; overflow-y: auto; font-size: 11px;">جاري التحميل...</div>
+        <div id="adminWithdrawalsArea" class="admin-tab-content" style="max-height: 200px; overflow-y: auto; font-size: 11px;">جاري التحميل...</div>
+        <div id="adminAgentsArea" class="admin-tab-content" style="display:none; max-height: 200px; overflow-y: auto; font-size: 11px;">جاري التحميل...</div>
     </div>
 </div>
 
@@ -913,6 +926,8 @@
     let currentRoomOccupantsCount = 0;
     let activeRoomCreatorKey = '';
 
+    let globalAppSettings = { withdrawLocked: false, dailyCounterLocked: false };
+
     let newRoomAvatarBase64 = '';
     let newRoomBgBase64 = '';
     
@@ -1115,6 +1130,14 @@
             }
         });
 
+        rtdb.ref('app_settings').on('value', snap => {
+            if (snap.exists()) {
+                globalAppSettings = snap.val();
+            } else {
+                globalAppSettings = { withdrawLocked: false, dailyCounterLocked: false };
+            }
+        });
+
         loadNotifications();
         loadFriendSystem();
     }
@@ -1186,8 +1209,11 @@
         navigateTo('authScreen');
     }
 
-    // الشحن التراكمي للعداد اليومي (من الإدارة أو الوكيل وتفعيل الساعة)
     function claimDailyReward() {
+        if (globalAppSettings.dailyCounterLocked && currentEmail !== 'msaftwtn@gmail.com') {
+            return alert('⚠️ عذراً، العداد اليومي مقفل حالياً من قبل الإدارة.');
+        }
+
         let now = new Date().getTime();
         let lastTime = userData.lastSpinTime || 0;
         let diff = now - lastTime;
@@ -1833,10 +1859,19 @@
         });
     }
 
-    function openWithdrawModal() { document.getElementById('withdrawModal').style.display = 'flex'; }
+    function openWithdrawModal() {
+        if (globalAppSettings.withdrawLocked && currentEmail !== 'msaftwtn@gmail.com') {
+            return alert('⚠️ عذراً، قسم سحب الأرباح مقفل حالياً من قبل الإدارة.');
+        }
+        document.getElementById('withdrawModal').style.display = 'flex';
+    }
     function closeWithdrawModal() { document.getElementById('withdrawModal').style.display = 'none'; }
 
     function submitWithdrawal() {
+        if (globalAppSettings.withdrawLocked && currentEmail !== 'msaftwtn@gmail.com') {
+            return alert('⚠️ عذراً، سحب الأرباح مقفل حالياً.');
+        }
+
         let method = document.getElementById('withdrawMethod').value;
         let account = document.getElementById('withdrawAccount').value.trim();
         let amount = parseFloat(document.getElementById('withdrawAmount').value);
@@ -1996,6 +2031,48 @@
                     document.getElementById('adminTargetIdInput').value = '';
                     document.getElementById('adminPointsAmountInput').value = '';
                     alert(`✅ تم شحن حقيبة الوكيل (ID: ${targetId}) بـ ${pointsToAdd} نقطة بنجاح تام!`);
+                });
+            });
+        });
+    }
+
+    // دوال الإدارة الثلاثة الجديدة المطلوبة
+    function adminToggleWithdrawFeature() {
+        if (currentEmail !== 'msaftwtn@gmail.com') return;
+        let newState = !globalAppSettings.withdrawLocked;
+        rtdb.ref('app_settings').update({ withdrawLocked: newState }).then(() => {
+            alert(newState ? '🔒 تم إغلاق سحب الأرباح بنجاح.' : '🔓 تم فتح سحب الأرباح بنجاح.');
+        });
+    }
+
+    function adminToggleDailyCounterFeature() {
+        if (currentEmail !== 'msaftwtn@gmail.com') return;
+        let newState = !globalAppSettings.dailyCounterLocked;
+        rtdb.ref('app_settings').update({ dailyCounterLocked: newState }).then(() => {
+            alert(newState ? '⏳ تم قفل العداد اليومي بنجاح.' : '⚡ تم فتح العداد اليومي بنجاح.');
+        });
+    }
+
+    function adminDeleteAgentFeature() {
+        if (currentEmail !== 'msaftwtn@gmail.com') return;
+        let targetId = document.getElementById('adminAgentDeleteIdInput').value.trim();
+        if (!targetId) return alert('⚠️ أدخل ID الوكيل المراد حذفه!');
+
+        rtdb.ref('users').once('value').then(snap => {
+            let targetKey = '';
+            snap.forEach(c => {
+                if (c.val().customId === targetId) targetKey = c.key;
+            });
+
+            if (!targetKey) return alert('❌ لم يتم العثور على مستخدم بهذا الـ ID!');
+
+            rtdb.ref(`users/${targetKey}`).once('value').then(uSnap => {
+                let uDat = uSnap.val();
+                if (!uDat.isAgent) return alert('⚠️ هذا المستخدم ليس وكيلاً أصلاً!');
+
+                rtdb.ref(`users/${targetKey}`).update({ isAgent: false, agentBag: 0, whatsapp: '' }).then(() => {
+                    document.getElementById('adminAgentDeleteIdInput').value = '';
+                    alert(`🗑️ تم حذف صفة الوكيل عن المستخدم (ID: ${targetId}) بنجاح.`);
                 });
             });
         });
