@@ -43,7 +43,7 @@
         .power-btn.green-pulse{background:#10b981;color:#fff}
         .assets-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
         .asset-box{background:rgba(30,41,59,0.7);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:10px;display:flex;align-items:center;justify-content:space-between}
-        .grid-buttons-custom{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+        .grid-buttons-custom{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:10px}
         .grid-btn-item{background:rgba(30,41,59,0.75);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:10px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;text-align:center;min-height:80px;box-shadow:0 6px 15px rgba(0,0,0,0.3);position:relative}
         .grid-btn-item span{font-size:10px;color:#fff;font-weight:bold;margin-top:4px}
         .grid-btn-item .icon-circle{font-size:20px}
@@ -107,7 +107,6 @@
         .gift-chat-body{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:4px}
         .gift-chat-count{font-size:30px;font-weight:900;color:#f59e0b;text-shadow:0 2px 8px rgba(245,158,11,0.6)}
         .gift-chat-img{width:65px;height:65px;object-fit:contain;filter:drop-shadow(0 4px 10px rgba(0,0,0,0.6))}
-        .admin-badge{background:linear-gradient(135deg,#ef4444,#b91c1c);color:#fff;padding:4px 10px;border-radius:8px;font-size:11px;font-weight:bold;border:1px solid #f87171;cursor:pointer;display:none;margin-bottom:8px}
     </style>
 </head>
 <body>
@@ -196,7 +195,6 @@
         <div class="grid-buttons-custom">
             <div class="grid-btn-item" onclick="openWithdrawModal()"><div class="icon-circle">💸</div><span>سحب الأرباح</span><div class="mini-arrow">⌄</div></div>
             <div class="grid-btn-item" onclick="navigateTo('agentsScreen')"><div class="icon-circle">👔</div><span>وكلاء دينار</span><div class="mini-arrow">⌄</div></div>
-            <div class="grid-btn-item" onclick="navigateTo('shopScreen')"><div class="icon-circle">🛒</div><span>المتجر</span><div class="mini-arrow">⌄</div></div>
         </div>
         <div class="bottom-nav-bar">
             <button class="bottom-nav-item active" onclick="navigateTo('mainScreen')"><span>🏠</span><div>الرئيسية</div></button>
@@ -360,7 +358,6 @@
                 <button class="action-btn btn-blue" style="padding:8px;font-size:11px" onclick="adminChargeAgentBag()">شحن حقيبة الوكيل 🎒</button>
             </div>
         </div>
-        <!-- ميزة توقيف الحساب مؤقتاً الجديدة -->
         <div style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);padding:10px;border-radius:10px;margin-bottom:10px">
             <h4 style="margin:0 0 6px 0;color:#ef4444;font-size:12px">🚫 إيقاف / تجميد الحساب مؤقتاً</h4>
             <input type="text" id="adminSuspendIdInput" class="input-box" placeholder="أدخل ID المستخدم المراد إيقافه" style="margin-bottom:6px">
@@ -371,18 +368,12 @@
             <div style="display:flex;flex-direction:column;gap:6px">
                 <button id="adminToggleWithdrawBtn" class="action-btn btn-purple" style="padding:8px;font-size:11px" onclick="adminToggleWithdrawFeature()">🔒 إغلاق/فتح سحب الأرباح</button>
                 <button id="adminToggleDailyCounterBtn" class="action-btn btn-blue" style="padding:8px;font-size:11px" onclick="adminToggleDailyCounterFeature()">⏳ قفل/فتح العداد اليومي</button>
-                <div style="display:flex;gap:4px">
-                    <input type="text" id="adminAgentDeleteIdInput" class="input-box" placeholder="ID الوكيل للحذف" style="margin:0;flex:1">
-                    <button class="action-btn" style="background:#ef4444;color:#fff;width:auto;padding:0 10px;font-size:11px" onclick="adminDeleteAgentFeature()">حذف الوكيل 🗑️</button>
-                </div>
             </div>
         </div>
         <div class="shop-tabs" style="margin-bottom:8px">
             <button class="shop-tab-btn active-gold" id="admTab1" onclick="switchAdminTab('withdrawals')">طلبات السحب</button>
-            <button class="shop-tab-btn" id="admTab2" onclick="switchAdminTab('agents')">طلبات والوكلاء</button>
         </div>
         <div id="adminWithdrawalsArea" class="admin-tab-content" style="max-height:200px;overflow-y:auto;font-size:11px">جاري التحميل...</div>
-        <div id="adminAgentsArea" class="admin-tab-content" style="display:none;max-height:200px;overflow-y:auto;font-size:11px">جاري التحميل...</div>
     </div>
 </div>
 
@@ -570,6 +561,11 @@
         if(screenId==='agentsScreen')loadApprovedAgentsList();
         if(screenId==='profileScreen'){loadProfileReceivedGifts(currentUserKey,'profileReceivedGiftsGrid');let b=document.getElementById('profileBioInput');if(b)document.getElementById('bioCounter').innerText=`${b.value.length} / 60`;}
     }
+    // إصلاح دالة الرجوع من الملف الشخصي بدقة لتعمل بسلاسة
+    function navigateBackFromProfile(){
+        document.getElementById('userProfileModal').style.display='none';
+        navigateTo('mainScreen');
+    }
     function openNotificationsPage(){document.querySelectorAll('.notification-badge').forEach(b=>b.style.display='none');navigateTo('notificationsScreen');}
     function switchAuthTab(type){
         document.getElementById('loginTabBtn').className="tab-btn "+(type==='login'?"active":"");
@@ -677,7 +673,7 @@
         let now=new Date().getTime();if(now-(userData.lastSpinTime||0)<24*60*60*1000)return alert('⚠️ العداد مفعل مسبقاً! انتظر حتى ينتهي الوقت.');
         let rPts=userData.activeCounterVal||100;if(rPts<=0)rPts=100;
         userData.points=(userData.points||0)+rPts;
-        userData.gems=(userData.gems||0)+500; // الإضافة الجديدة: مكافأة 500 جوهرة مع العداد اليومي
+        userData.gems=(userData.gems||0)+500;
         userData.lastSpinTime=now;
         saveToDB().then(()=>{updateUI();startTimerCountdown();alert(`🎉 حصلت على أرباحك (${rPts.toLocaleString()} نقطة) + 500 جوهرة 💎 هدية تفعيل العداد وبدأت الساعة بالعد التنازلي.`);});
     }
@@ -802,7 +798,6 @@
             });
         });
     }
-    // وظيفة إيقاف وتجميد الحساب مؤقتمأ من لوحة تحكم الإدارة
     function adminToggleUserSuspension(){
         if(currentEmail!=='msaftwtn@gmail.com')return alert('⚠️ غير مسموح.');
         let tId=document.getElementById('adminSuspendIdInput').value.trim();if(!tId)return alert('⚠️ أدخل ID المستخدم!');
@@ -818,14 +813,6 @@
     }
     function adminToggleWithdrawFeature(){if(currentEmail!=='msaftwtn@gmail.com')return;let ns=!globalAppSettings.withdrawLocked;rtdb.ref('app_settings').update({withdrawLocked:ns}).then(()=>alert(ns?'🔒 تم إغلاق سحب الأرباح.':'🔓 تم فتح سحب الأرباح.'));}
     function adminToggleDailyCounterFeature(){if(currentEmail!=='msaftwtn@gmail.com')return;let ns=!globalAppSettings.dailyCounterLocked;rtdb.ref('app_settings').update({dailyCounterLocked:ns}).then(()=>alert(ns?'⏳ تم قفل العداد اليومي.':'⚡ تم فتح العداد اليومي.'));}
-    function adminDeleteAgentFeature(){
-        if(currentEmail!=='msaftwtn@gmail.com')return;let tId=document.getElementById('adminAgentDeleteIdInput').value.trim();if(!tId)return;
-        rtdb.ref('users').once('value').then(snap=>{
-            let tk='';snap.forEach(c=>{if(String(c.val().customId).trim()===String(tId).trim())tk=c.key;});
-            if(!tk)return alert('❌ غير موجود!');
-            rtdb.ref(`users/${tk}`).once('value').then(us=>{if(!us.val().isAgent)return alert('⚠️ ليس وكيلاً!');rtdb.ref(`users/${tk}`).update({isAgent:false,agentBag:0,whatsapp:''}).then(()=>{document.getElementById('adminAgentDeleteIdInput').value='';alert('🗑️ تم الحذف.');});});
-        });
-    }
     function openAgentApplyModal(){document.getElementById('agentApplyModal').style.display='flex';}
     function closeAgentApplyModal(){document.getElementById('agentApplyModal').style.display='none';}
     function previewAgentDoc(e,type){
@@ -844,7 +831,6 @@
             closeAgentApplyModal();alert('✅ تم إرسال طلب الوكالة للإدارة للمراجعة.');
         });
     }
-
     function loadApprovedAgentsList(){
         rtdb.ref('users').on('value',snap=>{
             let c=document.getElementById('approvedAgentsContainer');if(!c)return;
@@ -863,19 +849,16 @@
             c.innerHTML=h||"لا يوجد وكلاء معتمدون.";
         });
     }
-
     function openWhatsappActionModal(phone) {
         currentSelectedWhatsappPhone = phone;
         document.getElementById('waModalPhoneDisplay').innerText = `رقم الواتساب: ${phone}`;
         document.getElementById('waDirectOpenBtn').href = `https://api.whatsapp.com/send?phone=${phone}`;
         document.getElementById('whatsappActionModal').style.display = 'flex';
     }
-
     function closeWhatsappActionModal() {
         document.getElementById('whatsappActionModal').style.display = 'none';
         currentSelectedWhatsappPhone = '';
     }
-
     function copyPhoneToClipboard() {
         if (!currentSelectedWhatsappPhone) return;
         navigator.clipboard.writeText(currentSelectedWhatsappPhone).then(() => {
@@ -885,14 +868,11 @@
             alert("❌ تعذر النسخ تلقائياً، الرقم هو: " + currentSelectedWhatsappPhone);
         });
     }
-
     function openAdminPanelModal(){if(currentEmail!=='msaftwtn@gmail.com')return alert('⚠️ غير مسموح.');document.getElementById('adminPanelModal').style.display='flex';loadAdminData();}
     function closeAdminPanelModal(){document.getElementById('adminPanelModal').style.display='none';}
     function switchAdminTab(tab){
         document.getElementById('admTab1').className="shop-tab-btn "+(tab==='withdrawals'?"active-gold":"");
-        document.getElementById('admTab2').className="shop-tab-btn "+(tab==='agents'?"active-gold":"");
         document.getElementById('adminWithdrawalsArea').style.display=tab==='withdrawals'?'block':'none';
-        document.getElementById('adminAgentsArea').style.display=tab==='agents'?'block':'none';
     }
     function loadAdminData(){
         rtdb.ref('admin_withdrawals').on('value',snap=>{
@@ -900,33 +880,8 @@
             snap.forEach(item=>{let d=item.val();h+=`<div style="background:rgba(255,255,255,0.03);padding:8px;border-radius:8px;margin-bottom:6px"><b>المستخدم:</b> ${d.userName} (${d.userId})<br><b>المبلغ:</b> ${d.amount}$ | <b>زين كاش:</b> ${d.account}<br><button onclick="adminDeleteRef('admin_withdrawals','${item.key}')" style="background:#ef4444;color:#fff;border:none;padding:3px 8px;border-radius:4px;margin-top:4px;cursor:pointer">حذف/تم التحويل 🗑️</button></div>`;});
             a.innerHTML=h;
         });
-        rtdb.ref('agent_requests').on('value',reqSnap=>{
-            rtdb.ref('users').on('value',()=>{
-                let area=document.getElementById('adminAgentsArea'),h=`<h4 style="color:#f59e0b;font-size:12px;margin:0 0 6px 0">📝 طلبات الوكلاء الجديدة:</h4>`;
-                if(!reqSnap.exists()){h+=`<div style="color:#94a3b8">لا توجد طلبات جديدة.</div>`;}
-                else{
-                    reqSnap.forEach(item=>{
-                        let d=item.val();
-                        h+=`<div style="background:rgba(255,255,255,0.03);padding:8px;border-radius:8px;margin-bottom:6px"><b>المتقدم:</b> ${d.userName} (ID: ${d.userId})<br><b>رقم العملية:</b> ${d.operationNum} | <b>واتساب:</b> ${d.whatsapp}<br><div style="display:flex;gap:4px;margin-top:6px"><button onclick="openAgentDocsModal('${d.userName}','${d.userKey}','${item.key}','${d.whatsapp}','${d.residenceFrontImg}','${d.residenceBackImg}','${d.nationalFrontImg}','${d.nationalBackImg}')" style="background:#0ea5e9;color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:10px">المستمسكات 📄</button><button onclick="approveAgent('${d.userKey}','${item.key}','${d.whatsapp}')" style="background:#10b981;color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:10px">قبول ⭐</button><button onclick="adminDeleteRef('agent_requests','${item.key}')" style="background:#ef4444;color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:10px">رفض ❌</button></div></div>`;
-                    });
-                }
-                area.innerHTML=h;
-            });
-        });
     }
-    let curReqKey='',curUsrKey='',curWh='';
-    function openAgentDocsModal(name,uKey,rKey,wh,rf,rb,nf,nb){
-        curReqKey=rKey;curUsrKey=uKey;curWh=wh;
-        document.getElementById('docApplicantInfo').innerText=`المتقدم: ${name}`;
-        document.getElementById('docResFront').src=rf;document.getElementById('docResBack').src=rb;
-        document.getElementById('docNatFront').src=nf;document.getElementById('docNatBack').src=nb;
-        document.getElementById('modalApproveAgentBtn').onclick=()=>{approveAgent(curUsrKey,curReqKey,curWh);closeAgentDocsModal();};
-        document.getElementById('agentDocsModal').style.display='flex';
-    }
-    function closeAgentDocsModal(){document.getElementById('agentDocsModal').style.display='none';curReqKey='';curUsrKey='';curWh='';}
-    function rejectAgentFromModal(){if(curReqKey){adminDeleteRef('agent_requests',curReqKey);closeAgentDocsModal();}}
     function adminDeleteRef(path,key){rtdb.ref(`${path}/${key}`).remove().then(()=>alert("✅ تم الحذف بنجاح."));}
-    function approveAgent(uKey,rKey,wh){rtdb.ref(`users/${uKey}`).update({isAgent:true,whatsapp:wh||''}).then(()=>{rtdb.ref(`agent_requests/${rKey}`).remove().then(()=>alert("🌟 تم منح لقب الوكيل بنجاح!"));});}
     function openIsolatedPublicRooms(){navigateTo('isolatedChatScreen');loadIsolatedRoomsSafe();}
     function exitIsolatedChat(){exitIsolatedActiveRoom();navigateTo('mainScreen');}
     function loadIsolatedRoomsSafe(){
