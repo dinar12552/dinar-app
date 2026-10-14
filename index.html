@@ -43,7 +43,7 @@
         .power-btn.green-pulse{background:#10b981;color:#fff}
         .assets-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
         .asset-box{background:rgba(30,41,59,0.7);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:10px;display:flex;align-items:center;justify-content:space-between}
-        .grid-buttons-custom{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+        .grid-buttons-custom{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
         .grid-btn-item{background:rgba(30,41,59,0.75);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:10px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;text-align:center;min-height:80px;box-shadow:0 6px 15px rgba(0,0,0,0.3);position:relative}
         .grid-btn-item span{font-size:10px;color:#fff;font-weight:bold;margin-top:4px}
         .grid-btn-item .icon-circle{font-size:20px}
@@ -140,7 +140,6 @@
     </div>
 
     <div id="mainScreen" class="screen-page">
-        <div style="text-align:center"><button id="adminPanelMainBtn" class="admin-badge" onclick="openAdminPanelModal()">👑 لوحة تحكم الإدارة الخاصة</button></div>
         <div id="agentChargingCard" class="card" style="display:none;border:1px solid #38bdf8">
             <h4 style="margin:0 0 4px 0;color:#38bdf8;font-size:13px">⚡ حقيبة الوكيل: شحن نقاط المستخدمين</h4>
             <div style="font-size:11px;color:#f59e0b;margin-bottom:8px;font-weight:bold">رصيد حقيبتك الحاضر: <span id="agentBagBalance">0</span> نقطة</div>
@@ -195,34 +194,16 @@
             </div>
         </div>
         <div class="grid-buttons-custom">
-            <div class="grid-btn-item" onclick="openGuessNumberGameModal()"><div class="icon-circle">🎯</div><span>حزر الرقم</span><div class="mini-arrow">⌄</div></div>
             <div class="grid-btn-item" onclick="openWithdrawModal()"><div class="icon-circle">💸</div><span>سحب الأرباح</span><div class="mini-arrow">⌄</div></div>
-            <div class="grid-btn-item" onclick="navigateTo('leaderboardScreen')"><div class="icon-circle">🏆</div><span>التصنيف الأسبوعي</span><div class="mini-arrow">⌄</div></div>
             <div class="grid-btn-item" onclick="navigateTo('agentsScreen')"><div class="icon-circle">👔</div><span>وكلاء دينار</span><div class="mini-arrow">⌄</div></div>
+            <div class="grid-btn-item" onclick="navigateTo('shopScreen')"><div class="icon-circle">🛒</div><span>المتجر</span><div class="mini-arrow">⌄</div></div>
         </div>
         <div class="bottom-nav-bar">
             <button class="bottom-nav-item active" onclick="navigateTo('mainScreen')"><span>🏠</span><div>الرئيسية</div></button>
             <button class="bottom-nav-item" onclick="openIsolatedPublicRooms()"><span>💬</span><div>غرف الدردشة</div></button>
             <div class="bottom-nav-crown" onclick="navigateTo('wheelScreen')" title="عجلة الحظ">👑</div>
-            <button class="bottom-nav-item" onclick="navigateTo('friendsScreen')"><span>👥</span><div>الأصدقاء</div></button>
+            <button id="adminPanelNavBtn" class="bottom-nav-item" onclick="openAdminPanelModal()" style="display:none"><span>👑</span><div>الإدارة</div></button>
             <button class="bottom-nav-item" onclick="navigateTo('shopScreen')"><span>🛒</span><div>المتجر</div></button>
-        </div>
-    </div>
-
-    <div id="leaderboardScreen" class="screen-page">
-        <div class="top-nav">
-            <h3 style="margin:0;color:#f59e0b;font-size:15px">🏆 التصنيف الأسبوعي (لوحة الشرف)</h3>
-            <button class="nav-btn back" onclick="navigateTo('mainScreen')">⬅️ الرئيسية</button>
-        </div>
-        <div class="card" style="text-align:right;background:rgba(30,41,59,0.7);border:1px solid rgba(245,158,11,0.4)">
-            <div class="shop-tabs" style="margin-bottom:10px">
-                <button class="shop-tab-btn active-gold" id="lbTab1" onclick="switchLeaderboardTab('gifts')">🎁 الشحن والهدايا</button>
-                <button class="shop-tab-btn" id="lbTab2" onclick="switchLeaderboardTab('agents')">👔 نشاط الوكلاء</button>
-                <button class="shop-tab-btn" id="lbTab3" onclick="switchLeaderboardTab('wheel')">🎡 رابحي العجلة</button>
-            </div>
-            <div id="lbContentGifts" class="lb-pane-content"><div id="leaderboardGiftsList" style="font-size:11px;color:#cbd5e1">جاري التحميل...</div></div>
-            <div id="lbContentAgents" class="lb-pane-content" style="display:none"><div id="leaderboardAgentsList" style="font-size:11px;color:#cbd5e1">جاري التحميل...</div></div>
-            <div id="lbContentWheel" class="lb-pane-content" style="display:none"><div id="leaderboardWheelList" style="font-size:11px;color:#cbd5e1">جاري التحميل...</div></div>
         </div>
     </div>
 
@@ -310,34 +291,6 @@
         </div>
     </div>
 
-    <div id="friendsScreen" class="screen-page">
-        <div class="top-nav">
-            <h3 style="margin:0;color:#38bdf8;font-size:15px">👥 قائمة الأصدقاء والبحث</h3>
-            <button class="nav-btn back" onclick="navigateTo('mainScreen')">⬅️ الرئيسية</button>
-        </div>
-        <div class="card">
-            <h4 style="margin:0 0 6px 0;color:#38bdf8;font-size:12px">🔍 البحث وإضافة الأصدقاء</h4>
-            <input type="text" id="searchIdInput" class="input-box" placeholder="أدخل ID الصديق (أرقام فقط)">
-            <button class="action-btn btn-blue" onclick="sendFriendRequest()">إرسال طلب صداقة 📨</button>
-            <div id="searchResultArea" style="margin-top:4px;font-size:11px;text-align:center"></div>
-        </div>
-        <div class="card">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-                <h4 style="margin:0;color:#10b981;font-size:12px">💬 طلبات الصداقة الواردة</h4>
-                <button onclick="clearRequestsList()" style="background:rgba(239,68,68,0.2);border:1px solid #ef4444;color:#ef4444;font-size:10px;padding:2px 8px;border-radius:6px;cursor:pointer" title="إفراغ طلبات الصداقة">🗑️ تنظيف القائمة</button>
-            </div>
-            <div id="friendRequestsContainer" style="font-size:11px;color:#94a3b8;margin-bottom:10px;text-align:center">لا توجد طلبات صداقة</div>
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;border-top:1px solid rgba(255,255,255,0.1);padding-top:6px">
-                <h4 style="margin:0;color:#38bdf8;font-size:12px">👥 قائمة الأصدقاء</h4>
-                <div style="display:flex;gap:4px">
-                    <button onclick="loadFriendSystem()" style="background:rgba(14,165,233,0.2);border:1px solid #0ea5e9;color:#38bdf8;font-size:10px;padding:2px 6px;border-radius:6px;cursor:pointer" title="تحديث وإظهار الأصدقاء">🔄 تحديث</button>
-                    <button onclick="clearFriendsDisplayList()" style="background:rgba(239,68,68,0.2);border:1px solid #ef4444;color:#ef4444;font-size:10px;padding:2px 6px;border-radius:6px;cursor:pointer" title="إخفاء من القائمة">🗑️ تنظيف</button>
-                </div>
-            </div>
-            <div id="friendsListContainer" style="font-size:11px;color:#94a3b8;text-align:center">اختر صديقاً لبدء المحادثة</div>
-        </div>
-    </div>
-
     <div id="notificationsScreen" class="screen-page">
         <div class="top-nav">
             <h3 style="margin:0;color:#f59e0b;font-size:15px">🔔 صندوق الإشعارات</h3>
@@ -392,26 +345,6 @@
     </div>
 </div>
 
-<div id="guessNumberModal" class="modal">
-    <div class="modal-content" style="text-align:right;max-width:380px">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-            <h4 style="margin:0;color:#38bdf8;font-size:15px">🎯 لعبة حزر الرقم</h4>
-            <button style="background:none;border:none;color:#ef4444;font-size:18px;cursor:pointer" onclick="closeGuessNumberGameModal()">✖</button>
-        </div>
-        <div style="background:rgba(14,165,233,0.1);border:1px solid rgba(14,165,233,0.3);padding:8px;border-radius:8px;margin-bottom:12px;font-size:11px;color:#38bdf8;text-align:center">✨ أول محاولة مجانية يومياً!<br>بعدها تكلف كل محاولة <b>20 جوهرة 💎</b>.</div>
-        <div style="font-size:12px;color:#fff;margin-bottom:10px;text-align:center">اختر رقماً من 0 إلى 5:</div>
-        <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:15px">
-            <button onclick="submitUserGuess(0)" class="action-btn btn-blue" style="padding:10px 0;font-size:13px">0</button>
-            <button onclick="submitUserGuess(1)" class="action-btn btn-blue" style="padding:10px 0;font-size:13px">1</button>
-            <button onclick="submitUserGuess(2)" class="action-btn btn-blue" style="padding:10px 0;font-size:13px">2</button>
-            <button onclick="submitUserGuess(3)" class="action-btn btn-blue" style="padding:10px 0;font-size:13px">3</button>
-            <button onclick="submitUserGuess(4)" class="action-btn btn-blue" style="padding:10px 0;font-size:13px">4</button>
-            <button onclick="submitUserGuess(5)" class="action-btn btn-blue" style="padding:10px 0;font-size:13px">5</button>
-        </div>
-        <div id="guessGameMsg" style="font-size:12px;text-align:center;font-weight:bold;min-height:25px;color:#f59e0b"></div>
-    </div>
-</div>
-
 <div id="adminPanelModal" class="modal">
     <div class="modal-content" style="text-align:right;max-width:400px">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
@@ -426,6 +359,12 @@
                 <button class="action-btn btn-gold" style="padding:8px;font-size:11px" onclick="adminChargeDirectUser()">شحن النقاط 🪙</button>
                 <button class="action-btn btn-blue" style="padding:8px;font-size:11px" onclick="adminChargeAgentBag()">شحن حقيبة الوكيل 🎒</button>
             </div>
+        </div>
+        <!-- ميزة توقيف الحساب مؤقتاً الجديدة -->
+        <div style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);padding:10px;border-radius:10px;margin-bottom:10px">
+            <h4 style="margin:0 0 6px 0;color:#ef4444;font-size:12px">🚫 إيقاف / تجميد الحساب مؤقتاً</h4>
+            <input type="text" id="adminSuspendIdInput" class="input-box" placeholder="أدخل ID المستخدم المراد إيقافه" style="margin-bottom:6px">
+            <button class="action-btn" style="background:#ef4444;color:#fff;padding:8px;font-size:11px" onclick="adminToggleUserSuspension()">تجميد / إلغاء تجميد الحساب ⚠️</button>
         </div>
         <div style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);padding:10px;border-radius:10px;margin-bottom:10px">
             <h4 style="margin:0 0 6px 0;color:#f59e0b;font-size:12px">⚙️ إعدادات التحكم العامة للإدارة</h4>
@@ -504,7 +443,6 @@
             <div id="visitedReceivedGiftsGrid" class="profile-gifts-grid"><div style="grid-column:span 3;text-align:center;color:#94a3b8;font-size:10px;padding:6px">لا توجد هدايا مستلمة</div></div>
         </div>
         <div style="margin-top:8px;display:flex;gap:6px;justify-content:center">
-            <button id="visitedAddFriendBtn" class="action-btn btn-blue" style="padding:6px;font-size:11px;display:none" onclick="sendFriendRequestFromVisitedProfile()">إضافة صديق ➕</button>
             <button id="roomOwnerBanBtn" class="action-btn" style="background:#ef4444;color:#fff;padding:6px;font-size:11px;display:none" onclick="banUserFromRoom()">حظر من الغرفة 🚫</button>
         </div>
         <hr style="border-color:rgba(255,255,255,0.1);margin:10px 0">
@@ -576,26 +514,6 @@
     </div>
 </div>
 
-<div id="chatModal" class="modal">
-    <div class="modal-content" style="max-width:380px">
-        <div class="modal-header" style="display:flex;justify-content:space-between;align-items:center">
-            <h3 id="chatTitle" style="color:#10b981;margin:0;font-size:13px;cursor:pointer" onclick="openVisitedUserProfileFromChat()" title="اضغط لزيارة الملف الشخصي">الدردشة 👤</h3>
-            <div style="display:flex;gap:6px;align-items:center">
-                <button onclick="deleteFriendConnection()" style="background:rgba(245,158,11,0.2);border:1px solid #f59e0b;color:#f59e0b;font-size:10px;padding:3px 6px;border-radius:6px;cursor:pointer" title="حذف الصديق">❌ حذف الصديق</button>
-                <button onclick="blockCurrentFriend()" style="background:rgba(239,68,68,0.2);border:1px solid #ef4444;color:#ef4444;font-size:10px;padding:3px 6px;border-radius:6px;cursor:pointer" title="حظر المستخدم">🚫 حظر</button>
-                <button style="background:none;border:none;color:#ef4444;font-size:18px;cursor:pointer" onclick="closeChatModal()">✖</button>
-            </div>
-        </div>
-        <div id="chatMessagesArea" style="height:250px;overflow-y:auto;background:rgba(0,0,0,0.3);padding:8px;border-radius:8px;margin:8px 0;font-size:11px"></div>
-        <div style="display:flex;gap:4px;align-items:center">
-            <input type="file" id="chatImageInput" accept="image/*" style="display:none" onchange="sendChatImage(event)">
-            <button class="gift-box-btn" onclick="document.getElementById('chatImageInput').click()" title="إرسال صورة">📷</button>
-            <input type="text" id="chatInputMsg" class="input-box" placeholder="اكتب رسالة..." style="margin:0;flex:1">
-            <button class="action-btn btn-blue" style="width:60px;padding:0;height:38px" onclick="sendChatMessage()">إرسال</button>
-        </div>
-    </div>
-</div>
-
 <div id="withdrawModal" class="modal">
     <div class="modal-content" style="text-align:right">
         <div class="modal-header" style="display:flex;justify-content:space-between;margin-bottom:8px">
@@ -611,7 +529,6 @@
     </div>
 </div>
 
-<!-- نافذة خيارات الواتساب المحدثة (نقرة واحدة) -->
 <div id="whatsappActionModal" class="modal">
     <div class="modal-content" style="text-align:center;max-width:320px">
         <h4 style="color:#25d366;margin:0 0 8px 0;font-size:15px">💬 تواصل مع الوكيل عبر الواتساب</h4>
@@ -627,8 +544,8 @@
 <script>
     let currentEmail='',currentUserKey='',rtdb=null;
     let userData={points:0,gems:0,agentBag:0,lastSpinTime:0,activeCounter:'لا يوجد',activeCounterVal:0,customId:'',name:'',avatar:'',bio:'',hasCreatedRoom:false,createdRoomId:'',lastWithdrawTime:0,isAgent:false,isBanned:false,whatsapp:''};
-    let base64Image='',activeChatFriendKey='',activeChatFriendName='',visitedProfileTargetKey='',timerInterval=null;
-    let isolatedActiveRoomId='',currentRoomOccupantsCount=0,activeRoomCreatorKey='',globalAppSettings={withdrawLocked:false,dailyCounterLocked:false};
+    let base64Image='',visitedProfileTargetKey='',timerInterval=null;
+    let isolatedActiveRoomId='',activeRoomCreatorKey='',globalAppSettings={withdrawLocked:false,dailyCounterLocked:false};
     let newRoomAvatarBase64='',newRoomBgBase64='',agentResidenceFrontBase64='',agentResidenceBackBase64='',agentNationalFrontBase64='',agentNationalBackBase64='';
     let currentReplyTarget=null,pendingSelectedGift=null,selectedTargetUserKey='all',selectedTargetUserName='الكل (عام)',totalWheelDegrees=0;
     let currentSelectedWhatsappPhone = '';
@@ -650,10 +567,8 @@
     function navigateTo(screenId){
         document.querySelectorAll('.screen-page').forEach(p=>p.classList.remove('active'));
         const t=document.getElementById(screenId);if(t)t.classList.add('active');
-        if(screenId==='friendsScreen')loadFriendSystem();
         if(screenId==='agentsScreen')loadApprovedAgentsList();
         if(screenId==='profileScreen'){loadProfileReceivedGifts(currentUserKey,'profileReceivedGiftsGrid');let b=document.getElementById('profileBioInput');if(b)document.getElementById('bioCounter').innerText=`${b.value.length} / 60`;}
-        if(screenId==='leaderboardScreen')loadLeaderboardData();
     }
     function openNotificationsPage(){document.querySelectorAll('.notification-badge').forEach(b=>b.style.display='none');navigateTo('notificationsScreen');}
     function switchAuthTab(type){
@@ -671,7 +586,7 @@
             btn.disabled=false;btn.innerText="دخول الحساب 🚀";
             if(snap.exists()&&snap.val().password===pass){
                 let uDat=snap.val();
-                if(uDat.isBanned&&email!=='msaftwtn@gmail.com')return alert("🚫 تم حظر هذا الحساب نهائياً!");
+                if(uDat.isBanned&&email!=='msaftwtn@gmail.com')return alert("🚫 تم إيقاف أو حظر هذا الحساب مؤقتاً/نهائياً من قبل الإدارة!");
                 currentEmail=email;try{localStorage.setItem('dinarUserKey',currentUserKey);}catch(e){}
                 if(email==='msaftwtn@gmail.com'&&uDat.customId!=='1')rtdb.ref('users/'+currentUserKey).update({customId:'1'});
                 if(email!=='msaftwtn@gmail.com'){
@@ -715,15 +630,15 @@
         rtdb.ref('users/'+currentUserKey).on('value',snap=>{
             if(snap.exists()){
                 userData=snap.val();
-                if(userData.isBanned&&currentEmail!=='msaftwtn@gmail.com'){alert("🚫 تم حظر حسابك نهائياً!");handleLogout();return;}
+                if(userData.isBanned&&currentEmail!=='msaftwtn@gmail.com'){alert("🚫 تم إيقاف حسابك مؤقتاً من قبل الإدارة!");handleLogout();return;}
                 currentEmail=userData.email||'';
                 if(currentEmail==='msaftwtn@gmail.com'&&userData.customId!=='1'){userData.customId='1';rtdb.ref('users/'+currentUserKey).update({customId:'1'});}
                 if(!userData.customId||!/^\d+$/.test(userData.customId)){userData.customId=Math.floor(100000+Math.random()*900000).toString();rtdb.ref('users/'+currentUserKey).update({customId:userData.customId});}
-                updateUI();checkActiveTimer();checkAndRunAutomatedFridayDistribution();
+                updateUI();checkActiveTimer();
             }
         });
         rtdb.ref('app_settings').on('value',snap=>{globalAppSettings=snap.exists()?snap.val():{withdrawLocked:false,dailyCounterLocked:false};});
-        loadNotifications();loadFriendSystem();
+        loadNotifications();
     }
     function updateUI(){
         document.getElementById('userPoints').innerText=userData.points||0;
@@ -741,7 +656,7 @@
         document.getElementById('activeCounterInfo').innerText=cVal>0?`${cVal.toLocaleString()} نقطة يومياً`:(userData.activeCounter||'لا يوجد');
         let agentBadge=document.getElementById('agentStatusBadge');if(agentBadge)agentBadge.style.display=userData.isAgent?'block':'none';
         let agentCard=document.getElementById('agentChargingCard');if(agentCard)agentCard.style.display=userData.isAgent?'block':'none';
-        let adminBtn=document.getElementById('adminPanelMainBtn');if(adminBtn)adminBtn.style.display=currentEmail==='msaftwtn@gmail.com'?'inline-block':'none';
+        let adminNavBtn=document.getElementById('adminPanelNavBtn');if(adminNavBtn)adminNavBtn.style.display=currentEmail==='msaftwtn@gmail.com'?'flex':'none';
     }
     function saveToDB(){
         if(!currentUserKey||!rtdb)return Promise.resolve();
@@ -761,8 +676,10 @@
         if(globalAppSettings.dailyCounterLocked&&currentEmail!=='msaftwtn@gmail.com')return alert('⚠️ عذراً، العداد اليومي مقفل حالياً.');
         let now=new Date().getTime();if(now-(userData.lastSpinTime||0)<24*60*60*1000)return alert('⚠️ العداد مفعل مسبقاً! انتظر حتى ينتهي الوقت.');
         let rPts=userData.activeCounterVal||100;if(rPts<=0)rPts=100;
-        userData.points=(userData.points||0)+rPts;userData.lastSpinTime=now;
-        saveToDB().then(()=>{updateUI();startTimerCountdown();alert(`🎉 حصلت على أرباحك (${rPts.toLocaleString()} نقطة) وبدأت الساعة بالعد التنازلي.`);});
+        userData.points=(userData.points||0)+rPts;
+        userData.gems=(userData.gems||0)+500; // الإضافة الجديدة: مكافأة 500 جوهرة مع العداد اليومي
+        userData.lastSpinTime=now;
+        saveToDB().then(()=>{updateUI();startTimerCountdown();alert(`🎉 حصلت على أرباحك (${rPts.toLocaleString()} نقطة) + 500 جوهرة 💎 هدية تفعيل العداد وبدأت الساعة بالعد التنازلي.`);});
     }
     function convertGemsToPoints(){
         if((userData.gems||0)<10000)return alert(`⚠️ رصيدك (${userData.gems}) لا يكفي. يلزم 10.000 جوهرة لتبديلها بـ 1.000 نقطة!`);
@@ -803,58 +720,6 @@
             saveToDB().then(()=>{msg.innerText=`🎉 مبروك! حصلت على ${prize} نقطة بنجاح!`;isSpinning=false;spinBtn.disabled=false;updateUI();});
         },5000);
     }
-    function switchLeaderboardTab(tab){
-        document.getElementById('lbTab1').className="shop-tab-btn "+(tab==='gifts'?"active-gold":"");
-        document.getElementById('lbTab2').className="shop-tab-btn "+(tab==='agents'?"active-gold":"");
-        document.getElementById('lbTab3').className="shop-tab-btn "+(tab==='wheel'?"active-gold":"");
-        document.getElementById('lbContentGifts').style.display=tab==='gifts'?'block':'none';
-        document.getElementById('lbContentAgents').style.display=tab==='agents'?'block':'none';
-        document.getElementById('lbContentWheel').style.display=tab==='wheel'?'block':'none';
-    }
-    function loadLeaderboardData(){
-        rtdb.ref('users').once('value').then(snap=>{
-            if(!snap.exists())return;let users=[];
-            snap.forEach(u=>{let d=u.val();users.push({key:u.key,name:d.name||'مستخدم',customId:d.customId||'---',avatar:d.avatar||'',gifts:d.weeklyGiftsSent||0,agents:d.weeklyAgentPoints||0,wheel:d.weeklyWheelPoints||0});});
-            renderLeaderboardList('leaderboardGiftsList',[...users].sort((a,b)=>b.gifts-a.gifts).slice(0,10),'gifts','نقطة مصروفة');
-            renderLeaderboardList('leaderboardAgentsList',[...users].sort((a,b)=>b.agents-a.agents).slice(0,10),'agents','نقطة مشحونة');
-            renderLeaderboardList('leaderboardWheelList',[...users].sort((a,b)=>b.wheel-a.wheel).slice(0,10),'wheel','نقطة مربوحة');
-        });
-    }
-    function renderLeaderboardList(id,list,key,unit){
-        let c=document.getElementById(id);if(!c)return;
-        if(list.length===0||list[0][key]===0){c.innerHTML="<div style='text-align:center;padding:15px;color:#94a3b8'>لا توجد بيانات مسجلة.</div>";return;}
-        let html='';list.forEach((it,i)=>{
-            let r=i+1,cr=r===1?'👑 ':(r===2?'🥈 ':(r===3?'🥉 ':''));
-            html+=`<div style="display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.03);padding:8px;border-radius:10px;margin-bottom:6px;border:1px solid rgba(255,255,255,0.05)">
-                <div style="display:flex;align-items:center;gap:8px">
-                    <span style="font-weight:900;font-size:12px;color:#f59e0b;width:22px;text-align:center">#${r}</span>
-                    <img src="${it.avatar||'https://via.placeholder.com/38'}" style="width:38px;height:38px;border-radius:50%;object-fit:cover" alt="صورة">
-                    <div><b style="color:#fff;font-size:12px;cursor:pointer" onclick="openVisitedUserProfileByKeyDirect('${it.key}')">${cr}${it.name}</b><div style="font-size:10px;color:#94a3b8">ID: ${it.customId}</div></div>
-                </div>
-                <div style="text-align:left"><span style="color:#34d399;font-weight:bold;font-size:12px">${it[key]}</span><div style="font-size:9px;color:#94a3b8">${unit}</div></div>
-            </div>`;
-        });
-        c.innerHTML=html;
-    }
-    function checkAndRunAutomatedFridayDistribution(){
-        let now=new Date();if(now.getDay()===5&&now.getHours()===6&&currentEmail==='msaftwtn@gmail.com'){
-            let l=localStorage.getItem('dinarLastFridayReset'),t=now.toDateString();
-            if(l!==t){localStorage.setItem('dinarLastFridayReset',t);executeAutomatedWeeklyRewards();}
-        }
-    }
-    function executeAutomatedWeeklyRewards(){
-        rtdb.ref('users').once('value').then(snap=>{
-            if(!snap.exists())return;let users=[];snap.forEach(u=>{users.push({key:u.key,...u.val()});});
-            [{key:'weeklyGiftsSent',name:'الهدايا'},{key:'weeklyAgentPoints',name:'الوكلاء'},{key:'weeklyWheelPoints',name:'العجلة'}].forEach(cat=>{
-                let s=[...users].sort((a,b)=>(b[cat.key]||0)-(a[cat.key]||0));
-                if(s[0]&&s[0][cat.key]>0){rtdb.ref(`users/${s[0].key}`).update({gems:(s[0].gems||0)+1000});rtdb.ref(`notifications/${s[0].key}`).push({text:`🎉 المركز الأول في (${cat.name})! جائزة 1000 جوهرة`,timestamp:Date.now()});}
-                if(s[1]&&s[1][cat.key]>0){rtdb.ref(`users/${s[1].key}`).update({gems:(s[1].gems||0)+500});rtdb.ref(`notifications/${s[1].key}`).push({text:`🎉 المركز الثاني في (${cat.name})! جائزة 500 جوهرة`,timestamp:Date.now()});}
-                if(s[2]&&s[2][cat.key]>0){rtdb.ref(`users/${s[2].key}`).update({gems:(s[2].gems||0)+250});rtdb.ref(`notifications/${s[2].key}`).push({text:`🎉 المركز الثالث في (${cat.name})! جائزة 250 جوهرة`,timestamp:Date.now()});}
-            });
-            let up={};users.forEach(u=>{up[`users/${u.key}/weeklyGiftsSent`]=0;up[`users/${u.key}/weeklyAgentPoints`]=0;up[`users/${u.key}/weeklyWheelPoints`]=0;});
-            rtdb.ref().update(up);
-        });
-    }
     function loadNotifications(){
         if(!currentUserKey||!rtdb)return;
         rtdb.ref(`notifications/${currentUserKey}`).on('value',snap=>{
@@ -863,130 +728,8 @@
             if(b)b.style.display='block';let html='';snap.forEach(n=>{html+=`<div style="border-bottom:1px solid rgba(255,255,255,0.08);padding:6px 0">🔔 ${n.val().text}</div>`;});
             c.innerHTML=html;
         });
-        rtdb.ref(`friend_requests/${currentUserKey}`).on('value',snap=>{
-            let c=document.getElementById('notificationsContainer'),b=document.getElementById('mainNotificationBadge');
-            if(snap.exists()){
-                if(b)b.style.display='block';let h=c.innerHTML==="لا توجد إشعارات جديدة"?"":c.innerHTML;
-                snap.forEach(req=>{let d=req.val();h+=`<div style="border-bottom:1px solid rgba(255,255,255,0.08);padding:6px 0;color:#38bdf8">👥 طلب صداقة من <b>${d.name}</b> (${d.customId}).</div>`;});
-                c.innerHTML=h;
-            }
-        });
     }
     function clearAllNotifications(){if(!currentUserKey||!rtdb||!confirm("⚠️ حذف الإشعارات؟"))return;rtdb.ref(`notifications/${currentUserKey}`).remove().then(()=>{document.getElementById('notificationsContainer').innerHTML="لا توجد إشعارات جديدة";document.getElementById('mainNotificationBadge').style.display='none';alert("🗑️ تم الحذف.");});}
-    function sendFriendRequest(){
-        let sId=document.getElementById('searchIdInput').value.trim(),res=document.getElementById('searchResultArea');
-        if(!sId)return res.innerText="⚠️ أدخل الـ ID";res.innerText="جاري الإرسال...";
-        rtdb.ref('users').once('value').then(snap=>{
-            let tk='';snap.forEach(c=>{if(c.val().customId===sId)tk=c.key;});
-            if(!tk)return res.innerText="❌ لم يتم العثور على مستخدم";if(tk===currentUserKey)return res.innerText="⚠️ لا يمكنك إضافة نفسك!";
-            rtdb.ref(`friends/${currentUserKey}/${tk}`).once('value').then(fs=>{
-                if(fs.exists())return res.innerText="⚠️ مضاف مسبقاً!";
-                rtdb.ref(`friend_requests/${tk}/${currentUserKey}`).set({name:userData.name,customId:userData.customId,timestamp:Date.now()}).then(()=>{document.getElementById('searchIdInput').value='';res.innerText="✅ تم إرسال الطلب بنجاح!";});
-            });
-        });
-    }
-    function sendFriendRequestFromVisitedProfile(){
-        if(!visitedProfileTargetKey||visitedProfileTargetKey===currentUserKey)return alert("⚠️ خطأ!");
-        rtdb.ref(`friends/${currentUserKey}/${visitedProfileTargetKey}`).once('value').then(fs=>{
-            if(fs.exists())return alert("⚠️ مضاف مسبقاً!");
-            rtdb.ref(`friend_requests/${visitedProfileTargetKey}/${currentUserKey}`).set({name:userData.name,customId:userData.customId,timestamp:Date.now()}).then(()=>alert("✅ تم إرسال طلب الصداقة!"));
-        });
-    }
-    function loadFriendSystem(){
-        if(!currentUserKey||!rtdb)return;
-        rtdb.ref(`friend_requests/${currentUserKey}`).on('value',snap=>{
-            let c=document.getElementById('friendRequestsContainer');if(!c)return;
-            if(!snap.exists()){c.innerHTML="لا توجد طلبات صداقة";return;}let h='';
-            snap.forEach(req=>{let d=req.val(),sk=req.key;h+=`<div style="display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.03);padding:6px;border-radius:6px;margin-bottom:4px"><span><b>${d.name}</b> (${d.customId})</span><div style="display:flex;gap:4px"><button onclick="acceptFriend('${sk}','${d.name}','${d.customId}')" style="background:#10b981;color:#fff;border:none;padding:3px 8px;border-radius:4px;cursor:pointer">قبول</button><button onclick="rejectFriend('${sk}')" style="background:#ef4444;color:#fff;border:none;padding:3px 8px;border-radius:4px;cursor:pointer">رفض</button></div></div>`;});
-            c.innerHTML=h;
-        });
-        rtdb.ref(`friends/${currentUserKey}`).on('value',snap=>{
-            let c=document.getElementById('friendsListContainer');if(!c)return;
-            if(!snap.exists()){c.innerHTML="لا يوجد أصدقاء مضافون";return;}let h='';
-            snap.forEach(f=>{let d=f.val();h+=`<div style="display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.03);padding:6px;border-radius:6px;margin-bottom:4px"><span style="cursor:pointer" onclick="openVisitedUserProfileByKey('${f.key}')">🟢 <b>${d.name}</b></span><button onclick="openChatModal('${f.key}','${d.name}')" style="background:#0ea5e9;color:#fff;border:none;padding:3px 8px;border-radius:4px;cursor:pointer">محادثة 💬</button></div>`;});
-            c.innerHTML=h;
-        });
-    }
-    function acceptFriend(sk,sName,sId){
-        rtdb.ref(`friends/${currentUserKey}/${sk}`).set({name:sName,customId:sId});
-        rtdb.ref(`friends/${sk}/${currentUserKey}`).set({name:userData.name,customId:userData.customId});
-        rtdb.ref(`friend_requests/${currentUserKey}/${sk}`).remove().then(()=>alert('✅ أصدقاء الآن!'));
-    }
-    function rejectFriend(sk){rtdb.ref(`friend_requests/${currentUserKey}/${sk}`).remove();}
-    function clearRequestsList(){rtdb.ref(`friend_requests/${currentUserKey}`).remove().then(()=>{document.getElementById('friendRequestsContainer').innerHTML="لا توجد طلبات صداقة";alert('🗑️ تم التنظيف.');});}
-    function clearFriendsDisplayList(){let c=document.getElementById('friendsListContainer');if(c)c.innerHTML="لا يوجد أصدقاء معروضون";}
-    function openChatModal(fk,fName){
-        activeChatFriendKey=fk;activeChatFriendName=fName;
-        document.getElementById('chatTitle').innerText=`${fName} 👤 (زيارة الملف الشخصي)`;
-        document.getElementById('chatModal').style.display='flex';
-        let chatId=[currentUserKey,fk].sort().join('_');
-        rtdb.ref(`chats/${chatId}`).on('value',snap=>{
-            let a=document.getElementById('chatMessagesArea');if(!a)return;
-            if(!snap.exists()){a.innerHTML="ابدأ المحادثة...";return;}let h='';
-            snap.forEach(m=>{
-                let msg=m.val(),isMe=msg.sender===currentUserKey;
-                let cnt=msg.image?`<img src="${msg.image}" style="max-width:120px;border-radius:6px;display:block;margin-top:2px" alt="صورة">`:msg.text;
-                let del=`<button onclick="deletePrivateMessage('${chatId}','${m.key}')" style="background:none;border:none;color:#ef4444;font-size:10px;cursor:pointer;margin-right:4px">🗑️</button>`;
-                let bg=isMe?"background:#10b981;color:#fff":"background:#fff;color:#0f172a";
-                h+=`<div style="text-align:${isMe?'left':'right'};margin-bottom:5px"><span style="${bg};padding:5px 9px;border-radius:6px;display:inline-block;max-width:85%;word-break:break-word"><b>${msg.senderName}:</b> ${cnt} ${del}</span></div>`;
-            });
-            a.innerHTML=h;a.scrollTop=a.scrollHeight;
-        });
-    }
-    function deletePrivateMessage(chatId,mKey){rtdb.ref(`chats/${chatId}/${mKey}`).remove();}
-    function closeChatModal(){
-        if(activeChatFriendKey&&rtdb)rtdb.ref(`chats/${[currentUserKey,activeChatFriendKey].sort().join('_')}`).off();
-        activeChatFriendKey='';activeChatFriendName='';document.getElementById('chatModal').style.display='none';
-    }
-    function openVisitedUserProfileFromChat(){if(activeChatFriendKey){document.getElementById('chatModal').style.display='none';openVisitedUserProfileByKey(activeChatFriendKey,true);}}
-    function navigateBackFromProfile(){document.getElementById('userProfileModal').style.display='none';navigateTo('mainScreen');}
-    function openVisitedUserProfileByKey(targetKey){
-        if(!targetKey||!rtdb)return;visitedProfileTargetKey=targetKey;
-        rtdb.ref(`users/${targetKey}`).once('value').then(snap=>{
-            if(!snap.exists())return alert("❌ لم يتم العثور على المستخدم!");let u=snap.val();
-            document.getElementById('visitedUserName').innerText=u.name||'مستخدم';
-            document.getElementById('visitedUserCustomId').innerText=`ID: ${u.customId||'---'}`;
-            document.getElementById('visitedUserAvatar').src=u.avatar?u.avatar:'https://via.placeholder.com/85';
-            document.getElementById('visitedUserBio').innerText=u.bio?u.bio:'لا يوجد بايو حالياً.';
-            let vb=document.getElementById('visitedAgentBadge');vb.style.display=u.isAgent?'block':'none';
-            loadProfileReceivedGifts(targetKey,'visitedReceivedGiftsGrid');
-            let addB=document.getElementById('visitedAddFriendBtn'),roomA=document.getElementById('visitedUserRoomArea'),noRoomA=document.getElementById('visitedUserNoRoom'),banB=document.getElementById('roomOwnerBanBtn');
-            if(isolatedActiveRoomId&&currentUserKey===activeRoomCreatorKey&&targetKey!==currentUserKey)banB.style.display='inline-block';else banB.style.display='none';
-            rtdb.ref(`friends/${currentUserKey}/${targetKey}`).once('value').then(fs=>{addB.style.display=(fs.exists()||targetKey===currentUserKey)?'none':'inline-block';});
-            if(u.hasCreatedRoom&&u.createdRoomId){
-                rtdb.ref(`public_rooms/${u.createdRoomId}`).once('value').then(rs=>{
-                    if(rs.exists()){
-                        let ri=rs.val();document.getElementById('visitedRoomDetails').innerText=`اسم الغرفة: ${ri.name}`;
-                        document.getElementById('visitedRoomJoinBtn').onclick=()=>{closeUserProfileModal();openIsolatedPublicRooms();enterIsolatedRoom(ri.id,ri.creatorKey,ri.name);};
-                        roomA.style.display='block';noRoomA.style.display='none';
-                    }else{roomA.style.display='none';noRoomA.style.display='block';}
-                });
-            }else{roomA.style.display='none';noRoomA.style.display='block';}
-            document.getElementById('userProfileModal').style.display='flex';
-        });
-    }
-    function openVisitedUserProfileByKeyDirect(tk){openVisitedUserProfileByKey(tk);}
-    function closeUserProfileModal(){document.getElementById('userProfileModal').style.display='none';visitedProfileTargetKey='';}
-    function loadProfileReceivedGifts(userKey,containerId){
-        let gC=document.getElementById(containerId);if(!gC)return;
-        rtdb.ref(`profile_gifts/${userKey}`).on('value',snap=>{
-            if(!snap.exists()){gC.innerHTML=`<div style="grid-column:span 3;text-align:center;color:#94a3b8;font-size:10px;padding:10px">لا توجد هدايا مستلمة بعد</div>`;return;}
-            let h='';snap.forEach(g=>{let gd=g.val();h+=`<div class="profile-gift-mini-card" title="${gd.giftName}"><img src="${gd.giftIcon}" class="profile-gift-mini-img" alt="هدية"><span class="profile-gift-mini-count">x${gd.count}</span></div>`;});
-            gC.innerHTML=h;
-        });
-    }
-    function banUserFromRoom(){
-        if(!isolatedActiveRoomId||currentUserKey!==activeRoomCreatorKey||!visitedProfileTargetKey||!confirm("⚠️ حظر المستخدم من الغرفة ليوم كامل؟"))return;
-        rtdb.ref(`room_bans/${isolatedActiveRoomId}/${visitedProfileTargetKey}`).set({bannedUntil:Date.now()+(24*60*60*1000)}).then(()=>{closeUserProfileModal();alert("🚫 تم الحظر بنجاح.");});
-    }
-    function blockCurrentFriend(){if(!activeChatFriendKey||!confirm("⚠️ حظر المستخدم نهائياً؟"))return;rtdb.ref(`friends/${currentUserKey}/${activeChatFriendKey}`).remove();rtdb.ref(`friends/${activeChatFriendKey}/${currentUserKey}`).remove();closeChatModal();loadFriendSystem();alert("🚫 تم الحظر.");}
-    function deleteFriendConnection(){if(!activeChatFriendKey||!confirm("⚠️ حذف الصديق؟"))return;rtdb.ref(`friends/${currentUserKey}/${activeChatFriendKey}`).remove();rtdb.ref(`friends/${activeChatFriendKey}/${currentUserKey}`).remove();closeChatModal();loadFriendSystem();alert("❌ تم الحذف.");}
-    function sendChatMessage(){let txt=document.getElementById('chatInputMsg').value.trim();if(!txt||!activeChatFriendKey)return;rtdb.ref(`chats/${[currentUserKey,activeChatFriendKey].sort().join('_')}`).push({sender:currentUserKey,senderName:userData.name,text:txt,timestamp:Date.now()});document.getElementById('chatInputMsg').value='';}
-    function sendChatImage(e){
-        const f=e.target.files[0];if(!f||!activeChatFriendKey)return;const rd=new FileReader();
-        rd.onload=ce=>{let img=ce.target.result,chatId=[currentUserKey,activeChatFriendKey].sort().join('_');rtdb.ref(`chats/${chatId}`).push({sender:currentUserKey,senderName:userData.name,image:img,timestamp:Date.now()});};
-        rd.readAsDataURL(f);e.target.value='';
-    }
     function triggerImageUpload(){document.getElementById('hiddenImageInput').click();}
     function previewImage(e){const f=e.target.files[0];if(f){const rd=new FileReader();rd.onload=ce=>{base64Image=ce.target.result;document.getElementById('avatarPreview').src=base64Image;};rd.readAsDataURL(f);}}
     function validateBioLength(i){if(i.value.length>60)i.value=i.value.substring(0,60);document.getElementById('bioCounter').innerText=`${i.value.length} / 60`;}
@@ -994,19 +737,6 @@
         let n=document.getElementById('profileNameInput').value.trim(),b=document.getElementById('profileBioInput').value.trim();
         if(n)userData.name=n;if(b!==undefined)userData.bio=b.substring(0,60);if(base64Image)userData.avatar=base64Image;
         saveToDB().then(()=>{base64Image='';updateUI();alert('✅ تم حفظ التعديلات بنجاح!');}).catch(()=>alert('❌ حدث خطأ، حاول مجدداً.'));
-    }
-    function openGuessNumberGameModal(){document.getElementById('guessGameMsg').innerText="";document.getElementById('guessNumberModal').style.display='flex';}
-    function closeGuessNumberGameModal(){document.getElementById('guessNumberModal').style.display='none';}
-    function submitUserGuess(cn){
-        let today=new Date().toDateString(),free=localStorage.getItem('dinar_guess_free_date')!==today,msg=document.getElementById('guessGameMsg');
-        if(!free){if((userData.gems||0)<20)return msg.innerHTML="<span style='color:#ef4444'>❌ ليس لديك جواهر كافية (تحتاج 20 جوهرة)!</span>";userData.gems-=20;}
-        else{localStorage.setItem('dinar_guess_free_date',today);}
-        let win=Math.floor(Math.random()*6),rew=[0,5,10,15,20][Math.floor(Math.random()*5)];
-        if(cn===win){
-            if(rew>0){userData.points=(userData.points||0)+rew;msg.innerHTML=`<span style='color:#10b981'>🎉 الرقم الصحيح (${win}). ربحت ${rew} نقطة!</span>`;}
-            else{msg.innerHTML=`<span style='color:#f59e0b'>⚠️ الرقم صحيح (${win}) لكن الحظ أعطاك (0) نقطة!</span>`;}
-        }else{msg.innerHTML=`<span style='color:#ef4444'>❌ تخمينك خطأ! الرقم الصحيح (${win}).</span>`;}
-        saveToDB().then(()=>updateUI());
     }
     function openWithdrawModal(){if(globalAppSettings.withdrawLocked&&currentEmail!=='msaftwtn@gmail.com')return alert('⚠️ سحب الأرباح مقفل حالياً.');document.getElementById('withdrawModal').style.display='flex';}
     function closeWithdrawModal(){document.getElementById('withdrawModal').style.display='none';}
@@ -1072,6 +802,20 @@
             });
         });
     }
+    // وظيفة إيقاف وتجميد الحساب مؤقتمأ من لوحة تحكم الإدارة
+    function adminToggleUserSuspension(){
+        if(currentEmail!=='msaftwtn@gmail.com')return alert('⚠️ غير مسموح.');
+        let tId=document.getElementById('adminSuspendIdInput').value.trim();if(!tId)return alert('⚠️ أدخل ID المستخدم!');
+        rtdb.ref('users').once('value').then(snap=>{
+            let tk='';let curStatus=false;
+            snap.forEach(c=>{if(String(c.val().customId).trim()===String(tId).trim()){tk=c.key;curStatus=c.val().isBanned||false;}});
+            if(!tk)return alert('❌ لم يتم العثور على المستخدم!');
+            rtdb.ref(`users/${tk}`).update({isBanned:!curStatus}).then(()=>{
+                document.getElementById('adminSuspendIdInput').value='';
+                alert(!curStatus?'🚫 تم تجميد وإيقاف الحساب مؤقتاً بنجاح.':'✅ تم إلغاء التجميد وتفعيل الحساب بنجاح.');
+            });
+        });
+    }
     function adminToggleWithdrawFeature(){if(currentEmail!=='msaftwtn@gmail.com')return;let ns=!globalAppSettings.withdrawLocked;rtdb.ref('app_settings').update({withdrawLocked:ns}).then(()=>alert(ns?'🔒 تم إغلاق سحب الأرباح.':'🔓 تم فتح سحب الأرباح.'));}
     function adminToggleDailyCounterFeature(){if(currentEmail!=='msaftwtn@gmail.com')return;let ns=!globalAppSettings.dailyCounterLocked;rtdb.ref('app_settings').update({dailyCounterLocked:ns}).then(()=>alert(ns?'⏳ تم قفل العداد اليومي.':'⚡ تم فتح العداد اليومي.'));}
     function adminDeleteAgentFeature(){
@@ -1101,7 +845,6 @@
         });
     }
 
-    // [محدث] عرض الوكلاء مع زر "اضغط هنا" البسيط والسلس بنقرة واحدة
     function loadApprovedAgentsList(){
         rtdb.ref('users').on('value',snap=>{
             let c=document.getElementById('approvedAgentsContainer');if(!c)return;
