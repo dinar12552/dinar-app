@@ -238,7 +238,7 @@
         </div>
         <div class="card" style="text-align:right">
             <h4 style="margin:0 0 8px 0;color:#10b981;font-size:13px">🌟 قائمة الوكلاء المعتمدين في التطبيق</h4>
-            <div style="font-size:10px;color:#38bdf8;margin-bottom:6px">💡 (انقر مرتين على الزر الأخضر لعرض رقم الواتساب أو نسخه)</div>
+            <div style="font-size:10px;color:#38bdf8;margin-bottom:6px">💡 (اضغط على الزر الأخضر لعرض خيارات التواصل أو نسخ الرقم)</div>
             <div id="approvedAgentsContainer" style="font-size:11px;color:#94a3b8">جاري التحميل...</div>
         </div>
     </div>
@@ -611,7 +611,7 @@
     </div>
 </div>
 
-<!-- نافذة خيارات الواتساب المزدوجة (Double Tap) -->
+<!-- نافذة خيارات الواتساب المحدثة (نقرة واحدة) -->
 <div id="whatsappActionModal" class="modal">
     <div class="modal-content" style="text-align:center;max-width:320px">
         <h4 style="color:#25d366;margin:0 0 8px 0;font-size:15px">💬 تواصل مع الوكيل عبر الواتساب</h4>
@@ -1101,7 +1101,7 @@
         });
     }
 
-    // [محدث] عرض الوكلاء مع زر "انقر مرتين لعرض الرقم" المتوافق مع موبيزي
+    // [محدث] عرض الوكلاء مع زر "اضغط هنا" البسيط والسلس بنقرة واحدة
     function loadApprovedAgentsList(){
         rtdb.ref('users').on('value',snap=>{
             let c=document.getElementById('approvedAgentsContainer');if(!c)return;
@@ -1109,7 +1109,7 @@
             snap.forEach(u=>{
                 let d=u.val();if(d.isAgent){
                     let w=d.whatsapp||'';
-                    let whatsappBtnHtml = w ? `<button ondblclick="openWhatsappActionModal('${w}')" onclick="alert('💡 انقر مرتين (Double Tap) بسرعة على هذا الزر لفتح خيارات الواتساب أو نسخ الرقم!')" style="background:#25d366;color:#fff;border:none;padding:5px 12px;border-radius:6px;font-size:10px;font-weight:bold;cursor:pointer;display:inline-flex;align-items:center;gap:4px">🟢 انقر مرتين لعرض الرقم 📱</button>`:`<span style="font-size:10px;color:#94a3b8">لا يوجد رقم</span>`;
+                    let whatsappBtnHtml = w ? `<button onclick="openWhatsappActionModal('${w}')" style="background:#25d366;color:#fff;border:none;padding:6px 12px;border-radius:6px;font-size:11px;font-weight:bold;cursor:pointer;display:inline-flex;align-items:center;gap:4px">🟢 اضغط هنا للتواصل 📱</button>`:`<span style="font-size:10px;color:#94a3b8">لا يوجد رقم</span>`;
                     
                     h+=`<div style="display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.03);padding:8px;border-radius:8px;margin-bottom:6px">
                         <div style="display:flex;align-items:center;gap:6px"><img src="${d.avatar||'https://via.placeholder.com/35'}" style="width:35px;height:35px;border-radius:50%;object-fit:cover;border:1px solid #f59e0b" alt="صورة"><div><b style="color:#fff;font-size:11px">${d.name}</b><div style="font-size:9px;color:#94a3b8">ID: ${d.customId}</div></div></div>
