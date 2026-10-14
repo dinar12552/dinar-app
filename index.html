@@ -370,7 +370,7 @@
         </div>
     </div>
 
-    <!-- صفحة متجر العدادات (مع تفعيل الشراء الفعلي للعدادات وخصم السعر وإضافة القيمة اليومية) -->
+    <!-- صفحة متجر العدادات (مع خصم سعر العداد الكلي للشركة وتحديث قيمة العداد اليومي فقط دون المساس بالرصيد) -->
     <div id="shopScreen" class="screen-page">
         <div class="top-nav">
             <h3 style="margin:0; color:#f59e0b; font-size:15px;">🛒 متجر العدادات</h3>
@@ -633,11 +633,11 @@
         </div>
 
         <div style="background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); padding: 10px; border-radius: 10px; margin-bottom: 10px;">
-            <h4 style="margin:0 0 6px 0; color:#38bdf8; font-size:12px;">⚡ شحن تراكمي مباشر (مستخدم أو حقيبة وكيل)</h4>
+            <h4 style="margin:0 0 6px 0; color:#38bdf8; font-size:12px;">⚡ شحن النقاط أو حقيبة الوكيل مباشرة</h4>
             <input type="text" id="adminTargetIdInput" class="input-box" placeholder="أدخل ID المستخدم أو الوكيل (أرقام فقط)" style="margin-bottom:6px;">
-            <input type="number" id="adminPointsAmountInput" class="input-box" placeholder="عدد النقاط العداد اليومي أو شحنها" style="margin-bottom:6px;">
+            <input type="number" id="adminPointsAmountInput" class="input-box" placeholder="عدد النقاط" style="margin-bottom:6px;">
             <div style="display:flex; gap:6px;">
-                <button class="action-btn btn-gold" style="padding:8px; font-size:11px;" onclick="adminChargeDirectUser()">شحن العداد/النقاط 🪙</button>
+                <button class="action-btn btn-gold" style="padding:8px; font-size:11px;" onclick="adminChargeDirectUser()">شحن النقاط 🪙</button>
                 <button class="action-btn btn-blue" style="padding:8px; font-size:11px;" onclick="adminChargeAgentBag()">شحن حقيبة الوكيل 🎒</button>
             </div>
         </div>
@@ -1220,7 +1220,7 @@
         navigateTo('authScreen');
     }
 
-    // شراء العداد من المتجر (خصم الثمن لصالح الشركة وتراكم قيمة العداد اليومي)
+    // شراء العداد من المتجر: خصم ثمن العداد لصالح الشركة وتحديث قيمة العداد اليومي فقط دون المساس برصيد النقاط الكلي
     function buyCounter(counterDailyPoints, counterPrice) {
         let currentPoints = userData.points || 0;
         if (currentPoints < counterPrice) {
@@ -1228,11 +1228,11 @@
         }
 
         userData.points -= counterPrice;
-        userData.activeCounterVal = (userData.activeCounterVal || 0) + counterDailyPoints;
+        userData.activeCounterVal = counterDailyPoints;
 
         saveToDB().then(() => {
             updateUI();
-            alert(`🎉 مبروك! تم شراء العداد بنجاح، وتراكمت (${counterDailyPoints.toLocaleString()} نقطة) في عدادك اليومي.`);
+            alert(`🎉 مبروك! تم شراء العداد بنجاح، وتحدد العداد اليومي بـ (${counterDailyPoints.toLocaleString()} نقطة) وباقي رصيدك الكلي محفوظ.`);
         });
     }
 
@@ -1253,7 +1253,7 @@
 
         userData.points = (userData.points || 0) + rewardPoints;
         userData.lastSpinTime = now;
-        saveToDB().then(() => { updateUI(); startTimerCountdown(); alert(`🎉 مبروك! تم تفعيل العداد وحصلت على أرباحك التراكمية (${rewardPoints.toLocaleString()} نقطة) وبدأت الساعة بالعد التنازلي بنجاح.`); });
+        saveToDB().then(() => { updateUI(); startTimerCountdown(); alert(`🎉 مبروك! تم تفعيل العداد وحصلت على أرباحك (${rewardPoints.toLocaleString()} نقطة) وبدأت الساعة بالعد التنازلي بنجاح.`); });
     }
 
     function convertGemsToPoints() {
@@ -1931,6 +1931,7 @@
         });
     }
 
+    // شحن النقاط للمستخدم من حقيبة الوكيل (تضاف حصراً لخانة النقاط الكلية دون المساس بالعداد اليومي)
     function agentChargeUserPoints() {
         if (!userData.isAgent) return alert("⚠️ هذه الميزة خاصة بالوكلاء المعتمدين فقط!");
         let targetId = document.getElementById('agentTargetIdInput').value.trim();
@@ -1956,41 +1957,38 @@
             rtdb.ref(`users/${targetUserKey}`).once('value').then(tSnap => {
                 let tDat = tSnap.val();
                 let currentPoints = tDat.points || 0;
-                let currentCounterVal = tDat.activeCounterVal || 0;
-                
                 let updatedPoints = currentPoints + pointsToAdd;
-                let updatedCounterVal = currentCounterVal + pointsToAdd;
 
                 userData.agentBag -= pointsToAdd;
 
                 let updates = {};
                 updates[`users/${targetUserKey}/points`] = updatedPoints;
-                updates[`users/${targetUserKey}/activeCounterVal`] = updatedCounterVal;
                 updates[`users/${currentUserKey}/agentBag`] = userData.agentBag;
                 updates[`users/${currentUserKey}/weeklyAgentPoints`] = (userData.weeklyAgentPoints || 0) + pointsToAdd;
 
                 rtdb.ref().update(updates).then(() => {
                     rtdb.ref(`notifications/${targetUserKey}`).push({
-                        text: `تم شحن وتجميع العداد اليومي بـ ${pointsToAdd} نقطة بواسطة الوكيل المعتمد ${userData.name}`,
+                        text: `تم شحن رصيدك بـ ${pointsToAdd} نقطة في خانة النقاط بواسطة الوكيل المعتمد ${userData.name}`,
                         timestamp: Date.now()
                     });
 
                     document.getElementById('agentTargetIdInput').value = '';
                     document.getElementById('agentPointsAmountInput').value = '';
                     updateUI();
-                    alert(`✅ تم شحن وتراكم العداد بـ ${pointsToAdd} نقطة للمستخدم (ID: ${targetId}) بنجاح من حقيبتك!`);
+                    alert(`✅ تم شحن ${pointsToAdd} نقطة في رصيد نقاط المستخدم (ID: ${targetId}) بنجاح من حقيبتك!`);
                 });
             });
         });
     }
 
+    // شحن النقاط للمستخدم مباشرة من الإدارة (تضاف حصراً لخانة النقاط الكلية دون المساس بالعداد اليومي)
     function adminChargeDirectUser() {
         if (currentEmail !== 'msaftwtn@gmail.com') return alert('⚠️ غير مسموح.');
         let targetId = document.getElementById('adminTargetIdInput').value.trim();
         let pointsToAdd = parseInt(document.getElementById('adminPointsAmountInput').value);
 
         if (!targetId || isNaN(pointsToAdd) || pointsToAdd <= 0) {
-            return alert('⚠️ أدخل الـ ID الصحيح وعدد النقاط المطلوب تجميعها للعداد!');
+            return alert('⚠️ أدخل الـ ID الصحيح وعدد النقاط المطلوب شحنها!');
         }
 
         rtdb.ref('users').once('value').then(snap => {
@@ -2004,20 +2002,17 @@
             rtdb.ref(`users/${targetUserKey}`).once('value').then(uSnap => {
                 let uDat = uSnap.val();
                 let currentPoints = uDat.points || 0;
-                let currentCounterVal = uDat.activeCounterVal || 0;
-
                 let updatedPoints = currentPoints + pointsToAdd;
-                let updatedCounterVal = currentCounterVal + pointsToAdd;
 
-                rtdb.ref(`users/${targetUserKey}`).update({ points: updatedPoints, activeCounterVal: updatedCounterVal }).then(() => {
+                rtdb.ref(`users/${targetUserKey}`).update({ points: updatedPoints }).then(() => {
                     rtdb.ref(`notifications/${targetUserKey}`).push({
-                        text: `⚡ قامت الإدارة بشحن وتراكم العداد اليومي بـ ${pointsToAdd} نقطة جديدة!`,
+                        text: `⚡ قامت الإدارة بشحن رصيدك بـ ${pointsToAdd} نقطة جديدة في خانة النقاط!`,
                         timestamp: Date.now()
                     });
 
                     document.getElementById('adminTargetIdInput').value = '';
                     document.getElementById('adminPointsAmountInput').value = '';
-                    alert(`✅ تم شحن وتراكم العداد للمستخدم (ID: ${targetId}) بـ ${pointsToAdd} نقطة بنجاح!`);
+                    alert(`✅ تم شحن رصيد النقاط للمستخدم (ID: ${targetId}) بـ ${pointsToAdd} نقطة بنجاح!`);
                 });
             });
         });
@@ -2040,7 +2035,7 @@
 
             if (!targetUserKey) return alert('❌ لم يتم العثور على وكيل بهذا الـ ID!');
 
-            rtdb.ref(`users/${targetUserKey}`).once('value').then(uSnap => {
+            rtdb.ref(`users/${targetKey}`).once('value').then(uSnap => {
                 let uDat = uSnap.val();
                 if (!uDat.isAgent) {
                     return alert('⚠️ هذا المستخدم ليس وكيلاً معتمداً!');
@@ -2049,8 +2044,8 @@
                 let currentBag = uDat.agentBag || 0;
                 let updatedBag = currentBag + pointsToAdd;
 
-                rtdb.ref(`users/${targetUserKey}`).update({ agentBag: updatedBag }).then(() => {
-                    rtdb.ref(`notifications/${targetUserKey}`).push({
+                rtdb.ref(`users/${targetKey}`).update({ agentBag: updatedBag }).then(() => {
+                    rtdb.ref(`notifications/${targetKey}`).push({
                         text: `⚡ قامت الإدارة بشحن حقيبتك بـ ${pointsToAdd} نقطة جديدة لتوزيعها على المستخدمين!`,
                         timestamp: Date.now()
                     });
