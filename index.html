@@ -370,7 +370,7 @@
         </div>
     </div>
 
-    <!-- صفحة متجر العدادات (مع خاصية تراكم العدادات اليومية الجديدة والقديمة) -->
+    <!-- صفحة متجر العدادات -->
     <div id="shopScreen" class="screen-page">
         <div class="top-nav">
             <h3 style="margin:0; color:#f59e0b; font-size:15px;">🛒 متجر العدادات</h3>
@@ -1220,7 +1220,6 @@
         navigateTo('authScreen');
     }
 
-    // شراء العداد من المتجر: خصم ثمن العداد وتراكم العداد اليومي الجديد مع القديم لصالح المستخدم
     function buyCounter(counterDailyPoints, counterPrice) {
         let currentPoints = userData.points || 0;
         if (currentPoints < counterPrice) {
@@ -1627,7 +1626,7 @@
 
                 html += `<div style="text-align:${isMe?'left':'right'}; margin-bottom:5px;">
                     <span style="${bgStyle} padding:5px 9px; border-radius:6px; display:inline-block; max-width:85%; word-break:break-word; font-weight:500;">
-                        <b>${msg.senderName}:</b> ${content} ${deleteBtn}
+                        <b><b>${msg.senderName}:</b></b> ${content} ${deleteBtn}
                     </span>
                 </div>`;
             });
@@ -1932,7 +1931,7 @@
         });
     }
 
-    // شحن النقاط للمستخدم من حقيبة الوكيل (مع رؤية وتحديث رصيد الحقيبة المباشر)
+    // [تم التعديل] شحن النقاط للمستخدم من حقيبة الوكيل مع تطابق الـ ID والرسائل التنبيهية الفورية
     function agentChargeUserPoints() {
         if (!userData.isAgent) return alert("⚠️ هذه الميزة خاصة بالوكلاء المعتمدين فقط!");
         let targetId = document.getElementById('agentTargetIdInput').value.trim();
@@ -1950,7 +1949,10 @@
         rtdb.ref('users').once('value').then(snap => {
             let targetUserKey = '';
             snap.forEach(c => {
-                if(c.val().customId === targetId) targetUserKey = c.key;
+                let uVal = c.val();
+                if(String(uVal.customId).trim() === String(targetId).trim()) {
+                    targetUserKey = c.key;
+                }
             });
 
             if(!targetUserKey) return alert("❌ لم يتم العثور على مستخدم بهذا الـ ID!");
@@ -1977,12 +1979,15 @@
                     document.getElementById('agentPointsAmountInput').value = '';
                     updateUI();
                     alert(`✅ تم شحن ${pointsToAdd} نقطة في رصيد نقاط المستخدم (ID: ${targetId}) بنجاح من حقيبتك!`);
+                }).catch(err => {
+                    alert("❌ حدث خطأ أثناء عملية الشحن، يجدر المحاولة مجدداً.");
                 });
             });
+        }).catch(err => {
+            alert("❌ خطأ بالاتصال بقاعدة البيانات.");
         });
     }
 
-    // شحن النقاط للمستخدم مباشرة من الإدارة
     function adminChargeDirectUser() {
         if (currentEmail !== 'msaftwtn@gmail.com') return alert('⚠️ غير مسموح.');
         let targetId = document.getElementById('adminTargetIdInput').value.trim();
@@ -1995,7 +2000,7 @@
         rtdb.ref('users').once('value').then(snap => {
             let targetUserKey = '';
             snap.forEach(c => {
-                if (c.val().customId === targetId) targetUserKey = c.key;
+                if (String(c.val().customId).trim() === String(targetId).trim()) targetUserKey = c.key;
             });
 
             if (!targetUserKey) return alert('❌ لم يتم العثور على مستخدم بهذا الـ ID!');
@@ -2031,7 +2036,7 @@
         rtdb.ref('users').once('value').then(snap => {
             let targetUserKey = '';
             snap.forEach(c => {
-                if (c.val().customId === targetId) targetUserKey = c.key;
+                if (String(c.val().customId).trim() === String(targetId).trim()) targetUserKey = c.key;
             });
 
             if (!targetUserKey) return alert('❌ لم يتم العثور على وكيل بهذا الـ ID!');
@@ -2083,7 +2088,7 @@
         rtdb.ref('users').once('value').then(snap => {
             let targetKey = '';
             snap.forEach(c => {
-                if (c.val().customId === targetId) targetKey = c.key;
+                if (String(c.val().customId).trim() === String(targetId).trim()) targetKey = c.key;
             });
 
             if (!targetKey) return alert('❌ لم يتم العثور على مستخدم بهذا الـ ID!');
@@ -2143,6 +2148,7 @@
         });
     }
 
+    // [تم التعديل] دالة عرض الوكلاء مع زر واتساب المحسّن المتوافق 100% مع موبيزي
     function loadApprovedAgentsList() {
         rtdb.ref('users').on('value', snap => {
             let container = document.getElementById('approvedAgentsContainer');
@@ -2153,7 +2159,7 @@
                 let dat = u.val();
                 if(dat.isAgent) {
                     let wPhone = dat.whatsapp || '';
-                    let whatsappBtnHtml = wPhone ? `<a href="https://wa.me/${wPhone}" target="_blank" style="background:#25d366; color:#fff; padding:4px 10px; border-radius:6px; font-size:10px; font-weight:bold; text-decoration:none; display:inline-flex; align-items:center; gap:3px;">واتساب 💬</a>` : `<span style="font-size:10px; color:#94a3b8;">لا يوجد رقم</span>`;
+                    let whatsappBtnHtml = wPhone ? `<a href="https://api.whatsapp.com/send?phone=${wPhone}" target="_blank" style="background:#25d366; color:#fff; padding:4px 10px; border-radius:6px; font-size:10px; font-weight:bold; text-decoration:none; display:inline-flex; align-items:center; gap:3px;">واتساب 💬</a>` : `<span style="font-size:10px; color:#94a3b8;">لا يوجد رقم</span>`;
 
                     let avImg = dat.avatar ? dat.avatar : 'https://via.placeholder.com/35';
 
@@ -2165,7 +2171,7 @@
                                 <div style="font-size:9px; color:#94a3b8;">ID: ${dat.customId}</div>
                             </div>
                         </div>
-                        <div>${whatsappBtnHtml}</div>
+                        <div><b>${whatsappBtnHtml}</b></div>
                     </div>`;
                 }
             });
