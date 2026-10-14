@@ -1,1 +1,2697 @@
 
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيق دينار الرسمي</title>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: all 0.25s ease; }
+        body { margin: 0; padding: 15px; background: radial-gradient(circle at center, #131826 0%, #070913 100%); color: #ffffff; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
+        .container { width: 100%; max-width: 420px; padding-bottom: 70px; }
+
+        .screen-page { display: none; width: 100%; min-height: 85vh; flex-direction: column; justify-content: flex-start; }
+        .screen-page.active { display: flex; }
+
+        @keyframes waveBackground {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        #authScreen.screen-page.active {
+            background: linear-gradient(-45deg, #070913, #131826, #1e1b4b, #0f172a);
+            background-size: 400% 400%;
+            animation: waveBackground 12s ease infinite;
+            justify-content: center;
+            align-items: center;
+            border-radius: 20px;
+        }
+
+        .auth-card { background: rgba(30, 41, 59, 0.85); backdrop-filter: blur(16px); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 24px; padding: 24px 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.8); text-align: center; width: 100%; position: relative; z-index: 10; }
+        
+        @keyframes logoFloat {
+            0% { transform: translateY(0px) scale(1); filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.4)); }
+            50% { transform: translateY(-8px) scale(1.03); filter: drop-shadow(0 0 20px rgba(245, 158, 11, 0.8)); }
+            100% { transform: translateY(0px) scale(1); filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.4)); }
+        }
+        .animated-logo-container {
+            animation: logoFloat 3.5s ease-in-out infinite;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .tab-switch { display: flex; background: rgba(15, 23, 42, 0.8); border-radius: 12px; padding: 4px; margin-bottom: 16px; direction: rtl; }
+        .tab-btn { flex: 1; padding: 8px; border: none; background: transparent; color: #94a3b8; font-weight: bold; font-size: 12px; border-radius: 8px; cursor: pointer; text-align: center; }
+        .tab-btn.active { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; }
+        .input-box, .select-box { width: 100%; padding: 11px; margin-bottom: 10px; background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; color: #fff; font-size: 12px; outline: none; text-align: right; }
+
+        .top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .nav-btn { background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); color: #f59e0b; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; position: relative; }
+        .nav-btn.back { color: #38bdf8; border-color: rgba(56, 189, 248, 0.3); }
+
+        .notification-badge { position: absolute; top: -2px; right: -2px; width: 8px; height: 8px; background-color: #ef4444; border-radius: 50%; display: none; }
+        .card { background: rgba(30, 30, 30, 0.65); border: 1px solid rgba(255, 255, 255, 0.08); padding: 10px 12px; border-radius: 14px; margin-bottom: 8px; text-align: center; }
+
+        .new-header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .user-greeting-box { display: flex; align-items: center; gap: 10px; }
+        .user-avatar-small { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid #f59e0b; background: #111; }
+        .top-logout-btn { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #ef4444; padding: 5px 12px; border-radius: 12px; font-size: 11px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+        .bell-icon-btn { background: none; border: none; font-size: 20px; cursor: pointer; position: relative; padding: 0; margin-left: 8px; }
+
+        .top-profile-card { background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 16px; padding: 12px; margin-bottom: 10px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; }
+
+        .coin-center-emblem { width: 55px; height: 55px; border-radius: 50%; background: radial-gradient(circle, #3d2b00 0%, #1a1200 100%); border: 2px solid #f59e0b; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 12px rgba(245, 158, 11, 0.5); margin: 0 auto; }
+        .spinning-coin { font-size: 22px; animation: spinCoin 3s linear infinite; }
+        @keyframes spinCoin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .timer-mini-bar { display: flex; align-items: center; justify-content: center; background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 20px; padding: 2px 6px; gap: 6px; margin-top: 6px; }
+        .timer-time-text { font-family: monospace; font-size: 10px; font-weight: bold; color: #fff; }
+        .power-btn { width: 20px; height: 20px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .power-btn.red-pulse { background: #ef4444; color: #fff; animation: pulseRed 1.5s infinite alternate; }
+        @keyframes pulseRed { 0% { transform: scale(0.95); } 100% { transform: scale(1.05); } }
+        .power-btn.green-pulse { background: #10b981; color: #fff; }
+
+        .assets-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+        .asset-box { background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px; padding: 10px; display: flex; align-items: center; justify-content: space-between; }
+
+        .grid-buttons-custom { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 10px; }
+        .grid-btn-item { background: rgba(30, 41, 59, 0.75); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 14px; padding: 10px 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; text-align: center; min-height: 80px; box-shadow: 0 6px 15px rgba(0,0,0,0.3); position: relative; }
+        .grid-btn-item span { font-size: 10px; color: #fff; font-weight: bold; margin-top: 4px; }
+        .grid-btn-item .icon-circle { font-size: 20px; }
+        .grid-btn-item .mini-arrow { position: absolute; bottom: 4px; font-size: 9px; color: #94a3b8; }
+
+        .bottom-nav-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 420px; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); border-top: 1px solid rgba(255, 255, 255, 0.1); display: flex; justify-content: space-around; align-items: center; padding: 8px 10px; z-index: 999; }
+        .bottom-nav-item { display: flex; flex-direction: column; align-items: center; background: none; border: none; color: #94a3b8; font-size: 10px; cursor: pointer; gap: 2px; }
+        .bottom-nav-item.active { color: #38bdf8; }
+        .bottom-nav-item span { font-size: 16px; }
+
+        .bottom-nav-crown { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #1d4ed8); border: 2px solid #60a5fa; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 18px; margin-top: -16px; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.6); cursor: pointer; }
+
+        button.action-btn { width: 100%; padding: 10px; border: none; border-radius: 9px; font-weight: bold; font-size: 12px; cursor: pointer; }
+        .btn-gold { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; }
+        .btn-blue { background: linear-gradient(135deg, #0ea5e9, #0284c7); color: #fff; }
+        .btn-purple { background: linear-gradient(135deg, #a855f7, #7e22ce); color: #fff; }
+        .btn-green { background: linear-gradient(135deg, #10b981, #059669); color: #fff; }
+
+        .shop-tabs { display: flex; gap: 5px; margin-bottom: 10px; }
+        .shop-tab-btn { flex: 1; padding: 7px; background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #94a3b8; font-weight: bold; font-size: 11px; cursor: pointer; text-align: center; }
+        .shop-tab-btn.active-gold { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; }
+        .shop-tab-btn.active-diamond { background: linear-gradient(135deg, #0ea5e9, #0284c7); color: #fff; }
+        .shop-tab-btn.active-legend { background: linear-gradient(135deg, #a855f7, #7e22ce); color: #fff; }
+        .shop-tier-content { display: none; }
+        .shop-tier-content.active { display: block; }
+        .counter-row { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); border: 1px solid #1e293b; padding: 10px; border-radius: 8px; margin-bottom: 6px; text-align: right; }
+
+        .profile-box { text-align: center; background: rgba(30,41,59,0.7); border: 1px solid rgba(245,158,11,0.3); border-radius: 16px; padding: 15px; margin-bottom: 10px; }
+        .large-avatar-container { position: relative; width: 85px; height: 85px; margin: 0 auto 6px auto; }
+        .large-avatar { width: 85px; height: 85px; border-radius: 50%; object-fit: cover; display: block; background: #222; cursor: pointer; }
+
+        .profile-gifts-section { margin-top: 10px; text-align: right; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 8px; }
+        .profile-gifts-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; max-height: 140px; overflow-y: auto; padding: 2px; }
+        .profile-gift-mini-card { background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 8px; padding: 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; height: 55px; }
+        .profile-gift-mini-img { width: 28px; height: 28px; object-fit: contain; }
+        .profile-gift-mini-count { font-size: 9px; color: #f59e0b; font-weight: bold; margin-top: 2px; }
+
+        .wheel-box { width: 140px; height: 140px; border-radius: 50%; border: 6px solid #f59e0b; margin: 8px auto; position: relative; overflow: hidden; transition: transform 5s cubic-bezier(0.1, 0.9, 0.1, 1); background: conic-gradient(#ef4444 0deg 60deg, #3b82f6 60deg 120deg, #10b981 120deg 180deg, #f59e0b 180deg 240deg, #8b5cf6 240deg 300deg, #ec4899 300deg 360deg); }
+        .wheel-pointer { width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 15px solid #fff; margin: 0 auto; margin-bottom: -6px; z-index: 10; position: relative; }
+
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 1000; padding: 15px; }
+        .modal-content { background: #121826; border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 16px; width: 100%; max-width: 380px; padding: 16px; max-height: 90vh; overflow-y: auto; }
+
+        .gift-box-btn { background: rgba(245, 158, 11, 0.25); border: 1px solid #f59e0b; color: #fff; padding: 0 8px; border-radius: 8px; font-size: 11px; cursor: pointer; height: 38px; display: flex; align-items: center; justify-content: center; }
+        .room-settings-btn { background: rgba(168, 85, 247, 0.25); border: 1px solid #a855f7; color: #fff; padding: 0 8px; border-radius: 8px; font-size: 11px; cursor: pointer; height: 38px; display: flex; align-items: center; justify-content: center; }
+
+        .rooms-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 8px; max-height: 55vh; overflow-y: auto; padding: 2px; }
+        .room-square-card { background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 14px; padding: 12px 8px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between; box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
+        .room-square-avatar { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; border: 2px solid #f59e0b; margin-bottom: 6px; background: #111; }
+
+        #unifiedGiftModal { align-items: flex-end !important; padding: 0 !important; }
+        .gift-modal-bottom { width: 100% !important; max-width: 420px !important; background: rgba(15, 23, 42, 0.98) !important; border-top: 2px solid #f59e0b !important; border-radius: 20px 20px 0 0 !important; padding: 14px !important; box-shadow: 0 -10px 30px rgba(0,0,0,0.85); }
+        .gift-tabs-header { display: flex; background: rgba(30, 41, 59, 0.8); border-radius: 10px; padding: 3px; margin-bottom: 10px; gap: 4px; }
+        .gift-tab-btn { flex: 1; padding: 7px; border: none; background: transparent; color: #94a3b8; font-weight: bold; font-size: 11px; border-radius: 8px; cursor: pointer; text-align: center; }
+        .gift-tab-btn.active { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; }
+        .gift-pane-content { display: none; max-height: 250px; overflow-y: auto; padding: 4px; }
+        .gift-pane-content.active { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .gift-card-box { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 8px 4px; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; height: 82px; }
+        .gift-card-box.selected-gold { border: 2px solid #f59e0b !important; box-shadow: 0 0 12px #f59e0b, inset 0 0 8px rgba(245, 158, 11, 0.5) !important; background: rgba(245, 158, 11, 0.12) !important; }
+
+        @keyframes exclusivePulseAnim {
+            0% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(245, 158, 11, 0.6)); }
+            50% { transform: scale(1.12); filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.9)) brightness(1.15); }
+            100% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(245, 158, 11, 0.6)); }
+        }
+        .exclusive-gift-animated { animation: exclusivePulseAnim 2.2s ease-in-out infinite; }
+        .gift-icon-full { width: 42px; height: 42px; object-fit: contain; display: block; }
+        .gift-price-num { font-size: 11px; color: #f59e0b; font-weight: bold; margin-top: 3px; }
+        .bottom-action-bar { display: flex; align-items: center; justify-content: flex-end; margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(255, 255, 255, 0.1); }
+        .reply-preview-bar { display: none; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.95); border-left: 3px solid #38bdf8; padding: 4px 8px; border-radius: 6px; margin-bottom: 4px; font-size: 11px; }
+        .msg-bubble-container { padding: 6px 10px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: space-between; gap: 6px; max-width: 85%; word-break: break-word; margin-top: 2px; font-weight: bold; }
+        .msg-action-btn { background: none; border: none; color: #ffffff; font-size: 12px; cursor: pointer; padding: 0 2px; }
+        .msg-action-btn:hover { transform: scale(1.15); }
+
+        .gift-chat-card { background: rgba(0, 0, 0, 0.7); border: 1px solid rgba(245, 158, 11, 0.5); border-radius: 16px; padding: 12px; margin: 8px 0; width: 100%; max-width: 260px; box-shadow: 0 8px 25px rgba(0,0,0,0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .gift-chat-header { display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 8px; }
+        .gift-chat-sender { font-size: 12px; font-weight: bold; color: #f43f5e; display: flex; align-items: center; gap: 4px; }
+        .gift-chat-target { font-size: 13px; font-weight: 800; color: #34d399; }
+        .gift-chat-body { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 4px; }
+        .gift-chat-count { font-size: 30px; font-weight: 900; color: #f59e0b; text-shadow: 0 2px 8px rgba(245, 158, 11, 0.6); }
+        .gift-chat-img { width: 65px; height: 65px; object-fit: contain; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6)); }
+
+        .admin-badge { background: linear-gradient(135deg, #ef4444, #b91c1c); color: #fff; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: bold; border: 1px solid #f87171; cursor: pointer; display: none; margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- 1. واجهة تسجيل الدخول والإنشاء -->
+    <div id="authScreen" class="screen-page active">
+        <div class="auth-card">
+            <div class="animated-logo-container">
+                <div style="width: 75px; height: 75px; border-radius: 50%; background: radial-gradient(circle, #3d2b00 0%, #1a1200 100%); border: 2px solid #f59e0b; display: flex; flex-direction: column; justify-content: center; align-items: center; margin: 0 auto; box-shadow: 0 0 15px rgba(245,158,11,0.5);">
+                    <span style="font-size: 24px; font-weight: 900; color: #f59e0b;">D</span>
+                    <span style="font-size: 11px; font-weight: bold; color: #fff;">Dinar</span>
+                </div>
+            </div>
+            
+            <h2 style="color: #f59e0b; margin:0 0 5px 0;">منصة دينار</h2>
+            <p style="color: #94a3b8; font-size: 12px; margin-bottom:15px;">تسجيل الدخول أو إنشاء حساب جديد</p>
+            
+            <div class="tab-switch">
+                <button class="tab-btn active" id="loginTabBtn" onclick="switchAuthTab('login')">تسجيل الدخول</button>
+                <button class="tab-btn" id="signupTabBtn" onclick="switchAuthTab('signup')">حساب جديد</button>
+            </div>
+
+            <div id="loginForm">
+                <input type="email" id="loginEmail" class="input-box" placeholder="البريد الإلكتروني">
+                <input type="password" id="loginPass" class="input-box" placeholder="كلمة المرور">
+                <button id="loginBtn" class="action-btn btn-gold" onclick="handleLogin()">دخول الحساب 🚀</button>
+            </div>
+
+            <div id="signupForm" style="display: none;">
+                <input type="email" id="signupEmail" class="input-box" placeholder="البريد الإلكتروني">
+                <input type="password" id="signupPass" class="input-box" placeholder="كلمة المرور (6 أحرف فأكثر)">
+                <button id="signupBtn" class="action-btn btn-gold" onclick="handleSignup()">تأكيد إنشاء الحساب ✨</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. الشاشة الرئيسية -->
+    <div id="mainScreen" class="screen-page">
+        <div style="text-align: center;">
+            <button id="adminPanelMainBtn" class="admin-badge" onclick="openAdminPanelModal()">👑 لوحة تحكم الإدارة الخاصة</button>
+        </div>
+
+        <!-- لوحة الوكيل مع رصيد الحقيبة المحدث -->
+        <div id="agentChargingCard" class="card" style="display:none; border: 1px solid #38bdf8;">
+            <h4 style="margin:0 0 4px 0; color:#38bdf8; font-size:13px;">⚡ حقيبة الوكيل: شحن نقاط المستخدمين</h4>
+            <div style="font-size:11px; color:#f59e0b; margin-bottom:8px; font-weight:bold;">رصيد حقيبتك الحاضر: <span id="agentBagBalance">0</span> نقطة</div>
+            <input type="text" id="agentTargetIdInput" class="input-box" placeholder="أدخل ID المستخدم (أرقام فقط)">
+            <input type="number" id="agentPointsAmountInput" class="input-box" placeholder="عدد النقاط المراد شحنها">
+            <button class="action-btn btn-blue" onclick="agentChargeUserPoints()">شحن النقاط للمستخدم من الحقيبة 🚀</button>
+        </div>
+
+        <!-- الهيدر العلوي -->
+        <div class="new-header-bar">
+            <div style="display: flex; align-items: center;">
+                <button class="top-logout-btn" onclick="handleLogout()">
+                    <span>خروج</span> 🚪
+                </button>
+                <button class="bell-icon-btn" onclick="openNotificationsPage()" title="الإشعارات">
+                    🔔
+                    <span id="mainNotificationBadge" class="notification-badge"></span>
+                </button>
+            </div>
+
+            <div class="user-greeting-box" style="cursor: pointer;" onclick="navigateTo('profileScreen')">
+                <div style="text-align: left;">
+                    <div style="font-size: 11px; color: #94a3b8;">أهلاً بك</div>
+                    <div style="font-size: 13px; font-weight: bold; color: #fff;" id="headerUserName">المستخدم</div>
+                </div>
+                <img id="headerUserAvatar" src="https://via.placeholder.com/45" class="user-avatar-small" alt="صورة">
+            </div>
+        </div>
+
+        <!-- كارد العداد اليومي -->
+        <div class="top-profile-card">
+            <div style="text-align: right;">
+                <div style="font-size: 10px; color: #94a3b8; display:flex; align-items:center; gap:3px;"><span>👑</span> العداد اليومي</div>
+                <div style="font-size: 12px; color: #34d399; font-weight: bold; margin-top:2px;" id="activeCounterInfo">لا يوجد</div>
+            </div>
+
+            <div style="text-align: center;">
+                <div class="coin-center-emblem"><div class="spinning-coin">🪙</div></div>
+                <div class="timer-mini-bar">
+                    <span id="timerDisplay" class="timer-time-text">24:00:00</span>
+                    <button id="powerActivateBtn" class="power-btn red-pulse" onclick="claimDailyReward()">⚡</button>
+                </div>
+            </div>
+
+            <div style="text-align: left;">
+                <div style="font-size: 10px; color: #94a3b8;">ID الحساب</div>
+                <div style="font-size: 11px; color: #f59e0b; font-weight: bold;" id="displayUserId">---</div>
+            </div>
+        </div>
+
+        <!-- كاردات النقاط والجواهر -->
+        <div class="assets-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
+            <div class="asset-box">
+                <div style="text-align: right;">
+                    <div style="font-size: 10px; color: #94a3b8;">النقاط</div>
+                    <div style="font-size: 16px; font-weight: 800; color: #f59e0b;" id="userPoints">0</div>
+                </div>
+                <span style="font-size: 22px;">🪙</span>
+            </div>
+            <div class="asset-box" onclick="convertGemsToPoints()" style="cursor: pointer;" title="تبديل الجواهر">
+                <div style="text-align: right;">
+                    <div style="font-size: 10px; color: #38bdf8;">الجواهر</div>
+                    <div style="font-size: 15px; font-weight: bold; color: #38bdf8;" id="userGems">0</div>
+                </div>
+                <span style="font-size: 20px;">💎</span>
+            </div>
+        </div>
+
+        <!-- الأزرار الرئيسية -->
+        <div class="grid-buttons-custom">
+            <div class="grid-btn-item" onclick="openGuessNumberGameModal()">
+                <div class="icon-circle">🎯</div>
+                <span>حزر الرقم</span>
+                <div class="mini-arrow">⌄</div>
+            </div>
+            <div class="grid-btn-item" onclick="openWithdrawModal()">
+                <div class="icon-circle">💸</div>
+                <span>سحب الأرباح</span>
+                <div class="mini-arrow">⌄</div>
+            </div>
+            <div class="grid-btn-item" onclick="navigateTo('leaderboardScreen')">
+                <div class="icon-circle">🏆</div>
+                <span>التصنيف الأسبوعي</span>
+                <div class="mini-arrow">⌄</div>
+            </div>
+            <div class="grid-btn-item" onclick="navigateTo('agentsScreen')">
+                <div class="icon-circle">👔</div>
+                <span>وكلاء دينار</span>
+                <div class="mini-arrow">⌄</div>
+            </div>
+        </div>
+
+        <!-- شريط التنقل السفلي -->
+        <div class="bottom-nav-bar">
+            <button class="bottom-nav-item active" onclick="navigateTo('mainScreen')">
+                <span>🏠</span>
+                <div>الرئيسية</div>
+            </button>
+            <button class="bottom-nav-item" onclick="openIsolatedPublicRooms()">
+                <span>💬</span>
+                <div>غرف الدردشة</div>
+            </button>
+            <div class="bottom-nav-crown" onclick="navigateTo('wheelScreen')" title="عجلة الحظ">
+                👑
+            </div>
+            <button class="bottom-nav-item" onclick="navigateTo('friendsScreen')">
+                <span>👥</span>
+                <div>الأصدقاء</div>
+            </button>
+            <button class="bottom-nav-item" onclick="navigateTo('shopScreen')">
+                <span>🛒</span>
+                <div>المتجر</div>
+            </button>
+        </div>
+    </div>
+
+    <!-- صفحة لوحة الشرف -->
+    <div id="leaderboardScreen" class="screen-page">
+        <div class="top-nav">
+            <h3 style="margin:0; color:#f59e0b; font-size:15px;">🏆 التصنيف الأسبوعي (لوحة الشرف)</h3>
+            <button class="nav-btn back" onclick="navigateTo('mainScreen')">⬅️ الرئيسية</button>
+        </div>
+
+        <div class="card" style="text-align: right; background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(245, 158, 11, 0.4);">
+            <div class="shop-tabs" style="margin-bottom: 10px;">
+                <button class="shop-tab-btn active-gold" id="lbTab1" onclick="switchLeaderboardTab('gifts')">🎁 الشحن والهدايا</button>
+                <button class="shop-tab-btn" id="lbTab2" onclick="switchLeaderboardTab('agents')">👔 نشاط الوكلاء</button>
+                <button class="shop-tab-btn" id="lbTab3" onclick="switchLeaderboardTab('wheel')">🎡 رابحي العجلة</button>
+            </div>
+
+            <div id="lbContentGifts" class="lb-pane-content">
+                <div id="leaderboardGiftsList" style="font-size: 11px; color: #cbd5e1;">جاري التحميل...</div>
+            </div>
+            <div id="lbContentAgents" class="lb-pane-content" style="display:none;">
+                <div id="leaderboardAgentsList" style="font-size: 11px; color: #cbd5e1;">جاري التحميل...</div>
+            </div>
+            <div id="lbContentWheel" class="lb-pane-content" style="display:none;">
+                <div id="leaderboardWheelList" style="font-size: 11px; color: #cbd5e1;">جاري التحميل...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- صفحة وكلاء دينار -->
+    <div id="agentsScreen" class="screen-page">
+        <div class="top-nav">
+            <h3 style="margin:0; color:#38bdf8; font-size:15px;">👔 وكلاء دينار</h3>
+            <button class="nav-btn back" onclick="navigateTo('mainScreen')">⬅️ الرئيسية</button>
+        </div>
+
+        <div class="card" style="text-align: right;">
+            <h4 style="margin:0 0 6px 0; color:#f59e0b; font-size:13px;">⭐ شروط وتقديم طلب وكالة معتمدة</h4>
+            <p style="font-size: 11px; color: #cbd5e1; line-height: 1.5; margin-bottom: 10px;">
+                حول <b>1.000.000 مليون</b> لزين كاش (<b>9647881592421</b>)، ثم أدخل رقم الواتساب الخاص بك وأرفق صور السكن والبطاقة الوطنية (أمام وخلف).
+            </p>
+            <button class="action-btn btn-gold" onclick="openAgentApplyModal()">تقديم طلب وكالة جديد 📝</button>
+        </div>
+
+        <div class="card" style="text-align: right;">
+            <h4 style="margin:0 0 8px 0; color:#10b981; font-size:13px;">🌟 قائمة الوكلاء المعتمدين في التطبيق</h4>
+            <div id="approvedAgentsContainer" style="font-size: 11px; color: #94a3b8;">جاري التحميل...</div>
+        </div>
+    </div>
+
+    <!-- صفحة متجر العدادات -->
+    <div id="shopScreen" class="screen-page">
+        <div class="top-nav">
+            <h3 style="margin:0; color:#f59e0b; font-size:15px;">🛒 متجر العدادات</h3>
+            <button class="nav-btn back" onclick="navigateTo('mainScreen')">⬅️ الرئيسية</button>
+        </div>
+        <div class="card">
+            <div class="shop-tabs">
+                <button class="shop-tab-btn active-gold" id="tabGold" onclick="switchShopTab('gold')">الذهبي</button>
+                <button class="shop-tab-btn" id="tabDiamond" onclick="switchShopTab('diamond')">الماسي</button>
+                <button class="shop-tab-btn" id="tabLegend" onclick="switchShopTab('legend')">الأسطوري</button>
+            </div>
+
+            <div id="shopGoldContent" class="shop-tier-content active">
+                <div class="counter-row">
+                    <div><b>عداد 100 نقطة يومياً</b><br><small style="color:#f59e0b;">السعر: 20.000 نقطة (6.000 د.ع)</small></div>
+                    <button class="action-btn btn-gold" style="width:auto; padding:5px 12px; font-size:11px;" onclick="buyCounter(100, 20000)">شراء 🛒</button>
+                </div>
+                <div class="counter-row">
+                    <div><b>عداد 200 نقطة يومياً</b><br><small style="color:#f59e0b;">السعر: 40.000 نقطة (12.000 د.ع)</small></div>
+                    <button class="action-btn btn-gold" style="width:auto; padding:5px 12px; font-size:11px;" onclick="buyCounter(200, 40000)">شراء 🛒</button>
+                </div>
+                <div class="counter-row">
+                    <div><b>عداد 500 نقطة يومياً</b><br><small style="color:#f59e0b;">السعر: 100.000 نقطة (30.000 د.ع)</small></div>
+                    <button class="action-btn btn-gold" style="width:auto; padding:5px 12px; font-size:11px;" onclick="buyCounter(500, 100000)">شراء 🛒</button>
+                </div>
+                <div class="counter-row">
+                    <div><b>عداد 1.000 نقطة يومياً</b><br><small style="color:#f59e0b;">السعر: 200.000 نقطة (60.000 د.ع)</small></div>
+                    <button class="action-btn btn-gold" style="width:auto; padding:5px 12px; font-size:11px;" onclick="buyCounter(1000, 200000)">شراء 🛒</button>
+                </div>
+            </div>
+
+            <div id="shopDiamondContent" class="shop-tier-content">
+                <div class="counter-row">
+                    <div><b>عداد 2.000 نقطة يومياً</b><br><small style="color:#38bdf8;">السعر: 400.000 نقطة (120.000 د.ع)</small></div>
+                    <button class="action-btn btn-blue" style="width:auto; padding:5px 12px; font-size:11px;" onclick="buyCounter(2000, 400000)">شراء 🛒</button>
+                </div>
+                <div class="counter-row">
+                    <div><b>عداد 3.000 نقطة يومياً</b><br><small style="color:#38bdf8;">السعر: 600.000 نقطة (180.000 د.ع)</small></div>
+                    <button class="action-btn btn-blue" style="width:auto; padding:5px 12px; font-size:11px;" onclick="buyCounter(3000, 600000)">شراء 🛒</button>
+                </div>
+                <div class="counter-row">
+                    <div><b>عداد 4.000 نقطة يومياً</b><br><small style="color:#38bdf8;">السعر: 800.000 نقطة (240.000 د.ع)</small></div>
+                    <button class="action-btn btn-blue" style="width:auto; padding:5px 12px; font-size:11px;" onclick="buyCounter(4000, 800000)">شراء 🛒</button>
+                </div>
+                <div class="counter-row">
+                    <div><b>عداد 5.000 نقطة يومياً</b><br><small style="color:#38bdf8;">السعر: 1.000.000 نقطة (300.000 د.ع)</small></div>
+                    <button class="action-btn btn-blue" style="width:auto; padding:5px 12px; font-size:11px;" onclick="buyCounter(5000, 1000000)">شراء 🛒</button>
+                </div>
+            </div>
+
+            <div id="shopLegendContent" class="shop-tier-content">
+                <div class="counter-row">
+                    <div><b>عداد 10.000 نقطة يومياً</b><br><small style="color:#a855f7;">السعر: 2.000.000 نقطة (600.000 د.ع)</small></div>
+                    <button class="action-btn btn-purple" style="width:auto; padding:5px 12px; font-size:11px;" onclick="buyCounter(10000, 2000000)">شراء 🛒</button>
+                </div>
+                <div class="counter-row">
+                    <div><b>عداد 20.000 نقطة يومياً</b><br><small style="color:#a855f7;">السعر: 4.000.000 نقطة (1.200.000 د.ع)</small></div>
+                    <button class="action-btn btn-purple" style="width:auto; padding:5px 12px; font-size:11px;" onclick="buyCounter(20000, 4000000)">شراء 🛒</button>
+                </div>
+                <div class="counter-row">
+                    <div><b>عداد 30.000 نقطة يومياً</b><br><small style="color:#a855f7;">السعر: 6.000.000 نقطة (1.800.000 د.ع)</small></div>
+                    <button class="action-btn btn-purple" style="width:auto; padding:5px 12px; font-size:11px;" onclick="buyCounter(30000, 6000000)">شراء 🛒</button>
+                </div>
+                <div class="counter-row">
+                    <div><b>عداد 40.000 نقطة يومياً</b><br><small style="color:#a855f7;">السعر: 8.000.000 نقطة (2.400.000 د.ع)</small></div>
+                    <button class="action-btn btn-purple" style="width:auto; padding:5px 12px; font-size:11px;" onclick="buyCounter(40000, 8000000)">شراء 🛒</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- صفحة عجلة الحظ -->
+    <div id="wheelScreen" class="screen-page">
+        <div class="top-nav">
+            <h3 style="margin:0; color:#a855f7; font-size:15px;">🎡 عجلة الحظ</h3>
+            <button class="nav-btn back" onclick="navigateTo('mainScreen')">⬅️ الرئيسية</button>
+        </div>
+        <div class="card" style="padding:15px 10px; text-align:center;">
+            <div class="wheel-pointer"></div>
+            <div class="wheel-box" id="wheelGraphic"></div>
+            <div style="font-size: 13px; color: #f59e0b; font-weight: bold; margin: 6px 0;">تدوير العجلة بـ 100 جوهرة 💎 (هدايا نقاط)</div>
+            <button id="spinBtn" class="action-btn btn-purple" style="padding:8px; margin-top:3px;" onclick="spinWheel()">تدوير العجلة</button>
+            <div id="wheelMsg" style="margin-top:6px; font-size:12px; color:#38bdf8; font-weight:bold;"></div>
+        </div>
+    </div>
+
+    <!-- صفحة الملف الشخصي -->
+    <div id="profileScreen" class="screen-page">
+        <div class="top-nav">
+            <h3 style="margin:0; color:#f59e0b; font-size:15px;">👤 الملف الشخصي</h3>
+            <button class="nav-btn back" onclick="navigateBackFromProfile()">⬅️ الرئيسية</button>
+        </div>
+
+        <div class="profile-box">
+            <div class="large-avatar-container" id="profileAvatarRingBox">
+                <img id="avatarPreview" class="large-avatar" src="" alt="صورة" onclick="triggerImageUpload()" title="اضغط لتغيير الصورة الشخصية">
+            </div>
+            <input type="file" id="hiddenImageInput" accept="image/*" style="display: none;" onchange="previewImage(event)">
+
+            <div style="margin-top:2px; margin-bottom:6px;">
+                <span id="displayUserIdProfile" style="color:#f59e0b; font-size:12px; font-weight:bold;">ID: ---</span>
+            </div>
+
+            <input type="text" id="profileNameInput" class="input-box" placeholder="تعديل الاسم" style="margin-top:4px; margin-bottom:6px;">
+            <input type="text" id="profileBioInput" class="input-box" placeholder="اكتب البايو الخاص بك (60 حرف كحد أقصى)" maxlength="60" oninput="validateBioLength(this)" style="margin-top:2px; margin-bottom:6px; font-size:11px;">
+            <div id="bioCounter" style="font-size:9px; color:#94a3b8; text-align:left; margin-bottom:6px;">0 / 60</div>
+
+            <div id="agentStatusBadge" style="margin-top: 4px; display: none;"><span style="background:rgba(56,189,248,0.2); border:1px solid #38bdf8; color:#38bdf8; padding:2px 8px; border-radius:6px; font-size:10px; font-weight:bold;">⭐ وكيل معتمد</span></div>
+
+            <div style="margin-top:8px; text-align:right;">
+                <button class="action-btn btn-gold" onclick="saveProfileData()">حفظ التعديلات 💾</button>
+            </div>
+
+            <div class="profile-gifts-section">
+                <h4 style="margin:0 0 6px 0; color:#f59e0b; font-size:12px;">🎁 هدايا الملف الشخصي المستلمة</h4>
+                <div id="profileReceivedGiftsGrid" class="profile-gifts-grid">
+                    <div style="grid-column: span 3; text-align:center; color:#94a3b8; font-size:10px; padding:10px;">لا توجد هدايا مستلمة بعد</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- صفحة الأصدقاء والبحث -->
+    <div id="friendsScreen" class="screen-page">
+        <div class="top-nav">
+            <h3 style="margin:0; color:#38bdf8; font-size:15px;">👥 قائمة الأصدقاء والبحث</h3>
+            <button class="nav-btn back" onclick="navigateTo('mainScreen')">⬅️ الرئيسية</button>
+        </div>
+
+        <div class="card">
+            <h4 style="margin:0 0 6px 0; color:#38bdf8; font-size:12px;">🔍 البحث وإضافة الأصدقاء</h4>
+            <input type="text" id="searchIdInput" class="input-box" placeholder="أدخل ID الصديق (أرقام فقط)">
+            <button class="action-btn btn-blue" onclick="sendFriendRequest()">إرسال طلب صداقة 📨</button>
+            <div id="searchResultArea" style="margin-top:4px; font-size:11px; text-align:center;"></div>
+        </div>
+
+        <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <h4 style="margin:0; color:#10b981; font-size:12px;">💬 طلبات الصداقة الواردة</h4>
+                <button onclick="clearRequestsList()" style="background:rgba(239,68,68,0.2); border:1px solid #ef4444; color:#ef4444; font-size:10px; padding:2px 8px; border-radius:6px; cursor:pointer;" title="إفراغ طلبات الصداقة">🗑️ تنظيف القائمة</button>
+            </div>
+            <div id="friendRequestsContainer" style="font-size:11px; color:#94a3b8; margin-bottom:10px; text-align:center;">لا توجد طلبات صداقة</div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; border-top:1px solid rgba(255,255,255,0.1); padding-top:6px;">
+                <h4 style="margin:0; color:#38bdf8; font-size:12px;">👥 قائمة الأصدقاء</h4>
+                <div style="display:flex; gap:4px;">
+                    <button onclick="loadFriendSystem()" style="background:rgba(14,165,233,0.2); border:1px solid #0ea5e9; color:#38bdf8; font-size:10px; padding:2px 6px; border-radius:6px; cursor:pointer;" title="تحديث وإظهار الأصدقاء">🔄 تحديث</button>
+                    <button onclick="clearFriendsDisplayList()" style="background:rgba(239,68,68,0.2); border:1px solid #ef4444; color:#ef4444; font-size:10px; padding:2px 6px; border-radius:6px; cursor:pointer;" title="إخفاء من القائمة">🗑️ تنظيف</button>
+                </div>
+            </div>
+            <div id="friendsListContainer" style="font-size:11px; color:#94a3b8; text-align:center;">اختر صديقاً لبدء المحادثة</div>
+        </div>
+    </div>
+
+    <!-- صفحة الإشعارات -->
+    <div id="notificationsScreen" class="screen-page">
+        <div class="top-nav">
+            <h3 style="margin:0; color:#f59e0b; font-size:15px;">🔔 صندوق الإشعارات</h3>
+            <div style="display:flex; gap:6px;">
+                <button onclick="clearAllNotifications()" style="background:rgba(239,68,68,0.2); border:1px solid #ef4444; color:#ef4444; font-size:12px; padding:4px 8px; border-radius:6px; cursor:pointer;" title="حذف كل الإشعارات">🗑️</button>
+                <button class="nav-btn back" onclick="navigateTo('mainScreen')">⬅️ الرئيسية</button>
+            </div>
+        </div>
+        <div class="card" style="text-align: right;">
+            <div id="notificationsContainer" style="font-size:12px; color:#94a3b8; max-height:70vh; overflow-y:auto; padding:4px;">لا توجد إشعارات جديدة</div>
+        </div>
+    </div>
+
+    <!-- صفحة غرف الدردشة الكتابية -->
+    <div id="isolatedChatScreen" class="screen-page">
+        <div class="top-nav">
+            <h3 style="margin:0; color:#10b981; font-size:15px;">💬 غرف الدردشة الكتابية</h3>
+            <button class="nav-btn back" onclick="exitIsolatedChat()">⬅️ الرئيسية</button>
+        </div>
+
+        <div id="chatRoomsListArea" class="card" style="text-align:right;">
+            <div style="display:flex; gap:6px; margin-bottom:10px;">
+                <input type="text" id="isolatedRoomNameInput" class="input-box" placeholder="اسم الغرفة الجديدة" style="margin:0; flex:1;">
+                <button class="action-btn btn-gold" style="width:auto; padding:0 12px;" onclick="createIsolatedRoom()">إنشاء ➕</button>
+            </div>
+
+            <hr style="border-color:rgba(255,255,255,0.1); margin:10px 0;">
+            <h4 style="margin:0 0 8px 0; color:#38bdf8; font-size:12px;">🔥 الغرف الشائعة (الأكثر حضوراً)</h4>
+
+            <div id="isolatedRoomsContainer" class="rooms-grid">جاري التحميل بأمان...</div>
+        </div>
+
+        <div id="isolatedActiveRoomArea" class="card" style="display:none; flex-direction:column; height:74vh; padding:8px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <div style="display:flex; align-items:center; gap:6px;">
+                    <div style="position:relative; width:30px; height:30px;">
+                        <img id="activeRoomAvatarDisplay" src="https://via.placeholder.com/30" style="width:30px; height:30px; border-radius:50%; object-fit:cover;" alt="الغرفة">
+                    </div>
+                    <div>
+                        <b id="isolatedActiveRoomTitle" style="color:#f59e0b; font-size:13px;">اسم الغرفة</b>
+                        <span id="isolatedRoomCount" style="color:#10b981; font-size:11px; font-weight:bold; margin-right:6px;">👁️‍🗨️ 0</span>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:4px;">
+                    <button class="action-btn btn-blue" style="width:auto; padding:2px 8px; font-size:10px;" onclick="exitIsolatedActiveRoom()">خروج 🚪</button>
+                </div>
+            </div>
+
+            <div id="isolatedMessagesBox" style="flex:1; overflow-y:auto; background:rgba(0,0,0,0.3); background-size:cover; background-position:center; padding:8px; border-radius:8px; font-size:11px; margin-bottom:8px; text-align:right;"></div>
+
+            <div id="replyPreviewBar" class="reply-preview-bar">
+                <div style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:85%;">
+                    <span style="color:#38bdf8; font-weight:bold;" id="replyTargetSender">الرد على: </span>
+                    <span style="color:#cbd5e1; margin-right:4px;" id="replyTargetText"></span>
+                </div>
+                <button onclick="cancelReplyMode()" style="background:none; border:none; color:#ef4444; cursor:pointer; font-size:14px;">✖</button>
+            </div>
+
+            <div style="display:flex; gap:4px; align-items:center;">
+                <button class="gift-box-btn" onclick="openUnifiedGiftBox('all', 'الكل (عام)')" title="صندوق الهدايا العامة">🎁</button>
+                <button id="roomSettingsBtn" class="room-settings-btn" style="display:none;" onclick="openRoomSettingsModal()" title="تخصيص الغرفة">🎨</button>
+
+                <input type="text" id="isolatedMsgInput" class="input-box" placeholder="اكتب رسالة..." style="margin:0; flex:1;">
+                <button class="action-btn btn-gold" style="width:55px; padding:0; height:38px;" onclick="sendIsolatedMsg()">إرسال</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- نافذة لعبة "حزر الرقم" -->
+<div id="guessNumberModal" class="modal">
+    <div class="modal-content" style="text-align:right; max-width: 380px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <h4 style="margin:0; color:#38bdf8; font-size:15px;">🎯 لعبة حزر الرقم</h4>
+            <button style="background:none; border:none; color:#ef4444; font-size:18px; cursor:pointer;" onclick="closeGuessNumberGameModal()">✖</button>
+        </div>
+        
+        <div style="background: rgba(14, 165, 233, 0.1); border: 1px solid rgba(14, 165, 233, 0.3); padding: 8px; border-radius: 8px; margin-bottom: 12px; font-size: 11px; color: #38bdf8; text-align: center;">
+            ✨ أول محاولة مجانية يومياً!<br>بعدها تكلف كل محاولة <b>20 جوهرة 💎</b>.
+        </div>
+
+        <div style="font-size: 12px; color: #fff; margin-bottom: 10px; text-align: center;">اختر رقماً من 0 إلى 5:</div>
+
+        <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-bottom: 15px;">
+            <button onclick="submitUserGuess(0)" class="action-btn btn-blue" style="padding: 10px 0; font-size: 13px;">0</button>
+            <button onclick="submitUserGuess(1)" class="action-btn btn-blue" style="padding: 10px 0; font-size: 13px;">1</button>
+            <button onclick="submitUserGuess(2)" class="action-btn btn-blue" style="padding: 10px 0; font-size: 13px;">2</button>
+            <button onclick="submitUserGuess(3)" class="action-btn btn-blue" style="padding: 10px 0; font-size: 13px;">3</button>
+            <button onclick="submitUserGuess(4)" class="action-btn btn-blue" style="padding: 10px 0; font-size: 13px;">4</button>
+            <button onclick="submitUserGuess(5)" class="action-btn btn-blue" style="padding: 10px 0; font-size: 13px;">5</button>
+        </div>
+
+        <div id="guessGameMsg" style="font-size: 12px; text-align: center; font-weight: bold; min-height: 25px; color: #f59e0b;"></div>
+    </div>
+</div>
+
+<!-- لوحة تحكم الإدارة -->
+<div id="adminPanelModal" class="modal">
+    <div class="modal-content" style="text-align:right; max-width: 400px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <h4 style="margin:0; color:#ef4444; font-size:15px;">👑 لوحة تحكم الإدارة (msaftwtn)</h4>
+            <button style="background:none; border:none; color:#ef4444; font-size:18px; cursor:pointer;" onclick="closeAdminPanelModal()">✖</button>
+        </div>
+
+        <div style="background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); padding: 10px; border-radius: 10px; margin-bottom: 10px;">
+            <h4 style="margin:0 0 6px 0; color:#38bdf8; font-size:12px;">⚡ شحن النقاط أو حقيبة الوكيل مباشرة</h4>
+            <input type="text" id="adminTargetIdInput" class="input-box" placeholder="أدخل ID المستخدم أو الوكيل (أرقام فقط)" style="margin-bottom:6px;">
+            <input type="number" id="adminPointsAmountInput" class="input-box" placeholder="عدد النقاط" style="margin-bottom:6px;">
+            <div style="display:flex; gap:6px;">
+                <button class="action-btn btn-gold" style="padding:8px; font-size:11px;" onclick="adminChargeDirectUser()">شحن النقاط 🪙</button>
+                <button class="action-btn btn-blue" style="padding:8px; font-size:11px;" onclick="adminChargeAgentBag()">شحن حقيبة الوكيل 🎒</button>
+            </div>
+        </div>
+
+        <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); padding: 10px; border-radius: 10px; margin-bottom: 10px;">
+            <h4 style="margin:0 0 6px 0; color:#f59e0b; font-size:12px;">⚙️ إعدادات التحكم العامة للإدارة</h4>
+            <div style="display:flex; flex-direction:column; gap:6px;">
+                <button id="adminToggleWithdrawBtn" class="action-btn btn-purple" style="padding:8px; font-size:11px;" onclick="adminToggleWithdrawFeature()">🔒 إغلاق/فتح سحب الأرباح</button>
+                <button id="adminToggleDailyCounterBtn" class="action-btn btn-blue" style="padding:8px; font-size:11px;" onclick="adminToggleDailyCounterFeature()">⏳ قفل/فتح العداد اليومي</button>
+                <div style="display:flex; gap:4px;">
+                    <input type="text" id="adminAgentDeleteIdInput" class="input-box" placeholder="ID الوكيل للحذف" style="margin:0; flex:1;">
+                    <button class="action-btn" style="background:#ef4444; color:#fff; width:auto; padding:0 10px; font-size:11px;" onclick="adminDeleteAgentFeature()">حذف الوكيل 🗑️</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="shop-tabs" style="margin-bottom:8px;">
+            <button class="shop-tab-btn active-gold" id="admTab1" onclick="switchAdminTab('withdrawals')">طلبات السحب</button>
+            <button class="shop-tab-btn" id="admTab2" onclick="switchAdminTab('agents')">طلبات والوكلاء</button>
+        </div>
+
+        <div id="adminWithdrawalsArea" class="admin-tab-content" style="max-height: 200px; overflow-y: auto; font-size: 11px;">جاري التحميل...</div>
+        <div id="adminAgentsArea" class="admin-tab-content" style="display:none; max-height: 200px; overflow-y: auto; font-size: 11px;">جاري التحميل...</div>
+    </div>
+</div>
+
+<!-- نافذة معاينة مستمسكات الوكيل للإدارة -->
+<div id="agentDocsModal" class="modal">
+    <div class="modal-content" style="text-align:right; max-width: 400px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <h4 style="margin:0; color:#f59e0b; font-size:14px;">📄 مستمسكات طلب الوكالة</h4>
+            <button style="background:none; border:none; color:#ef4444; font-size:18px; cursor:pointer;" onclick="closeAgentDocsModal()">✖</button>
+        </div>
+        <div style="font-size:11px; color:#cbd5e1; margin-bottom:8px;" id="docApplicantInfo">المتقدم: ---</div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; max-height: 300px; overflow-y: auto; margin-bottom: 10px;">
+            <div>
+                <div style="font-size:10px; color:#38bdf8; margin-bottom:2px;">بطاقة السكن (أمامية):</div>
+                <img id="docResFront" src="" style="width:100%; border-radius:6px; border:1px solid rgba(255,255,255,0.2);" alt="سكن أمامية">
+            </div>
+            <div>
+                <div style="font-size:10px; color:#38bdf8; margin-bottom:2px;">بطاقة السكن (خلفية):</div>
+                <img id="docResBack" src="" style="width:100%; border-radius:6px; border:1px solid rgba(255,255,255,0.2);" alt="سكن خلفية">
+            </div>
+            <div>
+                <div style="font-size:10px; color:#38bdf8; margin-bottom:2px;">البطاقة الوطنية (أمامية):</div>
+                <img id="docNatFront" src="" style="width:100%; border-radius:6px; border:1px solid rgba(255,255,255,0.2);" alt="وطنية أمامية">
+            </div>
+            <div>
+                <div style="font-size:10px; color:#38bdf8; margin-bottom:2px;">البطاقة الوطنية (خلفية):</div>
+                <img id="docNatBack" src="" style="width:100%; border-radius:6px; border:1px solid rgba(255,255,255,0.2);" alt="وطنية خلفية">
+            </div>
+        </div>
+
+        <div style="display:flex; gap:6px;">
+            <button id="modalApproveAgentBtn" class="action-btn btn-green" style="font-size:11px; padding:8px;">قبول ومنح الوكالة ⭐</button>
+            <button id="modalRejectAgentBtn" class="action-btn" style="background:#ef4444; color:#fff; font-size:11px; padding:8px;" onclick="rejectAgentFromModal()">رفض وحذف ❌</button>
+        </div>
+    </div>
+</div>
+
+<!-- نافذة تقديم طلب وكالة -->
+<div id="agentApplyModal" class="modal">
+    <div class="modal-content" style="text-align:right;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <h4 style="margin:0; color:#f59e0b; font-size:14px;">📝 تقديم طلب وكالة دينار</h4>
+            <button style="background:none; border:none; color:#ef4444; font-size:18px; cursor:pointer;" onclick="closeAgentApplyModal()">✖</button>
+        </div>
+        <div style="background: rgba(245, 158, 11, 0.15); border: 1px solid #f59e0b; padding: 6px; border-radius: 8px; margin-bottom: 8px; font-size: 10px; color: #f59e0b;">
+            حول مبلغ 1.000.000 مليون إلى زين كاش الإدارة: <b>9647881592421</b> ثم أدخل رقم الواتساب الخاص بك والمستمسكات الأربعة أدناه:
+        </div>
+
+        <input type="text" id="agentOperationInput" class="input-box" placeholder="رقم عملية التحويل من زين كاش">
+        <input type="text" id="agentWhatsappInput" class="input-box" placeholder="رقم الواتساب للتواصل (مثلاً: 9647xxxxxxxx)">
+        
+        <label style="font-size:10px; color:#cbd5e1; display:block; margin-bottom:2px;">صورة بطاقة السكن (الأمامية):</label>
+        <input type="file" id="agentResidenceFrontInput" accept="image/*" class="input-box" onchange="previewAgentDoc(event, 'residenceFront')">
+
+        <label style="font-size:10px; color:#cbd5e1; display:block; margin-bottom:2px;">صورة بطاقة السكن (الخلفية):</label>
+        <input type="file" id="agentResidenceBackInput" accept="image/*" class="input-box" onchange="previewAgentDoc(event, 'residenceBack')">
+
+        <label style="font-size:10px; color:#cbd5e1; display:block; margin-bottom:2px;">صورة البطاقة الوطنية (الأمامية):</label>
+        <input type="file" id="agentNationalFrontInput" accept="image/*" class="input-box" onchange="previewAgentDoc(event, 'nationalFront')">
+
+        <label style="font-size:10px; color:#cbd5e1; display:block; margin-bottom:2px;">صورة البطاقة الوطنية (الخلفية):</label>
+        <input type="file" id="agentNationalBackInput" accept="image/*" class="input-box" onchange="previewAgentDoc(event, 'nationalBack')">
+
+        <button class="action-btn btn-gold" onclick="submitAgentApplication()">إرسال طلب الوكالة للإدارة 🚀</button>
+    </div>
+</div>
+
+<!-- بروفايل المستخدم المرئي -->
+<div id="userProfileModal" class="modal">
+    <div class="modal-content" style="text-align:center;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <h4 style="margin:0; color:#f59e0b; font-size:14px;">👤 الملف الشخصي</h4>
+            <button style="background:none; border:none; color:#ef4444; font-size:18px; cursor:pointer;" onclick="closeUserProfileModal()">✖</button>
+        </div>
+
+        <div class="large-avatar-container" style="margin:0 auto 4px auto;">
+            <img id="visitedUserAvatar" src="https://via.placeholder.com/85" style="width:85px; height:85px; border-radius:50%; object-fit:cover; display:block; background:#222;" alt="صورة المستخدم">
+        </div>
+        <span id="visitedUserCustomId" style="color:#f59e0b; font-size:12px; font-weight:bold; display:block; margin-bottom:4px;">ID: ---</span>
+        
+        <div id="visitedUserBio" style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:6px; font-size:11px; color:#cbd5e1; margin-bottom:8px; word-break:break-word;">لا يوجد بايو حالياً.</div>
+
+        <h3 id="visitedUserName" style="margin:0 0 2px 0; color:#fff; font-size:15px;">اسم المستخدم</h3>
+        <div id="visitedAgentBadge" style="margin-top: 4px; display: none;"><span style="background:rgba(56,189,248,0.2); border:1px solid #38bdf8; color:#38bdf8; padding:2px 8px; border-radius:6px; font-size:10px; font-weight:bold;">⭐ وكيل معتمد</span></div>
+
+        <div class="profile-gifts-section" style="margin-top:8px;">
+            <h4 style="margin:0 0 4px 0; color:#f59e0b; font-size:11px;">🎁 هدايا الملف الشخصي</h4>
+            <div id="visitedReceivedGiftsGrid" class="profile-gifts-grid">
+                <div style="grid-column: span 3; text-align:center; color:#94a3b8; font-size:10px; padding:6px;">لا توجد هدايا مستلمة</div>
+            </div>
+        </div>
+
+        <div style="margin-top:8px; display:flex; gap:6px; justify-content:center;">
+            <button id="visitedAddFriendBtn" class="action-btn btn-blue" style="padding:6px; font-size:11px; display:none;" onclick="sendFriendRequestFromVisitedProfile()">إضافة صديق ➕</button>
+            <button id="roomOwnerBanBtn" class="action-btn" style="background:#ef4444; color:#fff; padding:6px; font-size:11px; display:none;" onclick="banUserFromRoom()">حظر من الغرفة 🚫</button>
+        </div>
+
+        <hr style="border-color:rgba(255,255,255,0.1); margin:10px 0;">
+
+        <div id="visitedUserRoomArea" style="background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(16, 185, 129, 0.3); padding: 10px; border-radius: 12px; display:none;">
+            <h4 style="margin:0 0 6px 0; color:#10b981; font-size:12px;">🏠 غرفة الدردشة الخاصة بالمستخدم</h4>
+            <div id="visitedRoomDetails" style="font-size:11px; color:#cbd5e1; margin-bottom:8px;">اسم الغرفة</div>
+            <button id="visitedRoomJoinBtn" class="action-btn btn-green" style="padding:6px; font-size:11px;" onclick="">انضمام للغرفة 🚪</button>
+        </div>
+        <div id="visitedUserNoRoom" style="font-size:11px; color:#94a3b8; display:none;">هذا المستخدم ليس لديه غرفة دردشة نشطة حالياً.</div>
+    </div>
+</div>
+
+<div id="roomSettingsModal" class="modal">
+    <div class="modal-content" style="text-align:right;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <h4 style="margin:0; color:#a855f7; font-size:14px;">🎨 تخصيص غرفتك</h4>
+            <button style="background:none; border:none; color:#ef4444; font-size:18px; cursor:pointer;" onclick="closeRoomSettingsModal()">✖</button>
+        </div>
+
+        <label style="font-size:11px; color:#cbd5e1; display:block; margin-bottom:4px;">صورة الغرفة الظاهرة للخارج:</label>
+        <input type="file" id="roomAvatarInput" accept="image/*" class="input-box" onchange="previewRoomAvatar(event)">
+
+        <label style="font-size:11px; color:#cbd5e1; display:block; margin-bottom:4px; margin-top:8px;">خلفية الدردشة للغرفة:</label>
+        <input type="file" id="roomBgInput" accept="image/*" class="input-box" onchange="previewRoomBg(event)">
+
+        <button class="action-btn btn-purple" style="margin-top:10px;" onclick="saveRoomCustomization()">حفظ التخصيص وتطبيق 💾</button>
+    </div>
+</div>
+
+<div id="unifiedGiftModal" class="modal">
+    <div class="modal-content gift-modal-bottom">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+            <div style="font-size:12px; font-weight:bold; color:#f59e0b;" id="giftModalMainTitle">صندوق الهدايا</div>
+            <button style="background:none; border:none; color:#ef4444; font-size:16px; cursor:pointer;" onclick="closeUnifiedGiftBox()">✖</button>
+        </div>
+
+        <div style="background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; border-radius: 8px; padding: 6px 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 11px; color: #34d399;" id="activeTargetDisplayLabel">🎯 يتم الإرسال إلى: <b>الكل (عام)</b></span>
+            <button onclick="openTargetSelectorModal()" style="background: #10b981; color: #fff; border: none; padding: 3px 8px; border-radius: 6px; font-size: 10px; cursor: pointer; font-weight: bold;">تغيير المستخدم 👥</button>
+        </div>
+
+        <div class="gift-tabs-header">
+            <button class="gift-tab-btn active" id="interactiveTabBtn" onclick="switchGiftTab('interactive')">🎁 هدايا تفاعلية</button>
+            <button class="gift-tab-btn" id="exclusiveTabBtn" onclick="switchGiftTab('exclusive')">👑 هدايا حصرية</button>
+        </div>
+
+        <div id="interactiveGiftsContent" class="gift-pane-content active">
+            <div class="gift-card-box" id="giftBox_1" onclick="highlightGift('علم العراق 🇮🇶', 100, 'https://upload.wikimedia.org/wikipedia/commons/f/f6/Flag_of_Iraq.svg', 'giftBox_1')">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/f/f6/Flag_of_Iraq.svg" class="gift-icon-full" alt="علم العراق">
+                <div class="gift-price-num">100 🪙</div>
+            </div>
+            <div class="gift-card-box" id="giftBox_2" onclick="highlightGift('وردة', 25, 'https://cdn-icons-png.flaticon.com/512/2921/2921822.png', 'giftBox_2')">
+                <img src="https://cdn-icons-png.flaticon.com/512/2921/2921822.png" class="gift-icon-full" alt="وردة">
+                <div class="gift-price-num">25 🪙</div>
+            </div>
+            <div class="gift-card-box" id="giftBox_3" onclick="highlightGift('قلب', 30, 'https://cdn-icons-png.flaticon.com/512/833/833472.png', 'giftBox_3')">
+                <img src="https://cdn-icons-png.flaticon.com/512/833/833472.png" class="gift-icon-full" alt="قلب">
+                <div class="gift-price-num">30 🪙</div>
+            </div>
+            <div class="gift-card-box" id="giftBox_4" onclick="highlightGift('عصير بيبسي 🥤', 20, 'https://cdn-icons-png.flaticon.com/512/2405/2405479.png', 'giftBox_4')">
+                <img src="https://cdn-icons-png.flaticon.com/512/2405/2405479.png" class="gift-icon-full" alt="بيبسي">
+                <div class="gift-price-num">20 🪙</div>
+            </div>
+            <div class="gift-card-box" id="giftBox_5" onclick="highlightGift('دراجة هوائية', 15, 'https://cdn-icons-png.flaticon.com/512/2972/2972185.png', 'giftBox_5')">
+                <img src="https://cdn-icons-png.flaticon.com/512/2972/2972185.png" class="gift-icon-full" alt="دراجة">
+                <div class="gift-price-num">15 🪙</div>
+            </div>
+            <div class="gift-card-box" id="giftBox_6" onclick="highlightGift('قطة', 15, 'https://cdn-icons-png.flaticon.com/512/1818/1818400.png', 'giftBox_6')">
+                <img src="https://cdn-icons-png.flaticon.com/512/1818/1818400.png" class="gift-icon-full" alt="قطة">
+                <div class="gift-price-num">15 🪙</div>
+            </div>
+        </div>
+
+        <div id="exclusiveGiftsContent" class="gift-pane-content">
+            <div class="gift-card-box" id="giftBox_10" onclick="highlightGift('الأسد 🦁', 1000, 'https://cdn-icons-png.flaticon.com/512/1998/1998612.png', 'giftBox_10')">
+                <img src="https://cdn-icons-png.flaticon.com/512/1998/1998612.png" class="gift-icon-full exclusive-gift-animated" alt="أسد">
+                <div class="gift-price-num">1000 🪙</div>
+            </div>
+            <div class="gift-card-box" id="giftBox_11" onclick="highlightGift('عجلة فيراري 🏎️', 1500, 'https://cdn-icons-png.flaticon.com/512/741/741407.png', 'giftBox_11')">
+                <img src="https://cdn-icons-png.flaticon.com/512/741/741407.png" class="gift-icon-full exclusive-gift-animated" alt="فيراري">
+                <div class="gift-price-num">1500 🪙</div>
+            </div>
+            <div class="gift-card-box" id="giftBox_12" onclick="highlightGift('دب قطبي 🐻‍❄️', 800, 'https://cdn-icons-png.flaticon.com/512/235/235380.png', 'giftBox_12')">
+                <img src="https://cdn-icons-png.flaticon.com/512/235/235380.png" class="gift-icon-full exclusive-gift-animated" alt="دب">
+                <div class="gift-price-num">800 🪙</div>
+            </div>
+            <div class="gift-card-box" id="giftBox_13" onclick="highlightGift('فضاء حقيقي 🌌', 1400, 'https://cdn-icons-png.flaticon.com/512/1146/1146869.png', 'giftBox_13')">
+                <img src="https://cdn-icons-png.flaticon.com/512/1146/1146869.png" class="gift-icon-full exclusive-gift-animated" alt="فضاء">
+                <div class="gift-price-num">1400 🪙</div>
+            </div>
+            <div class="gift-card-box" id="giftBox_14" onclick="highlightGift('ذئب 🐺', 750, 'https://cdn-icons-png.flaticon.com/512/3069/3069172.png', 'giftBox_14')">
+                <img src="https://cdn-icons-png.flaticon.com/512/3069/3069172.png" class="gift-icon-full exclusive-gift-animated" alt="ذئب">
+                <div class="gift-price-num">750 🪙</div>
+            </div>
+            <div class="gift-card-box" id="giftBox_15" onclick="highlightGift('نرد الزار 🎲', 150, 'https://cdn-icons-png.flaticon.com/512/1041/1041888.png', 'giftBox_15')">
+                <img src="https://cdn-icons-png.flaticon.com/512/1041/1041888.png" class="gift-icon-full exclusive-gift-animated" alt="نرد">
+                <div class="gift-price-num">150 🪙</div>
+            </div>
+        </div>
+
+        <div class="bottom-action-bar" id="giftSendActionBar">
+            <button onclick="confirmSendPendingGift()" style="background:linear-gradient(135deg, #10b981, #059669); color:#fff; border:none; padding:6px 18px; border-radius:8px; font-size:12px; font-weight:bold; cursor:pointer; box-shadow:0 3px 10px rgba(16,185,129,0.4);">إرسال 🚀</button>
+        </div>
+    </div>
+</div>
+
+<div id="targetSelectorModal" class="modal">
+    <div class="modal-content" style="text-align:right;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <h4 style="margin:0; color:#38bdf8; font-size:13px;">👥 حدد المستخدم المستهدف بالهدية</h4>
+            <button style="background:none; border:none; color:#ef4444; font-size:16px; cursor:pointer;" onclick="closeTargetSelectorModal()">✖</button>
+        </div>
+        <div style="font-size:11px; color:#94a3b8; margin-bottom:8px;">اختر شخصاً من المتواجدين في الغرفة الآن:</div>
+        <div id="roomOccupantsListContainer" style="max-height:200px; overflow-y:auto; border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:4px;">
+            جاري تحميل الحضور...
+        </div>
+    </div>
+</div>
+
+<div id="chatModal" class="modal">
+    <div class="modal-content" style="max-width: 380px;">
+        <div class="modal-header" style="display:flex; justify-content:space-between; align-items:center;">
+            <h3 id="chatTitle" style="color:#10b981; margin:0; font-size:13px; cursor:pointer;" onclick="openVisitedUserProfileFromChat()" title="اضغط لزيارة الملف الشخصي">الدردشة 👤</h3>
+            <div style="display:flex; gap:6px; align-items:center;">
+                <button onclick="deleteFriendConnection()" style="background:rgba(245,158,11,0.2); border:1px solid #f59e0b; color:#f59e0b; font-size:10px; padding:3px 6px; border-radius:6px; cursor:pointer;" title="حذف الصديق">❌ حذف الصديق</button>
+                <button onclick="blockCurrentFriend()" style="background:rgba(239,68,68,0.2); border:1px solid #ef4444; color:#ef4444; font-size:10px; padding:3px 6px; border-radius:6px; cursor:pointer;" title="حظر المستخدم">🚫 حظر</button>
+                <button style="background:none; border:none; color:#ef4444; font-size:18px; cursor:pointer;" onclick="closeChatModal()">✖</button>
+            </div>
+        </div>
+        <div id="chatMessagesArea" style="height:250px; overflow-y:auto; background:rgba(0,0,0,0.3); padding:8px; border-radius:8px; margin:8px 0; font-size:11px;"></div>
+        
+        <div style="display:flex; gap:4px; align-items:center;">
+            <input type="file" id="chatImageInput" accept="image/*" style="display:none;" onchange="sendChatImage(event)">
+            <button class="gift-box-btn" onclick="document.getElementById('chatImageInput').click()" title="إرسال صورة">📷</button>
+            <input type="text" id="chatInputMsg" class="input-box" placeholder="اكتب رسالة..." style="margin:0; flex:1;">
+            <button class="action-btn btn-blue" style="width:60px; padding:0; height:38px;" onclick="sendChatMessage()">إرسال</button>
+        </div>
+    </div>
+</div>
+
+<!-- صفحة سحب الأرباح -->
+<div id="withdrawModal" class="modal">
+    <div class="modal-content" style="text-align:right;">
+        <div class="modal-header" style="display:flex; justify-content:space-between; margin-bottom:8px;">
+            <h3 style="color:#f59e0b; margin:0; font-size:14px;">💸 سحب الأرباح</h3>
+            <button style="background:none; border:none; color:#ef4444; font-size:18px; cursor:pointer;" onclick="closeWithdrawModal()">✖</button>
+        </div>
+
+        <div style="background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; padding: 8px; border-radius: 8px; margin-bottom: 10px; font-size: 11px; color: #10b981;">
+            <b>💼 قسم سحب الأرباح:</b><br>
+            الحد الأدنى للسحب 10$ ويتم التحويل حصراً من قبل الإدارة على محفظة زين كاش لاستلام الأرباح.
+        </div>
+
+        <label style="font-size: 11px; color: #cbd5e1; display:block; margin-bottom:4px;">طريقة السحب:</label>
+        <select id="withdrawMethod" class="select-box">
+            <option value="زين كاش (Zain Cash)">زين كاش (Zain Cash)</option>
+        </select>
+
+        <input type="text" class="input-box" id="withdrawAccount" placeholder="رقم محفظة زين كاش الخاصة بك لاستلام الأرباح">
+        <input type="number" class="input-box" id="withdrawAmount" placeholder="أدخل مبلغ السحب (10 دولار فأكثر)">
+
+        <button class="action-btn btn-gold" onclick="submitWithdrawal()">تأكيد طلب السحب للإدارة 🚀</button>
+    </div>
+</div>
+
+<script>
+    let currentEmail = '';
+    let currentUserKey = '';
+    let rtdb = null;
+    let userData = { points: 0, gems: 0, agentBag: 0, lastSpinTime: 0, activeCounter: 'لا يوجد', activeCounterVal: 0, customId: '', name: '', avatar: '', bio: '', hasCreatedRoom: false, createdRoomId: '', lastWithdrawTime: 0, isAgent: false, isBanned: false, whatsapp: '' };
+    let base64Image = '';
+    let activeChatFriendKey = '';
+    let activeChatFriendName = '';
+    let visitedProfileTargetKey = '';
+    let timerInterval = null;
+    let isolatedActiveRoomId = '';
+    let currentRoomOccupantsCount = 0;
+    let activeRoomCreatorKey = '';
+
+    let globalAppSettings = { withdrawLocked: false, dailyCounterLocked: false };
+
+    let newRoomAvatarBase64 = '';
+    let newRoomBgBase64 = '';
+    
+    let agentResidenceFrontBase64 = '';
+    let agentResidenceBackBase64 = '';
+    let agentNationalFrontBase64 = '';
+    let agentNationalBackBase64 = '';
+
+    let currentReplyTarget = null;
+    let pendingSelectedGift = null;
+    let selectedTargetUserKey = 'all';
+    let selectedTargetUserName = 'الكل (عام)';
+
+    let totalWheelDegrees = 0;
+
+    window.addEventListener('load', () => {
+        try {
+            const firebaseConfig = {
+                apiKey: "AIzaSyBSClPiF0QT7sKxw6ZZdalXVYBW_-PGCBU",
+                authDomain: "dinar-f5b37.firebaseapp.com",
+                databaseURL: "https://dinar-f5b37-default-rtdb.firebaseio.com",
+                projectId: "dinar-f5b37",
+                storageBucket: "dinar-f5b37-default-rtdb.firebasestorage.app",
+                messagingSenderId: "949221346060",
+                appId: "1:949221346060:web:1bdaaf777f775cdbf01729"
+            };
+            if (typeof firebase !== 'undefined' && !firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+                rtdb = firebase.database();
+            }
+        } catch (e) { console.error(e); }
+
+        setTimeout(() => {
+            try {
+                const savedUserKey = localStorage.getItem('dinarUserKey');
+                if (savedUserKey && rtdb) {
+                    currentUserKey = savedUserKey;
+                    initRealtimeSync();
+                    navigateTo('mainScreen');
+                } else {
+                    navigateTo('authScreen');
+                }
+            } catch (err) {
+                navigateTo('authScreen');
+            }
+        }, 300);
+    });
+
+    function navigateTo(screenId) {
+        document.querySelectorAll('.screen-page').forEach(page => page.classList.remove('active'));
+        const target = document.getElementById(screenId);
+        if(target) target.classList.add('active');
+        if(screenId === 'friendsScreen') loadFriendSystem();
+        if(screenId === 'agentsScreen') loadApprovedAgentsList();
+        if(screenId === 'profileScreen') {
+            loadProfileReceivedGifts(currentUserKey, 'profileReceivedGiftsGrid');
+            let bioInput = document.getElementById('profileBioInput');
+            if(bioInput) {
+                let currentLen = bioInput.value.length;
+                document.getElementById('bioCounter').innerText = `${currentLen} / 60`;
+            }
+        }
+        if(screenId === 'leaderboardScreen') {
+            loadLeaderboardData();
+        }
+    }
+
+    function openNotificationsPage() {
+        document.querySelectorAll('.notification-badge').forEach(b => b.style.display = 'none');
+        navigateTo('notificationsScreen');
+    }
+
+    function switchAuthTab(type) {
+        document.getElementById('loginTabBtn').className = "tab-btn " + (type === 'login' ? "active" : "");
+        document.getElementById('signupTabBtn').className = "tab-btn " + (type === 'signup' ? "active" : "");
+        document.getElementById('loginForm').style.display = type === 'login' ? 'block' : 'none';
+        document.getElementById('signupForm').style.display = type === 'signup' ? 'block' : 'none';
+    }
+
+    function handleLogin() {
+        const email = document.getElementById('loginEmail').value.trim();
+        const pass = document.getElementById('loginPass').value.trim();
+        if(!email || !pass) return alert("⚠️ أدخل البريد وكلمة المرور");
+        if(!rtdb) return alert("❌ خطأ بالاتصال");
+
+        const btn = document.getElementById('loginBtn');
+        btn.disabled = true; btn.innerText = "جاري الدخول...";
+
+        currentUserKey = email.replace(/[^a-zA-Z0-9]/g, '_');
+        rtdb.ref('users/' + currentUserKey).once('value').then(snap => {
+            btn.disabled = false; btn.innerText = "دخول الحساب 🚀";
+            if(snap.exists() && snap.val().password === pass) {
+                let uDat = snap.val();
+                if (uDat.isBanned && email !== 'msaftwtn@gmail.com') {
+                    return alert("🚫 تم حظر هذا الحساب نهائياً!");
+                }
+
+                currentEmail = email;
+                try { localStorage.setItem('dinarUserKey', currentUserKey); } catch(e){}
+                
+                if (email === 'msaftwtn@gmail.com' && uDat.customId !== '1') {
+                    rtdb.ref('users/' + currentUserKey).update({ customId: '1' });
+                }
+
+                if (email !== 'msaftwtn@gmail.com') {
+                    let deviceKey = localStorage.getItem('dinarDeviceUuid');
+                    if (!deviceKey) {
+                        deviceKey = 'dev_' + Math.random().toString(36).substring(2) + Date.now();
+                        localStorage.setItem('dinarDeviceUuid', deviceKey);
+                    }
+                    rtdb.ref(`device_bindings/${deviceKey}`).once('value').then(bSnap => {
+                        if (bSnap.exists()) {
+                            let boundUser = bSnap.val().userKey;
+                            if (boundUser !== currentUserKey) {
+                                rtdb.ref(`users/${currentUserKey}`).update({ isBanned: true });
+                                rtdb.ref(`users/${boundUser}`).update({ isBanned: true });
+                                alert("🚫 تم حظر الحسابات لاكتشاف فتح حسابين على نفس الجهاز!");
+                                handleLogout();
+                                return;
+                            }
+                        } else {
+                            rtdb.ref(`device_bindings/${deviceKey}`).set({ userKey: currentUserKey });
+                        }
+                    });
+                }
+
+                initRealtimeSync();
+                navigateTo('mainScreen');
+            } else { alert("❌ البريد أو كلمة المرور غير صحيحة!"); }
+        }).catch(() => { 
+            btn.disabled = false; btn.innerText = "دخول الحساب 🚀"; alert("❌ خطأ بالاتصال بالشبكة."); 
+        });
+    }
+
+    function handleSignup() {
+        const email = document.getElementById('signupEmail').value.trim();
+        const pass = document.getElementById('signupPass').value.trim();
+        if(!email || !pass) return alert("⚠️ املأ الخانات");
+        if(!rtdb) return alert("❌ خطأ بالاتصال");
+
+        const btn = document.getElementById('signupBtn');
+        btn.disabled = true; btn.innerText = "جاري الإنشاء...";
+
+        currentUserKey = email.replace(/[^a-zA-Z0-9]/g, '_');
+        rtdb.ref('users/' + currentUserKey).once('value').then(check => {
+            if(check.exists()) { btn.disabled = false; btn.innerText = "تأكيد الحساب ✨"; return alert("⚠️ مسجل سابقاً!"); }
+
+            let defaultName = email.split('@')[0];
+            let assignedId = (email === 'msaftwtn@gmail.com') ? '1' : Math.floor(100000 + Math.random() * 900000).toString();
+
+            const newUser = { name: defaultName, email: email, password: pass, customId: assignedId, points: 0, gems: 0, agentBag: 0, bio: '', lastSpinTime: 0, activeCounter: 'لا يوجد', activeCounterVal: 0, hasCreatedRoom: false, createdRoomId: '', lastWithdrawTime: 0, isAgent: false, isBanned: false, whatsapp: '', weeklyGiftsSent: 0, weeklyWheelPoints: 0, weeklyAgentPoints: 0 };
+            rtdb.ref('users/' + currentUserKey).set(newUser).then(() => {
+                btn.disabled = false; btn.innerText = "تأكيد الحساب ✨";
+                currentEmail = email;
+                try { localStorage.setItem('dinarUserKey', currentUserKey); } catch(e){}
+                
+                if (email !== 'msaftwtn@gmail.com') {
+                    let deviceKey = localStorage.getItem('dinarDeviceUuid');
+                    if (!deviceKey) {
+                        deviceKey = 'dev_' + Math.random().toString(36).substring(2) + Date.now();
+                        localStorage.setItem('dinarDeviceUuid', deviceKey);
+                    }
+                    rtdb.ref(`device_bindings/${deviceKey}`).set({ userKey: currentUserKey });
+                }
+
+                initRealtimeSync();
+                navigateTo('mainScreen');
+            });
+        }).catch(() => { 
+            btn.disabled = false; btn.innerText = "تأكيد الحساب ✨"; alert("❌ خطأ بالاتصال بالشبكة.");
+        });
+    }
+
+    function initRealtimeSync() {
+        if(!currentUserKey || !rtdb) return;
+        rtdb.ref('users/' + currentUserKey).on('value', snap => {
+            if(snap.exists()) {
+                userData = snap.val();
+                if (userData.isBanned && currentEmail !== 'msaftwtn@gmail.com') {
+                    alert("🚫 تم حظر حسابك نهائياً!");
+                    handleLogout();
+                    return;
+                }
+
+                currentEmail = userData.email || '';
+                
+                if(currentEmail === 'msaftwtn@gmail.com' && userData.customId !== '1') {
+                    userData.customId = '1';
+                    rtdb.ref('users/' + currentUserKey).update({ customId: '1' });
+                }
+
+                if(!userData.customId || !/^\d+$/.test(userData.customId)) {
+                    userData.customId = Math.floor(100000 + Math.random() * 900000).toString();
+                    rtdb.ref('users/' + currentUserKey).update({ customId: userData.customId });
+                }
+
+                updateUI();
+                checkActiveTimer();
+                checkAndRunAutomatedFridayDistribution();
+            }
+        });
+
+        rtdb.ref('app_settings').on('value', snap => {
+            if (snap.exists()) {
+                globalAppSettings = snap.val();
+            } else {
+                globalAppSettings = { withdrawLocked: false, dailyCounterLocked: false };
+            }
+        });
+
+        loadNotifications();
+        loadFriendSystem();
+    }
+
+    function updateUI() {
+        document.getElementById('userPoints').innerText = userData.points || 0;
+        document.getElementById('userGems').innerText = userData.gems || 0;
+        let bagEl = document.getElementById('agentBagBalance');
+        if(bagEl) bagEl.innerText = userData.agentBag || 0;
+
+        document.getElementById('displayUserId').innerText = `ID: ${userData.customId || '---'}`;
+        let profileIdEl = document.getElementById('displayUserIdProfile');
+        if(profileIdEl) profileIdEl.innerText = `ID: ${userData.customId || '---'}`;
+
+        document.getElementById('headerUserName').innerText = userData.name || 'المستخدم';
+        document.getElementById('profileNameInput').value = userData.name || '';
+        
+        let bioInput = document.getElementById('profileBioInput');
+        if(bioInput) {
+            bioInput.value = userData.bio || '';
+            document.getElementById('bioCounter').innerText = `${bioInput.value.length} / 60`;
+        }
+        
+        let avatarSrc = userData.avatar ? userData.avatar : 'https://via.placeholder.com/45';
+        document.getElementById('headerUserAvatar').src = avatarSrc;
+        let avPreview = document.getElementById('avatarPreview');
+        if(avPreview) avPreview.src = avatarSrc;
+
+        let currentVal = userData.activeCounterVal || 0;
+        if (currentVal > 0) {
+            document.getElementById('activeCounterInfo').innerText = `${currentVal.toLocaleString()} نقطة يومياً`;
+        } else {
+            document.getElementById('activeCounterInfo').innerText = userData.activeCounter || 'لا يوجد';
+        }
+
+        let agentBadge = document.getElementById('agentStatusBadge');
+        if (userData.isAgent) agentBadge.style.display = 'block';
+        else agentBadge.style.display = 'none';
+
+        let agentCard = document.getElementById('agentChargingCard');
+        if(agentCard) {
+            agentCard.style.display = userData.isAgent ? 'block' : 'none';
+        }
+
+        let adminBtn = document.getElementById('adminPanelMainBtn');
+        if (currentEmail === 'msaftwtn@gmail.com') {
+            adminBtn.style.display = 'inline-block';
+        } else {
+            adminBtn.style.display = 'none';
+        }
+    }
+
+    function saveToDB() {
+        if(!currentUserKey || !rtdb) return Promise.resolve();
+        if ((userData.points < 0 || userData.gems < 0 || userData.agentBag < 0) && currentEmail !== 'msaftwtn@gmail.com') {
+            userData.isBanned = true;
+            rtdb.ref('users/' + currentUserKey).update({ isBanned: true });
+            alert("🚫 تم الحظر أوتوماتيكياً بسبب مخالفة نظام الأمان الصارم!");
+            handleLogout();
+            return Promise.reject("Anti-cheat violation");
+        }
+        return rtdb.ref('users/' + currentUserKey).update(userData);
+    }
+
+    function handleLogout() {
+        if(timerInterval) clearInterval(timerInterval);
+        try { localStorage.removeItem('dinarUserKey'); } catch(e){}
+        currentEmail = ''; currentUserKey = '';
+        navigateTo('authScreen');
+    }
+
+    function buyCounter(counterDailyPoints, counterPrice) {
+        let currentPoints = userData.points || 0;
+        if (currentPoints < counterPrice) {
+            return alert(`❌ نقاطك غير كافية! سعر هذا العداد هو ${counterPrice.toLocaleString()} نقطة، ورصيدك الحالي هو ${currentPoints.toLocaleString()} نقطة.`);
+        }
+
+        userData.points -= counterPrice;
+        let oldCounterVal = userData.activeCounterVal || 0;
+        userData.activeCounterVal = oldCounterVal + counterDailyPoints;
+
+        saveToDB().then(() => {
+            updateUI();
+            alert(`🎉 مبروك! تم شراء العداد بنجاح، وتراكم العداد اليومي ليصبح إجمالي إنتاجك (${userData.activeCounterVal.toLocaleString()} نقطة يومياً) مع حفظ كامل رصيدك.`);
+        });
+    }
+
+    function claimDailyReward() {
+        if (globalAppSettings.dailyCounterLocked && currentEmail !== 'msaftwtn@gmail.com') {
+            return alert('⚠️ عذراً، العداد اليومي مقفل حالياً من قبل الإدارة.');
+        }
+
+        let now = new Date().getTime();
+        let lastTime = userData.lastSpinTime || 0;
+        let diff = now - lastTime;
+        let cooldown = 24 * 60 * 60 * 1000;
+
+        if(diff < cooldown) return alert('⚠️ العداد مفعل مسبقاً! انتظر حتى ينتهي الوقت.');
+
+        let rewardPoints = userData.activeCounterVal || 100;
+        if (rewardPoints <= 0) rewardPoints = 100;
+
+        userData.points = (userData.points || 0) + rewardPoints;
+        userData.lastSpinTime = now;
+        saveToDB().then(() => { updateUI(); startTimerCountdown(); alert(`🎉 مبروك! تم تفعيل العداد وحصلت على أرباحك (${rewardPoints.toLocaleString()} نقطة) وبدأت الساعة بالعد التنازلي بنجاح.`); });
+    }
+
+    function convertGemsToPoints() {
+        let currentGems = userData.gems || 0;
+        if (currentGems < 10000) {
+            return alert(`⚠️ رصيدك الحالي من الجواهر (${currentGems}) لا يكفي للتبديل. يلزم 10.000 جوهرة للحصول على 1.000 نقطة!`);
+        }
+
+        userData.gems -= 10000;
+        userData.points = (userData.points || 0) + 1000;
+        saveToDB().then(() => {
+            updateUI();
+            alert('🎉 مبروك! تم تبديل 10.000 جوهرة بـ 1.000 نقطة بنجاح.');
+        });
+    }
+
+    function checkActiveTimer() { startTimerCountdown(); }
+
+    function startTimerCountdown() {
+        if(timerInterval) clearInterval(timerInterval);
+        let cooldown = 24 * 60 * 60 * 1000;
+        let powerBtn = document.getElementById('powerActivateBtn');
+        let display = document.getElementById('timerDisplay');
+
+        timerInterval = setInterval(() => {
+            let now = new Date().getTime();
+            let elapsed = now - (userData.lastSpinTime || 0);
+            let remaining = cooldown - elapsed;
+
+            if(userData.lastSpinTime && remaining > 0) {
+                powerBtn.className = "power-btn green-pulse";
+                powerBtn.disabled = true;
+                let hours = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                let minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+                let seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+                display.innerText = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            } else {
+                display.innerText = "24:00:00";
+                powerBtn.className = "power-btn red-pulse";
+                powerBtn.disabled = false;
+                clearInterval(timerInterval);
+            }
+        }, 1000);
+    }
+
+    function switchShopTab(tier) {
+        document.querySelectorAll('.shop-tab-btn').forEach(b => b.className = 'shop-tab-btn');
+        document.querySelectorAll('.shop-tier-content').forEach(c => c.classList.remove('active'));
+        if(tier === 'gold') { document.getElementById('tabGold').className = "shop-tab-btn active-gold"; document.getElementById('shopGoldContent').classList.add('active'); }
+        else if(tier === 'diamond') { document.getElementById('tabDiamond').className = "shop-tab-btn active-diamond"; document.getElementById('shopDiamondContent').classList.add('active'); }
+        else if(tier === 'legend') { document.getElementById('tabLegend').className = "shop-tab-btn active-legend"; document.getElementById('shopLegendContent').classList.add('active'); }
+    }
+
+    let isSpinning = false;
+    function spinWheel() {
+        if(isSpinning) return;
+        let msg = document.getElementById('wheelMsg');
+        let spinBtn = document.getElementById('spinBtn');
+        let currentGems = userData.gems || 0;
+        
+        if(currentGems < 100) return msg.innerText = "❌ ليس لديك جواهر كافية (يلزم 100 جوهرة للتدوير)!";
+
+        isSpinning = true; spinBtn.disabled = true;
+        userData.gems -= 100; saveToDB();
+
+        const wheel = document.getElementById('wheelGraphic');
+        msg.innerText = "🎡 جاري تدوير العجلة بسرعة فائقة (5 ثوانٍ)...";
+        
+        let prizes = [0, 5, 10, 15, 20, 50];
+        let selectedIndex = Math.floor(Math.random() * 6);
+        let prize = prizes[selectedIndex];
+        
+        totalWheelDegrees += 3600 + (selectedIndex * 60) + 30;
+        wheel.style.transform = `rotate(${totalWheelDegrees}deg)`;
+
+        setTimeout(() => {
+            userData.points = (userData.points || 0) + prize;
+            userData.weeklyWheelPoints = (userData.weeklyWheelPoints || 0) + prize;
+            saveToDB().then(() => {
+                msg.innerText = `🎉 مبروك! تم الحصول على ${prize} نقطة بنجاح!`;
+                isSpinning = false; spinBtn.disabled = false;
+                updateUI();
+            });
+        }, 5000);
+    }
+
+    function switchLeaderboardTab(tab) {
+        document.getElementById('lbTab1').className = "shop-tab-btn " + (tab === 'gifts' ? "active-gold" : "");
+        document.getElementById('lbTab2').className = "shop-tab-btn " + (tab === 'agents' ? "active-gold" : "");
+        document.getElementById('lbTab3').className = "shop-tab-btn " + (tab === 'wheel' ? "active-gold" : "");
+
+        document.getElementById('lbContentGifts').style.display = tab === 'gifts' ? 'block' : 'none';
+        document.getElementById('lbContentAgents').style.display = tab === 'agents' ? 'block' : 'none';
+        document.getElementById('lbContentWheel').style.display = tab === 'wheel' ? 'block' : 'none';
+    }
+
+    function loadLeaderboardData() {
+        rtdb.ref('users').once('value').then(snap => {
+            if(!snap.exists()) return;
+            let users = [];
+            snap.forEach(u => {
+                let dat = u.val();
+                users.push({ key: u.key, name: dat.name || 'مستخدم', customId: dat.customId || '---', avatar: dat.avatar || '', gifts: dat.weeklyGiftsSent || 0, agents: dat.weeklyAgentPoints || 0, wheel: dat.weeklyWheelPoints || 0 });
+            });
+
+            let giftsList = [...users].sort((a,b) => b.gifts - a.gifts).slice(0, 10);
+            renderLeaderboardList('leaderboardGiftsList', giftsList, 'gifts', 'نقطة مصروفة');
+
+            let agentsList = [...users].sort((a,b) => b.agents - a.agents).slice(0, 10);
+            renderLeaderboardList('leaderboardAgentsList', agentsList, 'agents', 'نقطة مشحونة');
+
+            let wheelList = [...users].sort((a,b) => b.wheel - a.wheel).slice(0, 10);
+            renderLeaderboardList('leaderboardWheelList', wheelList, 'wheel', 'نقطة مربوحة');
+        });
+    }
+
+    function renderLeaderboardList(containerId, list, typeKey, unitText) {
+        let container = document.getElementById(containerId);
+        if(!container) return;
+        if(list.length === 0 || list[0][typeKey] === 0) {
+            container.innerHTML = "<div style='text-align:center; padding:15px; color:#94a3b8;'>لا توجد بيانات مسجلة في هذا التصنيف بعد.</div>";
+            return;
+        }
+
+        let html = '';
+        list.forEach((item, index) => {
+            let rank = index + 1;
+            let crownIcon = rank === 1 ? '👑 ' : (rank === 2 ? '🥈 ' : (rank === 3 ? '🥉 ' : ''));
+            
+            html += `
+            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.03); padding:8px; border-radius:10px; margin-bottom:6px; border:1px solid rgba(255,255,255,0.05);">
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-weight:900; font-size:12px; color:#f59e0b; width:22px; text-align:center;">#${rank}</span>
+                    <div class="large-avatar-container" style="width:38px; height:38px; margin:0;">
+                        <img src="${item.avatar || 'https://via.placeholder.com/38'}" style="width:38px; height:38px; border-radius:50%; object-fit:cover;" alt="صورة">
+                    </div>
+                    <div>
+                        <b style="color:#fff; font-size:12px; cursor:pointer;" onclick="openVisitedUserProfileByKeyDirect('${item.key}')">${crownIcon}${item.name}</b>
+                        <div style="font-size:10px; color:#94a3b8;">ID: ${item.customId}</div>
+                    </div>
+                </div>
+                <div style="text-align:left;">
+                    <span style="color:#34d399; font-weight:bold; font-size:12px;">${item[typeKey]}</span>
+                    <div style="font-size:9px; color:#94a3b8;">${unitText}</div>
+                </div>
+            </div>`;
+        });
+        container.innerHTML = html;
+    }
+
+    function checkAndRunAutomatedFridayDistribution() {
+        let now = new Date();
+        let day = now.getDay();
+        let hour = now.getHours();
+
+        if (day === 5 && hour === 6 && currentEmail === 'msaftwtn@gmail.com') {
+            let lastResetDate = localStorage.getItem('dinarLastFridayReset');
+            let todayStr = now.toDateString();
+            if (lastResetDate !== todayStr) {
+                localStorage.setItem('dinarLastFridayReset', todayStr);
+                executeAutomatedWeeklyRewards();
+            }
+        }
+    }
+
+    function executeAutomatedWeeklyRewards() {
+        rtdb.ref('users').once('value').then(snap => {
+            if(!snap.exists()) return;
+            let users = [];
+            snap.forEach(u => { users.push({ key: u.key, ...u.val() }); });
+
+            let categories = [ { key: 'weeklyGiftsSent', name: 'الهدايا' }, { key: 'weeklyAgentPoints', name: 'الوكلاء' }, { key: 'weeklyWheelPoints', name: 'العجلة' } ];
+
+            categories.forEach(cat => {
+                let sorted = [...users].sort((a,b) => (b[cat.key] || 0) - (a[cat.key] || 0));
+                
+                if (sorted[0] && sorted[0][cat.key] > 0) {
+                    let u1 = sorted[0];
+                    rtdb.ref(`users/${u1.key}`).update({ gems: (u1.gems || 0) + 1000 });
+                    rtdb.ref(`notifications/${u1.key}`).push({ text: `🎉 مبروك! حصلت على المركز الأول أوتوماتيكياً في تصنيف (${cat.name}) وجائزة 1000 جوهرة!`, timestamp: Date.now() });
+                }
+                if (sorted[1] && sorted[1][cat.key] > 0) {
+                    let u2 = sorted[1];
+                    rtdb.ref(`users/${u2.key}`).update({ gems: (u2.gems || 0) + 500 });
+                    rtdb.ref(`notifications/${u2.key}`).push({ text: `🎉 مبروك! حصلت على المركز الثاني أوتوماتيكياً في تصنيف (${cat.name}) وجائزة 500 جوهرة!`, timestamp: Date.now() });
+                }
+                if (sorted[2] && sorted[2][cat.key] > 0) {
+                    let u3 = sorted[2];
+                    rtdb.ref(`users/${u3.key}`).update({ gems: (u3.gems || 0) + 250 });
+                    rtdb.ref(`notifications/${u3.key}`).push({ text: `🎉 مبروك! حصلت على المركز الثالث أوتوماتيكياً في تصنيف (${cat.name}) وجائزة 250 جوهرة!`, timestamp: Date.now() });
+                }
+            });
+
+            let resetUpdates = {};
+            users.forEach(u => {
+                resetUpdates[`users/${u.key}/weeklyGiftsSent`] = 0;
+                resetUpdates[`users/${u.key}/weeklyAgentPoints`] = 0;
+                resetUpdates[`users/${u.key}/weeklyWheelPoints`] = 0;
+            });
+            rtdb.ref().update(resetUpdates);
+        });
+    }
+
+    function loadNotifications() {
+        if(!currentUserKey || !rtdb) return;
+        rtdb.ref(`notifications/${currentUserKey}`).on('value', snap => {
+            let container = document.getElementById('notificationsContainer');
+            let mainBadge = document.getElementById('mainNotificationBadge');
+            if(!container) return;
+            if(!snap.exists()) { 
+                container.innerHTML = "لا توجد إشعارات جديدة"; 
+                if(mainBadge) mainBadge.style.display = 'none';
+                return; 
+            }
+            if(mainBadge) mainBadge.style.display = 'block';
+            let html = '';
+            snap.forEach(n => {
+                let item = n.val();
+                html += `<div style="border-bottom:1px solid rgba(255,255,255,0.08); padding:6px 0;">🔔 ${item.text}</div>`;
+            });
+            container.innerHTML = html;
+        });
+
+        rtdb.ref(`friend_requests/${currentUserKey}`).on('value', snap => {
+            let container = document.getElementById('notificationsContainer');
+            let mainBadge = document.getElementById('mainNotificationBadge');
+            if(snap.exists()) {
+                if(mainBadge) mainBadge.style.display = 'block';
+                let html = container.innerHTML === "لا توجد إشعارات جديدة" ? "" : container.innerHTML;
+                snap.forEach(req => {
+                    let dat = req.val();
+                    html += `<div style="border-bottom:1px solid rgba(255,255,255,0.08); padding:6px 0; color:#38bdf8;">👥 لديك طلب صداقة من <b>${dat.name}</b> (${dat.customId}).</div>`;
+                });
+                container.innerHTML = html;
+            }
+        });
+    }
+
+    function clearAllNotifications() {
+        if(!currentUserKey || !rtdb) return;
+        if(!confirm("⚠️ حذف جميع الإشعارات؟")) return;
+        rtdb.ref(`notifications/${currentUserKey}`).remove().then(() => {
+            document.getElementById('notificationsContainer').innerHTML = "لا توجد إشعارات جديدة";
+            let mainBadge = document.getElementById('mainNotificationBadge');
+            if(mainBadge) mainBadge.style.display = 'none';
+            alert("🗑️ تم الحذف بنجاح.");
+        });
+    }
+
+    function sendFriendRequest() {
+        let sId = document.getElementById('searchIdInput').value.trim();
+        let resArea = document.getElementById('searchResultArea');
+        if(!sId) return resArea.innerText = "⚠️ أدخل الـ ID المطلوب";
+        resArea.innerText = "جاري إرسال الطلب...";
+
+        rtdb.ref('users').once('value').then(snap => {
+            let targetKey = '';
+            snap.forEach(c => { if(c.val().customId === sId) targetKey = c.key; });
+
+            if(!targetKey) return resArea.innerText = "❌ لم يتم العثور على مستخدم";
+            if(targetKey === currentUserKey) return resArea.innerText = "⚠️ لا يمكنك إضافة نفسك!";
+
+            rtdb.ref(`friends/${currentUserKey}/${targetKey}`).once('value').then(friendSnap => {
+                if (friendSnap.exists()) {
+                    return resArea.innerText = "⚠️ هذا المستخدم مضاف لديك بالفعل!";
+                }
+
+                rtdb.ref(`friend_requests/${targetKey}/${currentUserKey}`).set({
+                    name: userData.name, customId: userData.customId, timestamp: Date.now()
+                }).then(() => { 
+                    document.getElementById('searchIdInput').value = ''; 
+                    resArea.innerText = "✅ تم إرسال طلب الصداقة بنجاح!"; 
+                });
+            });
+        });
+    }
+
+    function sendFriendRequestFromVisitedProfile() {
+        if(!visitedProfileTargetKey) return;
+        if(visitedProfileTargetKey === currentUserKey) return alert("⚠️ لا يمكنك إضافة نفسك!");
+
+        rtdb.ref(`friends/${currentUserKey}/${visitedProfileTargetKey}`).once('value').then(friendSnap => {
+            if (friendSnap.exists()) {
+                return alert("⚠️ هذا المستخدم مضاف لديك بالفعل!");
+            }
+
+            rtdb.ref(`friend_requests/${visitedProfileTargetKey}/${currentUserKey}`).set({
+                name: userData.name, customId: userData.customId, timestamp: Date.now()
+            }).then(() => { alert("✅ تم إرسال طلب الصداقة بنجاح!"); });
+        });
+    }
+
+    function loadFriendSystem() {
+        if(!currentUserKey || !rtdb) return;
+        
+        rtdb.ref(`friend_requests/${currentUserKey}`).on('value', snap => {
+            let container = document.getElementById('friendRequestsContainer');
+            if(!container) return;
+            if(!snap.exists()) { container.innerHTML = "لا توجد طلبات صداقة"; return; }
+            let html = '';
+            snap.forEach(req => {
+                let dat = req.val();
+                let senderKey = req.key;
+                html += `<div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.03); padding:6px; border-radius:6px; margin-bottom:4px;">
+                    <span>لديك طلب صداقة من <b>${dat.name}</b> (${dat.customId})</span>
+                    <div style="display:flex; gap:4px;">
+                        <button onclick="acceptFriend('${senderKey}', '${dat.name}', '${dat.customId}')" style="background:#10b981; color:#fff; border:none; padding:3px 8px; border-radius:4px; cursor:pointer;">قبول</button>
+                        <button onclick="rejectFriend('${senderKey}')" style="background:#ef4444; color:#fff; border:none; padding:3px 8px; border-radius:4px; cursor:pointer;">رفض</button>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
+        });
+
+        rtdb.ref(`friends/${currentUserKey}`).on('value', snap => {
+            let container = document.getElementById('friendsListContainer');
+            if(!container) return;
+            if(!snap.exists()) { container.innerHTML = "لا يوجد أصدقاء مضافون حالياً"; return; }
+            let html = '';
+            snap.forEach(f => {
+                let dat = f.val();
+                html += `<div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.03); padding:6px; border-radius:6px; margin-bottom:4px;">
+                    <span style="cursor:pointer;" onclick="openVisitedUserProfileByKey('${f.key}')" title="زيارة البروفايل">🟢 <b>${dat.name}</b></span>
+                    <button onclick="openChatModal('${f.key}', '${dat.name}')" style="background:#0ea5e9; color:#fff; border:none; padding:3px 8px; border-radius:4px; cursor:pointer;">محادثة 💬</button>
+                </div>`;
+            });
+            container.innerHTML = html;
+        });
+    }
+
+    function acceptFriend(senderKey, senderName, senderId) {
+        rtdb.ref(`friends/${currentUserKey}/${senderKey}`).set({ name: senderName, customId: senderId });
+        rtdb.ref(`friends/${senderKey}/${currentUserKey}`).set({ name: userData.name, customId: userData.customId });
+        rtdb.ref(`friend_requests/${currentUserKey}/${senderKey}`).remove().then(() => { alert('✅ أصبحتم أصدقاء بنجاح!'); });
+    }
+
+    function rejectFriend(senderKey) { rtdb.ref(`friend_requests/${currentUserKey}/${senderKey}`).remove(); }
+
+    function clearRequestsList() {
+        if(!currentUserKey || !rtdb) return;
+        rtdb.ref(`friend_requests/${currentUserKey}`).remove().then(() => {
+            document.getElementById('friendRequestsContainer').innerHTML = "لا توجد طلبات صداقة";
+            alert('🗑️ تم تنظيف قائمة الطلبات.');
+        });
+    }
+
+    function clearFriendsDisplayList() {
+        let container = document.getElementById('friendsListContainer');
+        if(container) { container.innerHTML = "لا يوجد أصدقاء معروضون (اضغط زر 🔄 تحديث لإظهارهم)"; alert('🗑️ تم تنظيف الواجهة بنجاح.'); }
+    }
+
+    function openChatModal(friendKey, friendName) {
+        activeChatFriendKey = friendKey;
+        activeChatFriendName = friendName;
+        document.getElementById('chatTitle').innerText = `${friendName} 👤 (زيارة الملف الشخصي)`;
+        document.getElementById('chatModal').style.display = 'flex';
+
+        let chatId = [currentUserKey, friendKey].sort().join('_');
+        rtdb.ref(`chats/${chatId}`).on('value', snap => {
+            let area = document.getElementById('chatMessagesArea');
+            if(!area) return;
+            if(!snap.exists()) { area.innerHTML = "ابدأ المحادثة الآن..."; return; }
+            let html = '';
+            snap.forEach(m => {
+                let msg = m.val();
+                let isMe = msg.sender === currentUserKey;
+                let content = msg.image ? `<img src="${msg.image}" style="max-width:120px; border-radius:6px; display:block; margin-top:2px;" alt="صورة">` : msg.text;
+                let deleteBtn = `<button onclick="deletePrivateMessage('${chatId}', '${m.key}')" style="background:none; border:none; color:#ef4444; font-size:10px; cursor:pointer; margin-right:4px;" title="حذف">🗑️</button>`;
+                let bgStyle = isMe ? "background:#10b981; color:#ffffff;" : "background:#ffffff; color:#0f172a;";
+
+                html += `<div style="text-align:${isMe?'left':'right'}; margin-bottom:5px;">
+                    <span style="${bgStyle} padding:5px 9px; border-radius:6px; display:inline-block; max-width:85%; word-break:break-word; font-weight:500;">
+                        <b><b>${msg.senderName}:</b></b> ${content} ${deleteBtn}
+                    </span>
+                </div>`;
+            });
+            area.innerHTML = html;
+            area.scrollTop = area.scrollHeight;
+        });
+    }
+
+    function deletePrivateMessage(chatId, msgKey) { rtdb.ref(`chats/${chatId}/${msgKey}`).remove(); }
+
+    function closeChatModal() { 
+        if(activeChatFriendKey && rtdb) {
+            let chatId = [currentUserKey, activeChatFriendKey].sort().join('_');
+            rtdb.ref(`chats/${chatId}`).off();
+        }
+        activeChatFriendKey = ''; activeChatFriendName = '';
+        document.getElementById('chatModal').style.display = 'none'; 
+    }
+
+    function openVisitedUserProfileFromChat() {
+        if(activeChatFriendKey) { document.getElementById('chatModal').style.display = 'none'; openVisitedUserProfileByKey(activeChatFriendKey, true); }
+    }
+
+    function navigateBackFromProfile() { document.getElementById('userProfileModal').style.display = 'none'; navigateTo('mainScreen'); }
+
+    function openVisitedUserProfileByKey(targetUserKey, cameFromChat = false) {
+        if(!targetUserKey || !rtdb) return;
+        visitedProfileTargetKey = targetUserKey;
+
+        rtdb.ref(`users/${targetUserKey}`).once('value').then(snap => {
+            if(!snap.exists()) return alert("❌ لم يتم العثور على المستخدم!");
+            let uData = snap.val();
+
+            document.getElementById('visitedUserName').innerText = uData.name || 'مستخدم';
+            document.getElementById('visitedUserCustomId').innerText = `ID: ${uData.customId || '---'}`;
+            document.getElementById('visitedUserAvatar').src = uData.avatar ? uData.avatar : 'https://via.placeholder.com/85';
+            document.getElementById('visitedUserBio').innerText = uData.bio ? uData.bio : 'لا يوجد بايو حالياً.';
+
+            let visitedAgentBadge = document.getElementById('visitedAgentBadge');
+            if (uData.isAgent) visitedAgentBadge.style.display = 'block';
+            else visitedAgentBadge.style.display = 'none';
+
+            loadProfileReceivedGifts(targetUserKey, 'visitedReceivedGiftsGrid');
+
+            let addFriendBtn = document.getElementById('visitedAddFriendBtn');
+            let roomArea = document.getElementById('visitedUserRoomArea');
+            let noRoomArea = document.getElementById('visitedUserNoRoom');
+            let banBtn = document.getElementById('roomOwnerBanBtn');
+
+            if (isolatedActiveRoomId && currentUserKey === activeRoomCreatorKey && targetUserKey !== currentUserKey) {
+                banBtn.style.display = 'inline-block';
+            } else {
+                banBtn.style.display = 'none';
+            }
+
+            rtdb.ref(`friends/${currentUserKey}/${targetUserKey}`).once('value').then(fSnap => {
+                if (fSnap.exists() || targetUserKey === currentUserKey) {
+                    addFriendBtn.style.display = 'none';
+                } else {
+                    addFriendBtn.style.display = 'inline-block';
+                }
+            });
+
+            if(uData.hasCreatedRoom && uData.createdRoomId) {
+                rtdb.ref(`public_rooms/${uData.createdRoomId}`).once('value').then(roomSnap => {
+                    if(roomSnap.exists()) {
+                        let roomInfo = roomSnap.val();
+                        document.getElementById('visitedRoomDetails').innerText = `اسم الغرفة: ${roomInfo.name}`;
+                        let joinBtn = document.getElementById('visitedRoomJoinBtn');
+                        joinBtn.onclick = function() {
+                            closeUserProfileModal();
+                            openIsolatedPublicRooms();
+                            enterIsolatedRoom(roomInfo.id, roomInfo.creatorKey, roomInfo.name);
+                        };
+                        roomArea.style.display = 'block';
+                        noRoomArea.style.display = 'none';
+                    } else {
+                        roomArea.style.display = 'none';
+                        noRoomArea.style.display = 'block';
+                    }
+                });
+            } else {
+                roomArea.style.display = 'none';
+                noRoomArea.style.display = 'block';
+            }
+
+            document.getElementById('userProfileModal').style.display = 'flex';
+        });
+    }
+
+    function openVisitedUserProfileByKeyDirect(targetUserKey) { openVisitedUserProfileByKey(targetUserKey, false); }
+    function closeUserProfileModal() { document.getElementById('userProfileModal').style.display = 'none'; visitedProfileTargetKey = ''; }
+
+    function loadProfileReceivedGifts(userKey, containerId) {
+        let gridContainer = document.getElementById(containerId);
+        if(!gridContainer) return;
+
+        rtdb.ref(`profile_gifts/${userKey}`).on('value', snap => {
+            if(!snap.exists()) {
+                gridContainer.innerHTML = `<div style="grid-column: span 3; text-align:center; color:#94a3b8; font-size:10px; padding:10px;">لا توجد هدايا مستلمة بعد</div>`;
+                return;
+            }
+            let html = '';
+            snap.forEach(g => {
+                let giftDat = g.val();
+                html += `
+                <div class="profile-gift-mini-card" title="${giftDat.giftName}">
+                    <img src="${giftDat.giftIcon}" class="profile-gift-mini-img" alt="هدية">
+                    <span class="profile-gift-mini-count">x${giftDat.count}</span>
+                </div>`;
+            });
+            gridContainer.innerHTML = html;
+        });
+    }
+
+    function banUserFromRoom() {
+        if (!isolatedActiveRoomId || currentUserKey !== activeRoomCreatorKey || !visitedProfileTargetKey) return;
+        if (!confirm("⚠️ هل أنت متأكد من حظر هذا المستخدم من غرفتك لمدة يوم واحد؟")) return;
+
+        let banExpire = Date.now() + (24 * 60 * 60 * 1000);
+        rtdb.ref(`room_bans/${isolatedActiveRoomId}/${visitedProfileTargetKey}`).set({ bannedUntil: banExpire }).then(() => {
+            closeUserProfileModal();
+            alert("🚫 تم حظر المستخدم من الغرفة بنجاح لمدة 24 ساعة.");
+        });
+    }
+
+    function blockCurrentFriend() {
+        if (!activeChatFriendKey || !currentUserKey) return;
+        if (!confirm("⚠️ هل أنت متأكد من حظر هذا المستخدم نهائياً؟")) return;
+
+        rtdb.ref(`friends/${currentUserKey}/${activeChatFriendKey}`).remove();
+        rtdb.ref(`friends/${activeChatFriendKey}/${currentUserKey}`).remove();
+        closeChatModal();
+        loadFriendSystem();
+        alert("🚫 تم الحظر بنجاح.");
+    }
+
+    function deleteFriendConnection() {
+        if (!activeChatFriendKey || !currentUserKey) return;
+        if (!confirm("⚠️ هل أنت متأكد من إزالة هذا الشخص من قائمة الأصدقاء؟")) return;
+
+        rtdb.ref(`friends/${currentUserKey}/${activeChatFriendKey}`).remove();
+        rtdb.ref(`friends/${activeChatFriendKey}/${currentUserKey}`).remove();
+        closeChatModal();
+        loadFriendSystem();
+        alert("❌ تم حذف الصديق بنجاح.");
+    }
+
+    function sendChatMessage() {
+        let text = document.getElementById('chatInputMsg').value.trim();
+        if(!text || !activeChatFriendKey) return;
+        let chatId = [currentUserKey, activeChatFriendKey].sort().join('_');
+        
+        rtdb.ref(`chats/${chatId}`).push({ sender: currentUserKey, senderName: userData.name, text: text, timestamp: Date.now() });
+        document.getElementById('chatInputMsg').value = '';
+    }
+
+    function sendChatImage(event) {
+        const file = event.target.files[0];
+        if (!file || !activeChatFriendKey) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            let base64Img = e.target.result;
+            let chatId = [currentUserKey, activeChatFriendKey].sort().join('_');
+            rtdb.ref(`chats/${chatId}`).push({ sender: currentUserKey, senderName: userData.name, image: base64Img, timestamp: Date.now() });
+        };
+        reader.readAsDataURL(file);
+        event.target.value = '';
+    }
+
+    function triggerImageUpload() { document.getElementById('hiddenImageInput').click(); }
+    function previewImage(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) { base64Image = e.target.result; document.getElementById('avatarPreview').src = base64Image; }
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function validateBioLength(input) {
+        if (input.value.length > 60) {
+            input.value = input.value.substring(0, 60);
+        }
+        document.getElementById('bioCounter').innerText = `${input.value.length} / 60`;
+    }
+
+    function saveProfileData() {
+        let newName = document.getElementById('profileNameInput').value.trim();
+        let bioInput = document.getElementById('profileBioInput');
+        let newBio = bioInput.value.trim();
+        
+        if(newBio.length > 60) {
+            newBio = newBio.substring(0, 60);
+        }
+
+        if(newName) userData.name = newName;
+        if(newBio !== undefined) userData.bio = newBio;
+        if(base64Image) {
+            userData.avatar = base64Image;
+        }
+
+        saveToDB().then(() => { 
+            base64Image = '';
+            updateUI(); 
+            alert('✅ تم حفظ التعديلات بنجاح!'); 
+        }).catch(err => {
+            alert('❌ حدث خطأ أثناء الحفظ، حاول مرة أخرى.');
+        });
+    }
+
+    function openGuessNumberGameModal() {
+        document.getElementById('guessGameMsg').innerText = "";
+        document.getElementById('guessNumberModal').style.display = 'flex';
+    }
+
+    function closeGuessNumberGameModal() {
+        document.getElementById('guessNumberModal').style.display = 'none';
+    }
+
+    function submitUserGuess(chosenNum) {
+        let todayStr = new Date().toDateString();
+        let lastFreeDate = localStorage.getItem('dinar_guess_free_date');
+        let isFreeAvailable = (lastFreeDate !== todayStr);
+
+        let msgEl = document.getElementById('guessGameMsg');
+
+        if (!isFreeAvailable) {
+            let currentGems = userData.gems || 0;
+            if (currentGems < 20) {
+                msgEl.innerHTML = "<span style='color:#ef4444;'>❌ ليس لديك جواهر كافية! (تحتاج 20 جوهرة)</span>";
+                return;
+            }
+            userData.gems -= 20;
+        } else {
+            localStorage.setItem('dinar_guess_free_date', todayStr);
+        }
+
+        let winningNum = Math.floor(Math.random() * 6);
+        let possibleRewards = [0, 5, 10, 15, 20];
+        let wonPoints = possibleRewards[Math.floor(Math.random() * possibleRewards.length)];
+
+        if (chosenNum === winningNum) {
+            if (wonPoints > 0) {
+                userData.points = (userData.points || 0) + wonPoints;
+                msgEl.innerHTML = `<span style='color:#10b981;'>🎉 مبروك! الرقم الصحيح كان (${winningNum}). ربحت ${wonPoints} نقطة!</span>`;
+            } else {
+                msgEl.innerHTML = `<span style='color:#f59e0b;'>⚠️ الرقم الصحيح كان (${winningNum}) وحزرت صح، لكن الحظ هذه المرة أعطاك (0) نقطة!</span>`;
+            }
+        } else {
+            msgEl.innerHTML = `<span style='color:#ef4444;'>❌ للأسف تخمينك خطأ! الرقم الصحيح كان (${winningNum}). حاول مرة أخرى!</span>`;
+        }
+
+        saveToDB().then(() => {
+            updateUI();
+        });
+    }
+
+    function openWithdrawModal() {
+        if (globalAppSettings.withdrawLocked && currentEmail !== 'msaftwtn@gmail.com') {
+            return alert('⚠️ عذراً، قسم سحب الأرباح مقفل حالياً من قبل الإدارة.');
+        }
+        document.getElementById('withdrawModal').style.display = 'flex';
+    }
+    function closeWithdrawModal() { document.getElementById('withdrawModal').style.display = 'none'; }
+
+    function submitWithdrawal() {
+        if (globalAppSettings.withdrawLocked && currentEmail !== 'msaftwtn@gmail.com') {
+            return alert('⚠️ عذراً، سحب الأرباح مقفل حالياً.');
+        }
+
+        let method = document.getElementById('withdrawMethod').value;
+        let account = document.getElementById('withdrawAccount').value.trim();
+        let amount = parseFloat(document.getElementById('withdrawAmount').value);
+
+        if(!account || isNaN(amount)) return alert('⚠️ أدخل رقم الحساب والمبلغ بشكل صحيح!');
+        if(amount < 10) return alert('⚠️ الحد الأدنى للسحب هو 10 دولار!');
+
+        let currentPoints = userData.points || 0;
+        let requiredPointsForMin = 10000; 
+        if (currentPoints < requiredPointsForMin || currentPoints <= 0) {
+            return alert('❌ رصيدك الحالي غير كافي أو صفر! لا يمكنك تقديم طلب سحب أرباح لعدم وجود نقاط قابلة للاستبدال.');
+        }
+
+        let now = Date.now();
+        let lastWithdraw = userData.lastWithdrawTime || 0;
+        let fifteenDaysMs = 15 * 24 * 60 * 60 * 1000;
+
+        if (lastWithdraw && (now - lastWithdraw) < fifteenDaysMs) {
+            let remainingDays = Math.ceil((fifteenDaysMs - (now - lastWithdraw)) / (1000 * 60 * 60 * 24));
+            return alert(`⚠️ مسموح لك بالسحب مرة واحدة كل 15 يوماً. متبقي ${remainingDays} يوم.`);
+        }
+
+        let withdrawRef = rtdb.ref(`admin_withdrawals`).push();
+        withdrawRef.set({
+            userKey: currentUserKey, userName: userData.name, userId: userData.customId,
+            method: method, account: account, amount: amount, timestamp: now, status: 'pending'
+        }).then(() => {
+            userData.lastWithdrawTime = now;
+            saveToDB().then(() => { closeWithdrawModal(); alert('✅ تم تقديم طلب السحب بنجاح للإدارة (زين كاش).'); });
+        });
+    }
+
+    // [تم التعديل] شحن النقاط للمستخدم من حقيبة الوكيل مع تطابق الـ ID والرسائل التنبيهية الفورية
+    function agentChargeUserPoints() {
+        if (!userData.isAgent) return alert("⚠️ هذه الميزة خاصة بالوكلاء المعتمدين فقط!");
+        let targetId = document.getElementById('agentTargetIdInput').value.trim();
+        let pointsToAdd = parseInt(document.getElementById('agentPointsAmountInput').value);
+
+        if(!targetId || isNaN(pointsToAdd) || pointsToAdd <= 0) {
+            return alert("⚠️ أدخل الـ ID الصحيح وعدد نقاط صالح للشحن!");
+        }
+
+        let currentBag = userData.agentBag || 0;
+        if (currentBag < pointsToAdd) {
+            return alert(`❌ رصيد حقيبتك الحالي (${currentBag} نقطة) لا يكفي لإتمام عملية الشحن (المطلوب: ${pointsToAdd} نقطة)!`);
+        }
+
+        rtdb.ref('users').once('value').then(snap => {
+            let targetUserKey = '';
+            snap.forEach(c => {
+                let uVal = c.val();
+                if(String(uVal.customId).trim() === String(targetId).trim()) {
+                    targetUserKey = c.key;
+                }
+            });
+
+            if(!targetUserKey) return alert("❌ لم يتم العثور على مستخدم بهذا الـ ID!");
+
+            rtdb.ref(`users/${targetUserKey}`).once('value').then(tSnap => {
+                let tDat = tSnap.val();
+                let currentPoints = tDat.points || 0;
+                let updatedPoints = currentPoints + pointsToAdd;
+
+                userData.agentBag -= pointsToAdd;
+
+                let updates = {};
+                updates[`users/${targetUserKey}/points`] = updatedPoints;
+                updates[`users/${currentUserKey}/agentBag`] = userData.agentBag;
+                updates[`users/${currentUserKey}/weeklyAgentPoints`] = (userData.weeklyAgentPoints || 0) + pointsToAdd;
+
+                rtdb.ref().update(updates).then(() => {
+                    rtdb.ref(`notifications/${targetUserKey}`).push({
+                        text: `تم شحن رصيدك بـ ${pointsToAdd} نقطة في خانة النقاط بواسطة الوكيل المعتمد ${userData.name}`,
+                        timestamp: Date.now()
+                    });
+
+                    document.getElementById('agentTargetIdInput').value = '';
+                    document.getElementById('agentPointsAmountInput').value = '';
+                    updateUI();
+                    alert(`✅ تم شحن ${pointsToAdd} نقطة في رصيد نقاط المستخدم (ID: ${targetId}) بنجاح من حقيبتك!`);
+                }).catch(err => {
+                    alert("❌ حدث خطأ أثناء عملية الشحن، يجدر المحاولة مجدداً.");
+                });
+            });
+        }).catch(err => {
+            alert("❌ خطأ بالاتصال بقاعدة البيانات.");
+        });
+    }
+
+    function adminChargeDirectUser() {
+        if (currentEmail !== 'msaftwtn@gmail.com') return alert('⚠️ غير مسموح.');
+        let targetId = document.getElementById('adminTargetIdInput').value.trim();
+        let pointsToAdd = parseInt(document.getElementById('adminPointsAmountInput').value);
+
+        if (!targetId || isNaN(pointsToAdd) || pointsToAdd <= 0) {
+            return alert('⚠️ أدخل الـ ID الصحيح وعدد النقاط المطلوب شحنها!');
+        }
+
+        rtdb.ref('users').once('value').then(snap => {
+            let targetUserKey = '';
+            snap.forEach(c => {
+                if (String(c.val().customId).trim() === String(targetId).trim()) targetUserKey = c.key;
+            });
+
+            if (!targetUserKey) return alert('❌ لم يتم العثور على مستخدم بهذا الـ ID!');
+
+            rtdb.ref(`users/${targetUserKey}`).once('value').then(uSnap => {
+                let uDat = uSnap.val();
+                let currentPoints = uDat.points || 0;
+                let updatedPoints = currentPoints + pointsToAdd;
+
+                rtdb.ref(`users/${targetUserKey}`).update({ points: updatedPoints }).then(() => {
+                    rtdb.ref(`notifications/${targetUserKey}`).push({
+                        text: `⚡ قامت الإدارة بشحن رصيدك بـ ${pointsToAdd} نقطة جديدة في خانة النقاط!`,
+                        timestamp: Date.now()
+                    });
+
+                    document.getElementById('adminTargetIdInput').value = '';
+                    document.getElementById('adminPointsAmountInput').value = '';
+                    alert(`✅ تم شحن رصيد النقاط للمستخدم (ID: ${targetId}) بـ ${pointsToAdd} نقطة بنجاح!`);
+                });
+            });
+        });
+    }
+
+    function adminChargeAgentBag() {
+        if (currentEmail !== 'msaftwtn@gmail.com') return alert('⚠️ غير مسموح.');
+        let targetId = document.getElementById('adminTargetIdInput').value.trim();
+        let pointsToAdd = parseInt(document.getElementById('adminPointsAmountInput').value);
+
+        if (!targetId || isNaN(pointsToAdd) || pointsToAdd <= 0) {
+            return alert('⚠️ أدخل الـ ID الصحيح للوكيل وعدد النقاط المطلوب إضافتها لحقيبته!');
+        }
+
+        rtdb.ref('users').once('value').then(snap => {
+            let targetUserKey = '';
+            snap.forEach(c => {
+                if (String(c.val().customId).trim() === String(targetId).trim()) targetUserKey = c.key;
+            });
+
+            if (!targetUserKey) return alert('❌ لم يتم العثور على وكيل بهذا الـ ID!');
+
+            rtdb.ref(`users/${targetKey}`).once('value').then(uSnap => {
+                let uDat = uSnap.val();
+                if (!uDat.isAgent) {
+                    return alert('⚠️ هذا المستخدم ليس وكيلاً معتمداً!');
+                }
+
+                let currentBag = uDat.agentBag || 0;
+                let updatedBag = currentBag + pointsToAdd;
+
+                rtdb.ref(`users/${targetKey}`).update({ agentBag: updatedBag }).then(() => {
+                    rtdb.ref(`notifications/${targetKey}`).push({
+                        text: `⚡ قامت الإدارة بشحن حقيبتك بـ ${pointsToAdd} نقطة جديدة لتوزيعها على المستخدمين!`,
+                        timestamp: Date.now()
+                    });
+
+                    document.getElementById('adminTargetIdInput').value = '';
+                    document.getElementById('adminPointsAmountInput').value = '';
+                    alert(`✅ تم شحن حقيبة الوكيل (ID: ${targetId}) بـ ${pointsToAdd} نقطة بنجاح تام!`);
+                });
+            });
+        });
+    }
+
+    function adminToggleWithdrawFeature() {
+        if (currentEmail !== 'msaftwtn@gmail.com') return;
+        let newState = !globalAppSettings.withdrawLocked;
+        rtdb.ref('app_settings').update({ withdrawLocked: newState }).then(() => {
+            alert(newState ? '🔒 تم إغلاق سحب الأرباح بنجاح.' : '🔓 تم فتح سحب الأرباح بنجاح.');
+        });
+    }
+
+    function adminToggleDailyCounterFeature() {
+        if (currentEmail !== 'msaftwtn@gmail.com') return;
+        let newState = !globalAppSettings.dailyCounterLocked;
+        rtdb.ref('app_settings').update({ dailyCounterLocked: newState }).then(() => {
+            alert(newState ? '⏳ تم قفل العداد اليومي بنجاح.' : '⚡ تم فتح العداد اليومي بنجاح.');
+        });
+    }
+
+    function adminDeleteAgentFeature() {
+        if (currentEmail !== 'msaftwtn@gmail.com') return;
+        let targetId = document.getElementById('adminAgentDeleteIdInput').value.trim();
+        if (!targetId) return alert('⚠️ أدخل ID الوكيل المراد حذفه!');
+
+        rtdb.ref('users').once('value').then(snap => {
+            let targetKey = '';
+            snap.forEach(c => {
+                if (String(c.val().customId).trim() === String(targetId).trim()) targetKey = c.key;
+            });
+
+            if (!targetKey) return alert('❌ لم يتم العثور على مستخدم بهذا الـ ID!');
+
+            rtdb.ref(`users/${targetKey}`).once('value').then(uSnap => {
+                let uDat = uSnap.val();
+                if (!uDat.isAgent) return alert('⚠️ هذا المستخدم ليس وكيلاً أصلاً!');
+
+                rtdb.ref(`users/${targetKey}`).update({ isAgent: false, agentBag: 0, whatsapp: '' }).then(() => {
+                    document.getElementById('adminAgentDeleteIdInput').value = '';
+                    alert(`🗑️ تم حذف صفة الوكيل عن المستخدم (ID: ${targetId}) بنجاح.`);
+                });
+            });
+        });
+    }
+
+    function openAgentApplyModal() { document.getElementById('agentApplyModal').style.display = 'flex'; }
+    function closeAgentApplyModal() { document.getElementById('agentApplyModal').style.display = 'none'; }
+
+    function previewAgentDoc(event, type) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                if(type === 'residenceFront') agentResidenceFrontBase64 = e.target.result;
+                if(type === 'residenceBack') agentResidenceBackBase64 = e.target.result;
+                if(type === 'nationalFront') agentNationalFrontBase64 = e.target.result;
+                if(type === 'nationalBack') agentNationalBackBase64 = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function submitAgentApplication() {
+        let operationNum = document.getElementById('agentOperationInput').value.trim();
+        let whatsappNum = document.getElementById('agentWhatsappInput').value.trim();
+        if(!operationNum || !whatsappNum) return alert('⚠️ أدخل رقم عملية التحويل من زين كاش ورقم الواتساب الخاص بك');
+        if(!agentResidenceFrontBase64 || !agentResidenceBackBase64 || !agentNationalFrontBase64 || !agentNationalBackBase64) {
+            return alert('⚠️ يرجى إرفاق صور المستمسكات الأربعة المطلوبة بالكامل (بطاقة السكن والبطاقة الوطنية جهة أمامية وخلفية)!');
+        }
+
+        rtdb.ref('agent_requests').push({
+            userKey: currentUserKey, userName: userData.name, userId: userData.customId,
+            operationNum: operationNum, whatsapp: whatsappNum,
+            residenceFrontImg: agentResidenceFrontBase64,
+            residenceBackImg: agentResidenceBackBase64,
+            nationalFrontImg: agentNationalFrontBase64,
+            nationalBackImg: agentNationalBackBase64,
+            timestamp: Date.now(), status: 'pending'
+        }).then(() => {
+            document.getElementById('agentOperationInput').value = '';
+            document.getElementById('agentWhatsappInput').value = '';
+            agentResidenceFrontBase64 = ''; agentResidenceBackBase64 = '';
+            agentNationalFrontBase64 = ''; agentNationalBackBase64 = '';
+            closeAgentApplyModal();
+            alert('✅ تم إرسال طلب الوكالة بنجاح إلى الإدارة للمراجعة.');
+        });
+    }
+
+    // [تم التعديل] دالة عرض الوكلاء مع زر واتساب المحسّن المتوافق 100% مع موبيزي
+    function loadApprovedAgentsList() {
+        rtdb.ref('users').on('value', snap => {
+            let container = document.getElementById('approvedAgentsContainer');
+            if(!container) return;
+            if(!snap.exists()) { container.innerHTML = "لا يوجد وكلاء معتمدون حالياً."; return; }
+            let html = '';
+            snap.forEach(u => {
+                let dat = u.val();
+                if(dat.isAgent) {
+                    let wPhone = dat.whatsapp || '';
+                    let whatsappBtnHtml = wPhone ? `<a href="https://api.whatsapp.com/send?phone=${wPhone}" target="_blank" style="background:#25d366; color:#fff; padding:4px 10px; border-radius:6px; font-size:10px; font-weight:bold; text-decoration:none; display:inline-flex; align-items:center; gap:3px;">واتساب 💬</a>` : `<span style="font-size:10px; color:#94a3b8;">لا يوجد رقم</span>`;
+
+                    let avImg = dat.avatar ? dat.avatar : 'https://via.placeholder.com/35';
+
+                    html += `<div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.03); padding:8px; border-radius:8px; margin-bottom:6px;">
+                        <div style="display:flex; align-items:center; gap:6px;">
+                            <img src="${avImg}" style="width:35px; height:35px; border-radius:50%; object-fit:cover; border:1px solid #f59e0b;" alt="صورة">
+                            <div>
+                                <b style="color:#fff; font-size:11px;">${dat.name}</b>
+                                <div style="font-size:9px; color:#94a3b8;">ID: ${dat.customId}</div>
+                            </div>
+                        </div>
+                        <div><b>${whatsappBtnHtml}</b></div>
+                    </div>`;
+                }
+            });
+            container.innerHTML = html || "لا يوجد وكلاء معتمدون حالياً.";
+        });
+    }
+
+    function openAdminPanelModal() {
+        if(currentEmail !== 'msaftwtn@gmail.com') return alert('⚠️ غير مسموح بالدخول.');
+        document.getElementById('adminPanelModal').style.display = 'flex';
+        loadAdminData();
+    }
+    function closeAdminPanelModal() { document.getElementById('adminPanelModal').style.display = 'none'; }
+
+    function switchAdminTab(tab) {
+        document.getElementById('admTab1').className = "shop-tab-btn " + (tab === 'withdrawals' ? "active-gold" : "");
+        document.getElementById('admTab2').className = "shop-tab-btn " + (tab === 'agents' ? "active-gold" : "");
+
+        document.getElementById('adminWithdrawalsArea').style.display = tab === 'withdrawals' ? 'block' : 'none';
+        document.getElementById('adminAgentsArea').style.display = tab === 'agents' ? 'block' : 'none';
+    }
+
+    function loadAdminData() {
+        rtdb.ref('admin_withdrawals').on('value', snap => {
+            let area = document.getElementById('adminWithdrawalsArea');
+            if(!snap.exists()) { area.innerHTML = "لا توجد طلبات سحب حالياً."; return; }
+            let html = '';
+            snap.forEach(item => {
+                let d = item.val();
+                html += `<div style="background:rgba(255,255,255,0.03); padding:8px; border-radius:8px; margin-bottom:6px;">
+                    <b>المستخدم:</b> ${d.userName} (${d.userId})<br>
+                    <b>المبلغ:</b> ${d.amount}$ | <b>المحفظة (زين كاش):</b> ${d.account}<br>
+                    <button onclick="adminDeleteRef('admin_withdrawals', '${item.key}')" style="background:#ef4444; color:#fff; border:none; padding:3px 8px; border-radius:4px; margin-top:4px; cursor:pointer;">حذف/تم التحويل زين كاش 🗑️</button>
+                </div>`;
+            });
+            area.innerHTML = html;
+        });
+
+        rtdb.ref('agent_requests').on('value', reqSnap => {
+            rtdb.ref('users').on('value', userSnap => {
+                let area = document.getElementById('adminAgentsArea');
+                let html = '';
+
+                html += `<h4 style="color:#f59e0b; font-size:12px; margin:0 0 6px 0;">📝 طلبات الوكلاء الجديدة:</h4>`;
+                if(!reqSnap.exists()) {
+                    html += `<div style="color:#94a3b8; margin-bottom:10px;">لا توجد طلبات وكلاء جديدة.</div>`;
+                } else {
+                    reqSnap.forEach(item => {
+                        let dat = item.val();
+                        html += `<div style="background:rgba(255,255,255,0.03); padding:8px; border-radius:8px; margin-bottom:6px;">
+                            <b>المتقدم:</b> ${dat.userName} (ID: ${dat.userId})<br>
+                            <b>رقم العملية:</b> ${dat.operationNum} | <b>واتساب:</b> ${dat.whatsapp}<br>
+                            <div style="display:flex; gap:4px; margin-top:6px;">
+                                <button onclick="openAgentDocsModal('${dat.userName}', '${dat.userKey}', '${item.key}', '${dat.whatsapp}', '${dat.residenceFrontImg}', '${dat.residenceBackImg}', '${dat.nationalFrontImg}', '${dat.nationalBackImg}')" style="background:#0ea5e9; color:#fff; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:10px;">معاينة المستمسكات 📄</button>
+                                <button onclick="approveAgent('${dat.userKey}', '${item.key}', '${dat.whatsapp}')" style="background:#10b981; color:#fff; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:10px;">قبول مباشر ⭐</button>
+                                <button onclick="adminDeleteRef('agent_requests', '${item.key}')" style="background:#ef4444; color:#fff; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:10px;">رفض ❌</button>
+                            </div>
+                        </div>`;
+                    });
+                }
+                area.innerHTML = html;
+            });
+        });
+    }
+
+    let currentReviewingReqKey = '';
+    let currentReviewingUserKey = '';
+    let currentReviewingWhatsapp = '';
+
+    function openAgentDocsModal(userName, userKey, reqKey, whatsapp, resF, resB, natF, natB) {
+        currentReviewingReqKey = reqKey;
+        currentReviewingUserKey = userKey;
+        currentReviewingWhatsapp = whatsapp;
+
+        document.getElementById('docApplicantInfo').innerText = `المتقدم: ${userName}`;
+        document.getElementById('docResFront').src = resF;
+        document.getElementById('docResBack').src = resB;
+        document.getElementById('docNatFront').src = natF;
+        document.getElementById('docNatBack').src = natB;
+
+        let approveBtn = document.getElementById('modalApproveAgentBtn');
+        approveBtn.onclick = function() {
+            approveAgent(currentReviewingUserKey, currentReviewingReqKey, currentReviewingWhatsapp);
+            closeAgentDocsModal();
+        };
+
+        document.getElementById('agentDocsModal').style.display = 'flex';
+    }
+
+    function closeAgentDocsModal() {
+        document.getElementById('agentDocsModal').style.display = 'none';
+        currentReviewingReqKey = ''; currentReviewingUserKey = ''; currentReviewingWhatsapp = '';
+    }
+
+    function rejectAgentFromModal() {
+        if(currentReviewingReqKey) {
+            adminDeleteRef('agent_requests', currentReviewingReqKey);
+            closeAgentDocsModal();
+        }
+    }
+
+    function adminDeleteRef(path, key) {
+        rtdb.ref(`${path}/${key}`).remove().then(() => alert("✅ تم إتمام الحذف بنجاح."));
+    }
+
+    function approveAgent(userKey, reqKey, whatsappNum = '') {
+        let updateObj = { isAgent: true };
+        if (whatsappNum) updateObj.whatsapp = whatsappNum;
+
+        rtdb.ref(`users/${userKey}`).update(updateObj).then(() => {
+            rtdb.ref(`agent_requests/${reqKey}`).remove().then(() => {
+                alert("🌟 تم منح لقب الوكيل للمستخدم بنجاح!");
+            });
+        });
+    }
+
+    function openIsolatedPublicRooms() { navigateTo('isolatedChatScreen'); loadIsolatedRoomsSafe(); }
+    function exitIsolatedChat() { exitIsolatedActiveRoom(); navigateTo('mainScreen'); }
+
+    function loadIsolatedRoomsSafe() {
+        try {
+            rtdb.ref('public_rooms').on('value', snap => {
+                let container = document.getElementById('isolatedRoomsContainer');
+                if(!container) return;
+                if(!snap.exists()) { container.innerHTML = "<div style='grid-column: span 2; text-align:center; color:#94a3b8;'>لا توجد غرف متاحة حالياً. أنشئ غرفة جديدة!</div>"; return; }
+
+                let roomsList = [];
+                snap.forEach(r => { roomsList.push(r.val()); });
+
+                rtdb.ref('room_occupants').once('value').then(occSnap => {
+                    let occupantsData = occSnap.val() || {};
+                    roomsList.forEach(room => {
+                        let occs = occupantsData[room.id] || {};
+                        room.occupantsCount = Object.keys(occs).length;
+                    });
+                    roomsList.sort((a, b) => b.occupantsCount - a.occupantsCount);
+
+                    let html = '';
+                    roomsList.forEach(room => {
+                        let rAvatar = room.avatar ? room.avatar : 'https://via.placeholder.com/55';
+                        
+                        let deleteRoomBtnHtml = (currentEmail === 'msaftwtn@gmail.com') ? 
+                            `<button class="action-btn" style="background:#ef4444; color:#fff; padding:4px; font-size:10px; margin-top:4px;" onclick="adminDeleteSingleRoom('${room.id}', '${room.name.replace(/'/g, "\\'")}')">🗑️ حذف الغرفة</button>` : '';
+
+                        html += `
+                        <div class="room-square-card">
+                            <img src="${rAvatar}" class="room-square-avatar" alt="الغرفة">
+                            <div style="font-weight:bold; color:#f59e0b; font-size:12px; margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%;">${room.name}</div>
+                            <div style="font-size:10px; color:#10b981; margin-bottom:4px;">🟢 الحضور: ${room.occupantsCount}</div>
+                            <button class="action-btn btn-green" style="padding:5px; font-size:11px;" onclick="checkAndEnterRoom('${room.id}', '${room.creatorKey}', '${room.name}')">انضمام 🚪</button>
+                            ${deleteRoomBtnHtml}
+                        </div>`;
+                    });
+                    container.innerHTML = html;
+                });
+            });
+        } catch(err) { console.error(err); }
+    }
+
+    function adminDeleteSingleRoom(roomId, roomName) {
+        if (currentEmail !== 'msaftwtn@gmail.com') return;
+        if (confirm(`⚠️ هل أنت متأكد من حذف الغرفة (${roomName}) نهائياً؟`)) {
+            rtdb.ref(`public_rooms/${roomId}`).remove();
+            rtdb.ref(`room_messages/${roomId}`).remove();
+            rtdb.ref(`room_occupants/${roomId}`).remove();
+            rtdb.ref(`room_bans/${roomId}`).remove();
+            alert("🗑️ تم حذف الغرفة بنجاح.");
+        }
+    }
+
+    function checkAndEnterRoom(roomId, creatorKey, roomName) {
+        rtdb.ref(`room_bans/${roomId}/${currentUserKey}`).once('value').then(snap => {
+            if (snap.exists()) {
+                let banData = snap.val();
+                let now = Date.now();
+                if (now < banData.bannedUntil) {
+                    let remainingHours = Math.ceil((banData.bannedUntil - now) / (1000 * 60 * 60));
+                    return alert(`🚫 أنت محظور من دخول هذه الغرفة مؤقتاً. متبقي ${remainingHours} ساعة لرفع الحظر.`);
+                } else {
+                    rtdb.ref(`room_bans/${roomId}/${currentUserKey}`).remove();
+                }
+            }
+            enterIsolatedRoom(roomId, creatorKey, roomName);
+        });
+    }
+
+    function createIsolatedRoom() {
+        if (userData.hasCreatedRoom) return alert('⚠️ لديك غرفة مسبقاً ولا يمكنك إنشاء سوى غرفة واحدة فقط!');
+
+        let name = document.getElementById('isolatedRoomNameInput').value.trim();
+        if(!name) return alert('⚠️ أدخل اسم الغرفة');
+
+        let newRef = rtdb.ref('public_rooms').push();
+        let roomId = newRef.key;
+
+        newRef.set({ 
+            id: roomId, name: name, creatorKey: currentUserKey, creatorName: userData.name, 
+            avatar: '', background: '', createdAt: Date.now() 
+        }).then(() => {
+            userData.hasCreatedRoom = true;
+            userData.createdRoomId = roomId;
+            saveToDB().then(() => { document.getElementById('isolatedRoomNameInput').value = ''; alert('✨ تم إنشاء غرفتك الخاصة بنجاح!'); });
+        });
+    }
+
+    function prepareReplyToMessage(senderName, msgText) {
+        currentReplyTarget = { senderName: senderName, text: msgText };
+        document.getElementById('replyTargetSender').innerText = `الرد على: ${senderName}`;
+        document.getElementById('replyTargetText').innerText = msgText;
+        document.getElementById('replyPreviewBar').style.display = 'flex';
+        document.getElementById('isolatedMsgInput').focus();
+    }
+
+    function cancelReplyMode() { currentReplyTarget = null; document.getElementById('replyPreviewBar').style.display = 'none'; }
+
+    function enterIsolatedRoom(roomId, creatorKey, roomName) {
+        isolatedActiveRoomId = roomId;
+        activeRoomCreatorKey = creatorKey;
+        cancelReplyMode();
+
+        document.getElementById('chatRoomsListArea').style.display = 'none';
+        document.getElementById('isolatedActiveRoomArea').style.display = 'flex';
+        document.getElementById('isolatedActiveRoomTitle').innerText = roomName;
+
+        let settingsBtn = document.getElementById('roomSettingsBtn');
+        if (currentUserKey === activeRoomCreatorKey || currentEmail === 'msaftwtn@gmail.com') {
+            settingsBtn.style.display = 'flex';
+        } else {
+            settingsBtn.style.display = 'none';
+        }
+
+        rtdb.ref(`public_rooms/${isolatedActiveRoomId}`).on('value', snap => {
+            if(snap.exists()) {
+                let rData = snap.val();
+                let avEl = document.getElementById('activeRoomAvatarDisplay');
+                avEl.src = rData.avatar ? rData.avatar : 'https://via.placeholder.com/30';
+                let msgBox = document.getElementById('isolatedMessagesBox');
+                msgBox.style.backgroundImage = rData.background ? `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(${rData.background})` : 'none';
+            }
+        });
+
+        rtdb.ref(`room_occupants/${isolatedActiveRoomId}/${currentUserKey}`).set({ name: userData.name });
+
+        rtdb.ref(`room_messages/${isolatedActiveRoomId}`).on('value', snap => {
+            let box = document.getElementById('isolatedMessagesBox');
+            if(!box) return;
+            if(!snap.exists()) { box.innerHTML = '<div style="color:#94a3b8; text-align:center;">مرحباً بك في الغرفة!</div>'; return; }
+            let html = '';
+            snap.forEach(m => {
+                let msg = m.val();
+                let isMe = msg.sender === currentUserKey;
+                let deleteMsgBtn = (isMe || currentEmail === 'msaftwtn@gmail.com') ? `<button class="msg-action-btn" onclick="deleteRoomMessage('${isolatedActiveRoomId}', '${m.key}')" title="حذف">🗑️</button>` : '';
+
+                if (msg.isGift) {
+                    html += `
+                    <div style="display:flex; justify-content:center; margin:8px 0;">
+                        <div class="gift-chat-card">
+                            <div class="gift-chat-header">
+                                <span class="gift-chat-sender">🦋 ${msg.senderName}</span>
+                                <span class="gift-chat-target">» ${msg.targetName}</span>
+                            </div>
+                            <div class="gift-chat-body">
+                                <span class="gift-chat-count">1 x</span>
+                                <img src="${msg.giftIcon || 'https://cdn-icons-png.flaticon.com/512/2405/2405479.png'}" class="gift-chat-img" alt="هدية">
+                            </div>
+                        </div>
+                    </div>`;
+                } else {
+                    let replyBtn = `<button class="msg-action-btn" onclick="prepareReplyToMessage('${msg.senderName.replace(/'/g, "\\'")}', '${msg.text.replace(/'/g, "\\'")}')" title="رد">🔃</button>`;
+                    let giftBtnHtml = !isMe ? `<button class="msg-action-btn" style="margin-left: 6px;" onclick="openUnifiedGiftBox('${msg.sender}', '${msg.senderName.replace(/'/g, "\\'")}')" title="إرسال هدية">🎁</button>` : '';
+                    let bgStyle = isMe ? "background:#ef4444; color:#ffffff;" : "background:#10b981; color:#ffffff;";
+
+                    let quotedHtml = msg.replyTo ? `<div style="background:rgba(0,0,0,0.25); border-right:2px solid #38bdf8; padding:3px 6px; border-radius:4px; margin-bottom:4px; font-size:10px; color:#cbd5e1; text-align:right;"><b style="color:#38bdf8;">${msg.replyTo.senderName}:</b> ${msg.replyTo.text}</div>` : '';
+
+                    html += `<div style="text-align:${isMe?'left':'right'}; margin-bottom:5px;">
+                        <div style="font-size:9px; color:#38bdf8; cursor:pointer;" onclick="openVisitedUserProfileByKeyDirect('${msg.sender}')"><b>${msg.senderName}</b> ${giftBtnHtml}</div>
+                        <div class="msg-bubble-container" style="${bgStyle}">
+                            <div style="display:flex; align-items:center; gap:2px;">${replyBtn}</div>
+                            <div style="flex:1; text-align:right;">${quotedHtml}<span>${msg.text}</span></div>
+                            <div>${deleteMsgBtn}</div>
+                        </div>
+                    </div>`;
+                }
+            });
+            box.innerHTML = html;
+            box.scrollTop = box.scrollHeight;
+        });
+
+        rtdb.ref(`room_occupants/${isolatedActiveRoomId}`).on('value', snap => {
+            let occ = snap.val() || {};
+            currentRoomOccupantsCount = Object.keys(occ).length;
+            let countEl = document.getElementById('isolatedRoomCount');
+            if(countEl) countEl.innerText = `👁️‍🗨️ ${currentRoomOccupantsCount}`;
+        });
+    }
+
+    function deleteRoomMessage(roomId, msgKey) { rtdb.ref(`room_messages/${roomId}/${msgKey}`).remove(); }
+
+    function exitIsolatedActiveRoom() {
+        cancelReplyMode();
+        if(isolatedActiveRoomId && rtdb) {
+            let rId = isolatedActiveRoomId;
+            rtdb.ref(`room_occupants/${rId}/${currentUserKey}`).remove();
+            rtdb.ref(`public_rooms/${rId}`).off();
+            rtdb.ref(`room_messages/${rId}`).off();
+            rtdb.ref(`room_occupants/${rId}`).off();
+
+            isolatedActiveRoomId = '';
+            activeRoomCreatorKey = '';
+            currentRoomOccupantsCount = 0;
+        }
+        let activeArea = document.getElementById('isolatedActiveRoomArea');
+        let listArea = document.getElementById('chatRoomsListArea');
+        if(activeArea) activeArea.style.display = 'none';
+        if(listArea) listArea.style.display = 'block';
+    }
+
+    function sendIsolatedMsg() {
+        let text = document.getElementById('isolatedMsgInput').value.trim();
+        if(!text || !isolatedActiveRoomId) return;
+
+        let msgObject = { sender: currentUserKey, senderName: userData.name, text: text, timestamp: Date.now() };
+        if (currentReplyTarget) {
+            msgObject.replyTo = { senderName: currentReplyTarget.senderName, text: currentReplyTarget.text };
+        }
+
+        rtdb.ref(`room_messages/${isolatedActiveRoomId}`).push(msgObject);
+        document.getElementById('isolatedMsgInput').value = '';
+        cancelReplyMode();
+    }
+
+    function openRoomSettingsModal() {
+        if (currentUserKey !== activeRoomCreatorKey && currentEmail !== 'msaftwtn@gmail.com') return alert('⚠️ هذه الميزة خاصة بمنشئ الغرفة والإدارة فقط!');
+        document.getElementById('roomSettingsModal').style.display = 'flex';
+    }
+    function closeRoomSettingsModal() { document.getElementById('roomSettingsModal').style.display = 'none'; }
+
+    function previewRoomAvatar(event) {
+        const file = event.target.files[0];
+        if (file) { const reader = new FileReader(); reader.onload = function(e) { newRoomAvatarBase64 = e.target.result; }; reader.readAsDataURL(file); }
+    }
+
+    function previewRoomBg(event) {
+        const file = event.target.files[0];
+        if (file) { const reader = new FileReader(); reader.onload = function(e) { newRoomBgBase64 = e.target.result; }; reader.readAsDataURL(file); }
+    }
+
+    function saveRoomCustomization() {
+        if (!isolatedActiveRoomId) return;
+        let updates = {};
+        if (newRoomAvatarBase64) updates.avatar = newRoomAvatarBase64;
+        if (newRoomBgBase64) updates.background = newRoomBgBase64;
+        if (Object.keys(updates).length === 0) return alert('⚠️ اختر صورة أو خلفية أولاً!');
+
+        rtdb.ref(`public_rooms/${isolatedActiveRoomId}`).update(updates).then(() => {
+            newRoomAvatarBase64 = ''; newRoomBgBase64 = '';
+            closeRoomSettingsModal();
+            alert('✨ تم التحديث بنجاح!');
+        });
+    }
+
+    function openUnifiedGiftBox(targetKey = 'all', targetName = 'الكل (عام)') {
+        if (!isolatedActiveRoomId) return alert('⚠️ أنت لست داخل غرفة دردشة!');
+        selectedTargetUserKey = targetKey;
+        selectedTargetUserName = targetName;
+        
+        let titleEl = document.getElementById('giftModalMainTitle');
+        if (titleEl) titleEl.innerText = targetKey === 'all' ? 'صندوق الهدايا العامة' : `إرسال هدية إلى: ${targetName}`;
+        let targetDisplayLabel = document.getElementById('activeTargetDisplayLabel');
+        if (targetDisplayLabel) targetDisplayLabel.innerHTML = `🎯 يتم الإرسال إلى: <b>${targetName}</b>`;
+        
+        rtdb.ref(`room_occupants/${isolatedActiveRoomId}`).once('value').then(snap => {
+            let occupants = snap.val() || {};
+            let occupantsKeys = Object.keys(occupants);
+            let sendBar = document.getElementById('giftSendActionBar');
+
+            if (occupantsKeys.length < 2) {
+                if(sendBar) sendBar.style.display = 'none';
+                if(targetDisplayLabel) targetDisplayLabel.innerHTML = `⚠️ لا يمكنك إرسال هدايا وأنت وحدك في الغرفة!`;
+            } else {
+                if(sendBar) sendBar.style.display = 'flex';
+            }
+            document.getElementById('unifiedGiftModal').style.display = 'flex';
+        });
+    }
+
+    function openTargetSelectorModal() {
+        if (!isolatedActiveRoomId) return;
+        let container = document.getElementById('roomOccupantsListContainer');
+        container.innerHTML = "جاري جلب المتواجدين...";
+
+        rtdb.ref(`room_occupants/${isolatedActiveRoomId}`).once('value').then(snap => {
+            if (!snap.exists()) { container.innerHTML = "<div style='padding:6px; color:#94a3b8; text-align:center;'>لا يوجد حضور سواك حالياً.</div>"; return; }
+
+            let html = `<div style="padding:6px 8px; background:rgba(255,255,255,0.03); border-radius:6px; margin-bottom:4px; display:flex; justify-content:space-between; align-items:center; cursor:pointer;" onclick="selectTargetAndCloseModal('all', 'الكل (عام)')"><span style="color:#f59e0b; font-weight:bold;">🌍 الكل (عام في الغرفة)</span><span style="font-size:10px; color:#38bdf8;">تحديد</span></div>`;
+
+            snap.forEach(occ => {
+                let userKey = occ.key;
+                let uDat = occ.val();
+                if (userKey !== currentUserKey) {
+                    html += `<div style="padding:6px 8px; background:rgba(255,255,255,0.03); border-radius:6px; margin-bottom:4px; display:flex; justify-content:space-between; align-items:center; cursor:pointer;" onclick="selectTargetAndCloseModal('${userKey}', '${uDat.name.replace(/'/g, "\\'")}')"><span style="color:#fff; font-weight:bold;">🟢 ${uDat.name}</span><span style="font-size:10px; color:#38bdf8;">تحديد</span></div>`;
+                }
+            });
+            container.innerHTML = html;
+            document.getElementById('targetSelectorModal').style.display = 'flex';
+        });
+    }
+
+    function closeTargetSelectorModal() { document.getElementById('targetSelectorModal').style.display = 'none'; }
+
+    function selectTargetAndCloseModal(targetKey, targetName) {
+        selectedTargetUserKey = targetKey;
+        selectedTargetUserName = targetName;
+        let targetDisplayLabel = document.getElementById('activeTargetDisplayLabel');
+        let sendBar = document.getElementById('giftSendActionBar');
+
+        if (targetKey === currentUserKey) {
+            if(sendBar) sendBar.style.display = 'none';
+            if(targetDisplayLabel) targetDisplayLabel.innerHTML = `⚠️ لا يمكنك إرسال هدية لنفسك!`;
+        } else {
+            if(sendBar) sendBar.style.display = 'flex';
+            if(targetDisplayLabel) targetDisplayLabel.innerHTML = `🎯 يتم الإرسال إلى: <b>${targetName}</b>`;
+        }
+
+        let titleEl = document.getElementById('giftModalMainTitle');
+        if (titleEl) titleEl.innerText = targetKey === 'all' ? 'صندوق الهدايا العامة' : `إرسال هدية إلى: ${targetName}`;
+        closeTargetSelectorModal();
+    }
+
+    function closeUnifiedGiftBox() {
+        document.getElementById('unifiedGiftModal').style.display = 'none';
+        pendingSelectedGift = null;
+        document.querySelectorAll('.gift-card-box').forEach(el => el.classList.remove('selected-gold'));
+    }
+
+    function switchGiftTab(type) {
+        document.getElementById('interactiveTabBtn').className = "gift-tab-btn " + (type === 'interactive' ? "active" : "");
+        document.getElementById('exclusiveTabBtn').className = "gift-tab-btn " + (type === 'exclusive' ? "active" : "");
+        document.getElementById('interactiveGiftsContent').className = "gift-pane-content " + (type === 'interactive' ? "active" : "");
+        document.getElementById('exclusiveGiftsContent').className = "gift-pane-content " + (type === 'exclusive' ? "active" : "");
+    }
+
+    function highlightGift(giftName, cost, giftIconUrl, elementId) {
+        document.querySelectorAll('.gift-card-box').forEach(el => el.classList.remove('selected-gold'));
+        let targetEl = document.getElementById(elementId);
+        if (targetEl) targetEl.classList.add('selected-gold');
+        pendingSelectedGift = { name: giftName, cost: cost, icon: giftIconUrl };
+    }
+
+    function confirmSendPendingGift() {
+        if (!pendingSelectedGift) return alert('⚠️ اختر هدية أولاً من الصندوق!');
+        if (selectedTargetUserKey === currentUserKey) return alert('⚠️ لا يمكنك إرسال هدية لنفسك!');
+        if (selectedTargetUserKey === 'all') return alert('⚠️ الهدايا في الملف الشخصي تُرَسل حصراً لمستخدم معين (ليست عامة)! حدد مستخدماً من زر "تغيير المستخدم".');
+
+        rtdb.ref(`room_occupants/${isolatedActiveRoomId}`).once('value').then(occSnap => {
+            let occupants = occSnap.val() || {};
+            if (Object.keys(occupants).length < 2) {
+                closeUnifiedGiftBox();
+                return alert('⚠️ ممنوع إرسال الهدايا وأنت وحدك في الغرفة لتفادي التلاعب بنظام النقاط!');
+            }
+
+            let cost = pendingSelectedGift.cost;
+            let giftName = pendingSelectedGift.name;
+            let giftIcon = pendingSelectedGift.icon;
+
+            rtdb.ref(`users/${currentUserKey}`).once('value').then(senderSnap => {
+                if(!senderSnap.exists()) return alert("❌ خطأ في بيانات المستخدم الحالي");
+                let senderLiveDat = senderSnap.val();
+                let currentLivePoints = senderLiveDat.points || 0;
+
+                if (currentLivePoints < cost) return alert(`❌ نقاطك غير كافية! سعر الهدية: ${cost} نقطة ورصيدك الحالي: ${currentLivePoints}`);
+
+                let newSenderPoints = currentLivePoints - cost;
+                let recipientShare = Math.floor(cost * 0.60);
+                let adminShare = Math.floor(cost * 0.40);
+
+                let updates = {};
+                updates[`users/${currentUserKey}/points`] = newSenderPoints;
+                updates[`users/${currentUserKey}/weeklyGiftsSent`] = (senderLiveDat.weeklyGiftsSent || 0) + cost;
+
+                rtdb.ref(`users/${selectedTargetUserKey}`).once('value').then(targetSnap => {
+                    if (targetSnap.exists()) {
+                        let targetData = targetSnap.val();
+                        updates[`users/${selectedTargetUserKey}/points`] = (targetData.points || 0) + recipientShare;
+                    }
+
+                    let giftKey = giftName.replace(/[^a-zA-Z0-9]/g, '_');
+                    rtdb.ref(`profile_gifts/${selectedTargetUserKey}/${giftKey}`).once('value').then(gSnap => {
+                        let currentCount = 0;
+                        if(gSnap.exists()) {
+                            currentCount = gSnap.val().count || 0;
+                        }
+                        updates[`profile_gifts/${selectedTargetUserKey}/${giftKey}`] = {
+                            giftName: giftName,
+                            giftIcon: giftIcon,
+                            count: currentCount + 1
+                        };
+
+                        rtdb.ref().update(updates).then(() => {
+                            rtdb.ref(`room_messages/${isolatedActiveRoomId}`).push({
+                                sender: currentUserKey, senderName: senderLiveDat.name,
+                                targetKey: selectedTargetUserKey, targetName: selectedTargetUserName,
+                                giftName: giftName, giftIcon: giftIcon, isGift: true, timestamp: Date.now()
+                            });
+
+                            rtdb.ref(`admin_revenues`).push({
+                                fromUser: senderLiveDat.name, giftName: giftName, totalCost: cost,
+                                adminShare: adminShare, recipientShare: recipientShare, targetUser: selectedTargetUserName, timestamp: Date.now()
+                            });
+
+                            closeUnifiedGiftBox();
+                            alert(`🎉 تم إرسال هدية (${giftName}) بنجاح وظهرت في ملف المستلم الشخصي!`);
+                        });
+                    });
+                });
+            });
+        });
+    }
+</script>
+
+</body>
+</html>
