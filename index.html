@@ -43,11 +43,6 @@
         .power-btn.green-pulse{background:#10b981;color:#fff}
         .assets-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
         .asset-box{background:rgba(30,41,59,0.7);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:10px;display:flex;align-items:center;justify-content:space-between}
-        .grid-buttons-custom{display:grid;grid-template-columns:repeat(1,1fr);gap:8px;margin-bottom:10px}
-        .grid-btn-item{background:rgba(30,41,59,0.75);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:10px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;text-align:center;min-height:80px;box-shadow:0 6px 15px rgba(0,0,0,0.3);position:relative}
-        .grid-btn-item span{font-size:10px;color:#fff;font-weight:bold;margin-top:4px}
-        .grid-btn-item .icon-circle{font-size:20px}
-        .grid-btn-item .mini-arrow{position:absolute;bottom:4px;font-size:9px;color:#94a3b8}
         .bottom-nav-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:420px;background:rgba(15,23,42,0.95);backdrop-filter:blur(10px);border-top:1px solid rgba(255,255,255,0.1);display:flex;justify-content:space-around;align-items:center;padding:8px 10px;z-index:999}
         .bottom-nav-item{display:flex;flex-direction:column;align-items:center;background:none;border:none;color:#94a3b8;font-size:10px;cursor:pointer;gap:2px}
         .bottom-nav-item.active{color:#38bdf8}
@@ -57,7 +52,6 @@
         .btn-gold{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff}
         .btn-blue{background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#fff}
         .btn-purple{background:linear-gradient(135deg,#a855f7,#7e22ce);color:#fff}
-        .btn-green{background:linear-gradient(135deg,#10b981,#059669);color:#fff}
         .shop-tabs{display:flex;gap:5px;margin-bottom:10px}
         .shop-tab-btn{flex:1;padding:7px;background:rgba(30,41,59,0.6);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#94a3b8;font-weight:bold;font-size:11px;cursor:pointer;text-align:center}
         .shop-tab-btn.active-gold{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff}
@@ -71,9 +65,6 @@
         .large-avatar{width:85px;height:85px;border-radius:50%;object-fit:cover;display:block;background:#222;cursor:pointer}
         .profile-gifts-section{margin-top:10px;text-align:right;border-top:1px solid rgba(255,255,255,0.1);padding-top:8px}
         .profile-gifts-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;max-height:140px;overflow-y:auto;padding:2px}
-        .profile-gift-mini-card{background:rgba(15,23,42,0.7);border:1px solid rgba(245,158,11,0.3);border-radius:8px;padding:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;height:55px}
-        .profile-gift-mini-img{width:28px;height:28px;object-fit:contain}
-        .profile-gift-mini-count{font-size:9px;color:#f59e0b;font-weight:bold;margin-top:2px}
         .wheel-box{width:140px;height:140px;border-radius:50%;border:6px solid #f59e0b;margin:8px auto;position:relative;overflow:hidden;transition:transform 5s cubic-bezier(0.1,0.9,0.1,1);background:conic-gradient(#ef4444 0deg 60deg,#3b82f6 60deg 120deg,#10b981 120deg 180deg,#f59e0b 180deg 240deg,#8b5cf6 240deg 300deg,#ec4899 300deg 360deg)}
         .wheel-pointer{width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:15px solid #fff;margin:0 auto;margin-bottom:-6px;z-index:10;position:relative}
         .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);justify-content:center;align-items:center;z-index:1000;padding:15px}
@@ -255,11 +246,6 @@
             <input type="number" id="adminPointsAmountInput" class="input-box" placeholder="عدد النقاط" style="margin-bottom:6px">
             <button class="action-btn btn-gold" style="padding:8px;font-size:11px" onclick="adminChargeDirectUser()">شحن النقاط للمستخدم 🪙</button>
         </div>
-        <div style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);padding:10px;border-radius:10px;margin-bottom:10px">
-            <h4 style="margin:0 0 6px 0;color:#ef4444;font-size:12px">🚫 إيقاف / تجميد الحساب مؤقتاً</h4>
-            <input type="text" id="adminSuspendIdInput" class="input-box" placeholder="أدخل ID المستخدم المراد إيقافه" style="margin-bottom:6px">
-            <button class="action-btn" style="background:#ef4444;color:#fff;padding:8px;font-size:11px" onclick="adminToggleUserSuspension()">تجميد / إلغاء تجميد الحساب ⚠️</button>
-        </div>
         <div style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);padding:10px;border-radius:10px;margin-bottom:10px">
             <h4 style="margin:0 0 6px 0;color:#f59e0b;font-size:12px">⚙️ إعدادات التحكم العامة للإدارة</h4>
             <div style="display:flex;flex-direction:column;gap:6px">
@@ -291,7 +277,7 @@
 
 <script>
     let currentEmail='',currentUserKey='',rtdb=null;
-    let userData={points:0,gems:0,lastSpinTime:0,activeCounter:'لا يوجد',activeCounterVal:0,customId:'',name:'',avatar:'',bio:'',lastWithdrawTime:0,isBanned:false};
+    let userData={points:0,gems:0,lastSpinTime:0,activeCounter:'لا يوجد',activeCounterVal:0,customId:'',name:'',avatar:'',bio:'',lastWithdrawTime:0};
     let base64Image='',timerInterval=null,globalAppSettings={withdrawLocked:false,dailyCounterLocked:false};
     let totalWheelDegrees=0;
 
@@ -333,20 +319,8 @@
             btn.disabled=false;btn.innerText="دخول الحساب 🚀";
             if(snap.exists()&&snap.val().password===pass){
                 let uDat=snap.val();
-                if(uDat.isBanned&&email!=='msaftwtn@gmail.com')return alert("🚫 تم إيقاف أو حظر هذا الحساب مؤقتاً/نهائياً من قبل الإدارة!");
                 currentEmail=email;try{localStorage.setItem('dinarUserKey',currentUserKey);}catch(e){}
                 if(email==='msaftwtn@gmail.com'&&uDat.customId!=='1')rtdb.ref('users/'+currentUserKey).update({customId:'1'});
-                if(email!=='msaftwtn@gmail.com'){
-                    let devKey=localStorage.getItem('dinarDeviceUuid');
-                    if(!devKey){devKey='dev_'+Math.random().toString(36).substring(2)+Date.now();localStorage.setItem('dinarDeviceUuid',devKey);}
-                    rtdb.ref(`device_bindings/${devKey}`).once('value').then(bSnap=>{
-                        if(bSnap.exists()&&bSnap.val().userKey!==currentUserKey){
-                            rtdb.ref(`users/${currentUserKey}`).update({isBanned:true});
-                            rtdb.ref(`users/${bSnap.val().userKey}`).update({isBanned:true});
-                            alert("🚫 تم حظر الحسابات لاكتشاف فتح حسابين على نفس الجهاز!");handleLogout();return;
-                        }else{rtdb.ref(`device_bindings/${devKey}`).set({userKey:currentUserKey});}
-                    });
-                }
                 initRealtimeSync();navigateTo('mainScreen');
             }else{alert("❌ البريد أو كلمة المرور غير صحيحة!");}
         }).catch(()=>{btn.disabled=false;btn.innerText="دخول الحساب 🚀";alert("❌ خطأ بالاتصال بالشبكة.");});
@@ -359,15 +333,10 @@
         rtdb.ref('users/'+currentUserKey).once('value').then(check=>{
             if(check.exists()){btn.disabled=false;btn.innerText="تأكيد الحساب ✨";return alert("⚠️ مسجل سابقاً!");}
             let defaultName=email.split('@')[0],assignedId=(email==='msaftwtn@gmail.com')?'1':Math.floor(100000+Math.random()*900000).toString();
-            const newUser={name:defaultName,email:email,password:pass,customId:assignedId,points:0,gems:0,bio:'',lastSpinTime:0,activeCounter:'لا يوجد',activeCounterVal:0,lastWithdrawTime:0,isBanned:false};
+            const newUser={name:defaultName,email:email,password:pass,customId:assignedId,points:0,gems:0,bio:'',lastSpinTime:0,activeCounter:'لا يوجد',activeCounterVal:0,lastWithdrawTime:0};
             rtdb.ref('users/'+currentUserKey).set(newUser).then(()=>{
                 btn.disabled=false;btn.innerText="تأكيد الحساب ✨";currentEmail=email;
                 try{localStorage.setItem('dinarUserKey',currentUserKey);}catch(e){}
-                if(email!=='msaftwtn@gmail.com'){
-                    let devKey=localStorage.getItem('dinarDeviceUuid');
-                    if(!devKey){devKey='dev_'+Math.random().toString(36).substring(2)+Date.now();localStorage.setItem('dinarDeviceUuid',devKey);}
-                    rtdb.ref(`device_bindings/${devKey}`).set({userKey:currentUserKey});
-                }
                 initRealtimeSync();navigateTo('mainScreen');
             });
         }).catch(()=>{btn.disabled=false;btn.innerText="تأكيد الحساب ✨";alert("❌ خطأ بالاتصال بالشبكة.");});
@@ -377,7 +346,6 @@
         rtdb.ref('users/'+currentUserKey).on('value',snap=>{
             if(snap.exists()){
                 userData=snap.val();
-                if(userData.isBanned&&currentEmail!=='msaftwtn@gmail.com'){alert("🚫 تم إيقاف حسابك مؤقتاً من قبل الإدارة!");handleLogout();return;}
                 currentEmail=userData.email||'';
                 if(currentEmail==='msaftwtn@gmail.com'&&userData.customId!=='1'){userData.customId='1';rtdb.ref('users/'+currentUserKey).update({customId:'1'});}
                 if(!userData.customId||!/^\d+$/.test(userData.customId)){userData.customId=Math.floor(100000+Math.random()*900000).toString();rtdb.ref('users/'+currentUserKey).update({customId:userData.customId});}
@@ -385,6 +353,7 @@
             }
         });
         rtdb.ref('app_settings').on('value',snap=>{globalAppSettings=snap.exists()?snap.val():{withdrawLocked:false,dailyCounterLocked:false};});
+        loadNotifications();
     }
     function updateUI(){
         document.getElementById('userPoints').innerText=userData.points||0;
@@ -403,10 +372,6 @@
     }
     function saveToDB(){
         if(!currentUserKey||!rtdb)return Promise.resolve();
-        if((userData.points<0||userData.gems<0)&&currentEmail!=='msaftwtn@gmail.com'){
-            userData.isBanned=true;rtdb.ref('users/'+currentUserKey).update({isBanned:true});
-            alert("🚫 تم الحظر أوتوماتيكياً بسبب مخالفة نظام الأمان الصارم!");handleLogout();return Promise.reject("Anti-cheat violation");
-        }
         return rtdb.ref('users/'+currentUserKey).update(userData);
     }
     function handleLogout(){if(timerInterval)clearInterval(timerInterval);try{localStorage.removeItem('dinarUserKey');}catch(e){}currentEmail='';currentUserKey='';navigateTo('authScreen');}
@@ -463,6 +428,16 @@
             saveToDB().then(()=>{msg.innerText=`🎉 مبروك! حصلت على ${prize} نقطة بنجاح!`;isSpinning=false;spinBtn.disabled=false;updateUI();});
         },5000);
     }
+    function loadNotifications(){
+        if(!currentUserKey||!rtdb)return;
+        rtdb.ref(`notifications/${currentUserKey}`).on('value',snap=>{
+            let c=document.getElementById('notificationsContainer'),b=document.getElementById('mainNotificationBadge');if(!c)return;
+            if(!snap.exists()){c.innerHTML="لا توجد إشعارات جديدة";if(b)b.style.display='none';return;}
+            if(b)b.style.display='block';let html='';snap.forEach(n=>{html+=`<div style="border-bottom:1px solid rgba(255,255,255,0.08);padding:6px 0">🔔 ${n.val().text}</div>`;});
+            c.innerHTML=html;
+        });
+    }
+    function clearAllNotifications(){if(!currentUserKey||!rtdb||!confirm("⚠️ حذف الإشعارات؟"))return;rtdb.ref(`notifications/${currentUserKey}`).remove().then(()=>{document.getElementById('notificationsContainer').innerHTML="لا توجد إشعارات جديدة";document.getElementById('mainNotificationBadge').style.display='none';alert("🗑️ تم الحذف.");});}
     function triggerImageUpload(){document.getElementById('hiddenImageInput').click();}
     function previewImage(e){const f=e.target.files[0];if(f){const rd=new FileReader();rd.onload=ce=>{base64Image=ce.target.result;document.getElementById('avatarPreview').src=base64Image;};rd.readAsDataURL(f);}}
     function validateBioLength(i){if(i.value.length>60)i.value=i.value.substring(0,60);document.getElementById('bioCounter').innerText=`${i.value.length} / 60`;}
@@ -496,19 +471,6 @@
                     document.getElementById('adminTargetIdInput').value='';document.getElementById('adminPointsAmountInput').value='';
                     alert(`✅ تم الشحن بـ ${pts} نقطة بنجاح.`);
                 });
-            });
-        });
-    }
-    function adminToggleUserSuspension(){
-        if(currentEmail!=='msaftwtn@gmail.com')return alert('⚠️ غير مسموح.');
-        let tId=document.getElementById('adminSuspendIdInput').value.trim();if(!tId)return alert('⚠️ أدخل ID المستخدم!');
-        rtdb.ref('users').once('value').then(snap=>{
-            let tk='';let curStatus=false;
-            snap.forEach(c=>{if(String(c.val().customId).trim()===String(tId).trim()){tk=c.key;curStatus=c.val().isBanned||false;}});
-            if(!tk)return alert('❌ لم يتم العثور على المستخدم!');
-            rtdb.ref(`users/${tk}`).update({isBanned:!curStatus}).then(()=>{
-                document.getElementById('adminSuspendIdInput').value='';
-                alert(!curStatus?'🚫 تم تجميد وإيقاف الحساب مؤقتاً بنجاح.':'✅ تم إلغاء التجميد وتفعيل الحساب بنجاح.');
             });
         });
     }
