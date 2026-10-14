@@ -63,8 +63,6 @@
         .profile-box{text-align:center;background:rgba(30,41,59,0.7);border:1px solid rgba(245,158,11,0.3);border-radius:16px;padding:15px;margin-bottom:10px}
         .large-avatar-container{position:relative;width:85px;height:85px;margin:0 auto 6px auto}
         .large-avatar{width:85px;height:85px;border-radius:50%;object-fit:cover;display:block;background:#222;cursor:pointer}
-        .profile-gifts-section{margin-top:10px;text-align:right;border-top:1px solid rgba(255,255,255,0.1);padding-top:8px}
-        .profile-gifts-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;max-height:140px;overflow-y:auto;padding:2px}
         .wheel-box{width:140px;height:140px;border-radius:50%;border:6px solid #f59e0b;margin:8px auto;position:relative;overflow:hidden;transition:transform 5s cubic-bezier(0.1,0.9,0.1,1);background:conic-gradient(#ef4444 0deg 60deg,#3b82f6 60deg 120deg,#10b981 120deg 180deg,#f59e0b 180deg 240deg,#8b5cf6 240deg 300deg,#ec4899 300deg 360deg)}
         .wheel-pointer{width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:15px solid #fff;margin:0 auto;margin-bottom:-6px;z-index:10;position:relative}
         .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);justify-content:center;align-items:center;z-index:1000;padding:15px}
@@ -211,14 +209,8 @@
             <div class="large-avatar-container" id="profileAvatarRingBox"><img id="avatarPreview" class="large-avatar" src="" alt="صورة" onclick="triggerImageUpload()" title="اضغط لتغيير الصورة الشخصية"></div>
             <input type="file" id="hiddenImageInput" accept="image/*" style="display:none" onchange="previewImage(event)">
             <div style="margin-top:2px;margin-bottom:6px"><span id="displayUserIdProfile" style="color:#f59e0b;font-size:12px;font-weight:bold">ID: ---</span></div>
-            <input type="text" id="profileNameInput" class="input-box" placeholder="تعديل الاسم" style="margin-top:4px;margin-bottom:6px">
-            <input type="text" id="profileBioInput" class="input-box" placeholder="اكتب البايو الخاص بك (60 حرف كحد أقصى)" maxlength="60" oninput="validateBioLength(this)" style="margin-top:2px;margin-bottom:6px;font-size:11px">
-            <div id="bioCounter" style="font-size:9px;color:#94a3b8;text-align:left;margin-bottom:6px">0 / 60</div>
+            <input type="text" id="profileNameInput" class="input-box" placeholder="تعديل الاسم" style="margin-top:4px;margin-bottom:10px">
             <div style="margin-top:8px;text-align:right"><button class="action-btn btn-gold" onclick="saveProfileData()">حفظ التعديلات 💾</button></div>
-            <div class="profile-gifts-section">
-                <h4 style="margin:0 0 6px 0;color:#f59e0b;font-size:12px">🎁 هدايا الملف الشخصي المستلمة</h4>
-                <div id="profileReceivedGiftsGrid" class="profile-gifts-grid"><div style="grid-column:span 3;text-align:center;color:#94a3b8;font-size:10px;padding:10px">لا توجد هدايا مستلمة بعد</div></div>
-            </div>
         </div>
     </div>
 
@@ -277,7 +269,7 @@
 
 <script>
     let currentEmail='',currentUserKey='',rtdb=null;
-    let userData={points:0,gems:0,lastSpinTime:0,activeCounter:'لا يوجد',activeCounterVal:0,customId:'',name:'',avatar:'',bio:'',lastWithdrawTime:0};
+    let userData={points:0,gems:0,lastSpinTime:0,activeCounter:'لا يوجد',activeCounterVal:0,customId:'',name:'',avatar:'',lastWithdrawTime:0};
     let base64Image='',timerInterval=null,globalAppSettings={withdrawLocked:false,dailyCounterLocked:false};
     let totalWheelDegrees=0;
 
@@ -298,7 +290,6 @@
     function navigateTo(screenId){
         document.querySelectorAll('.screen-page').forEach(p=>p.classList.remove('active'));
         const t=document.getElementById(screenId);if(t)t.classList.add('active');
-        if(screenId==='profileScreen'){let b=document.getElementById('profileBioInput');if(b)document.getElementById('bioCounter').innerText=`${b.value.length} / 60`;}
     }
     function navigateBackFromProfile(){
         navigateTo('mainScreen');
@@ -333,7 +324,7 @@
         rtdb.ref('users/'+currentUserKey).once('value').then(check=>{
             if(check.exists()){btn.disabled=false;btn.innerText="تأكيد الحساب ✨";return alert("⚠️ مسجل سابقاً!");}
             let defaultName=email.split('@')[0],assignedId=(email==='msaftwtn@gmail.com')?'1':Math.floor(100000+Math.random()*900000).toString();
-            const newUser={name:defaultName,email:email,password:pass,customId:assignedId,points:0,gems:0,bio:'',lastSpinTime:0,activeCounter:'لا يوجد',activeCounterVal:0,lastWithdrawTime:0};
+            const newUser={name:defaultName,email:email,password:pass,customId:assignedId,points:0,gems:0,lastSpinTime:0,activeCounter:'لا يوجد',activeCounterVal:0,lastWithdrawTime:0};
             rtdb.ref('users/'+currentUserKey).set(newUser).then(()=>{
                 btn.disabled=false;btn.innerText="تأكيد الحساب ✨";currentEmail=email;
                 try{localStorage.setItem('dinarUserKey',currentUserKey);}catch(e){}
@@ -362,8 +353,6 @@
         let pId=document.getElementById('displayUserIdProfile');if(pId)pId.innerText=`ID: ${userData.customId||'---'}`;
         document.getElementById('headerUserName').innerText=userData.name||'المستخدم';
         document.getElementById('profileNameInput').value=userData.name||'';
-        let bioInput=document.getElementById('profileBioInput');
-        if(bioInput){bioInput.value=userData.bio||'';document.getElementById('bioCounter').innerText=`${bioInput.value.length} / 60`;}
         let av=userData.avatar?userData.avatar:'https://via.placeholder.com/45';
         document.getElementById('headerUserAvatar').src=av;let avPrev=document.getElementById('avatarPreview');if(avPrev)avPrev.src=av;
         let cVal=userData.activeCounterVal||0;
@@ -440,10 +429,9 @@
     function clearAllNotifications(){if(!currentUserKey||!rtdb||!confirm("⚠️ حذف الإشعارات؟"))return;rtdb.ref(`notifications/${currentUserKey}`).remove().then(()=>{document.getElementById('notificationsContainer').innerHTML="لا توجد إشعارات جديدة";document.getElementById('mainNotificationBadge').style.display='none';alert("🗑️ تم الحذف.");});}
     function triggerImageUpload(){document.getElementById('hiddenImageInput').click();}
     function previewImage(e){const f=e.target.files[0];if(f){const rd=new FileReader();rd.onload=ce=>{base64Image=ce.target.result;document.getElementById('avatarPreview').src=base64Image;};rd.readAsDataURL(f);}}
-    function validateBioLength(i){if(i.value.length>60)i.value=i.value.substring(0,60);document.getElementById('bioCounter').innerText=`${i.value.length} / 60`;}
     function saveProfileData(){
-        let n=document.getElementById('profileNameInput').value.trim(),b=document.getElementById('profileBioInput').value.trim();
-        if(n)userData.name=n;if(b!==undefined)userData.bio=b.substring(0,60);if(base64Image)userData.avatar=base64Image;
+        let n=document.getElementById('profileNameInput').value.trim();
+        if(n)userData.name=n;if(base64Image)userData.avatar=base64Image;
         saveToDB().then(()=>{base64Image='';updateUI();alert('✅ تم حفظ التعديلات بنجاح!');}).catch(()=>alert('❌ حدث خطأ، حاول مجدداً.'));
     }
     function openWithdrawModal(){if(globalAppSettings.withdrawLocked&&currentEmail!=='msaftwtn@gmail.com')return alert('⚠️ سحب الأرباح مقفل حالياً.');document.getElementById('withdrawModal').style.display='flex';}
