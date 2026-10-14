@@ -1080,7 +1080,7 @@
             <option value="زين كاش الإدارة (9647881592421)">زين كاش (9647881592421)</option>
         </select>
 
-        <input type="text" id="cardNumberInput" class="input-box" placeholder="رقم عملية التحويل من رسالة زين كاش" style="margin-bottom:8px;">
+        <input type="text" id="cardNumberInput" class="input-box" placeholder="رقم عملية التحويل من رسالة زين كاش (8 أرقام فأكثر)" style="margin-bottom:8px;">
         <textarea id="cardNoteInput" class="input-box" placeholder="اكتب ملاحظة للإدارة..." style="height:70px; resize:none; margin-bottom:8px;"></textarea>
 
         <button class="action-btn btn-gold" onclick="submitCardPurchase()">إرسال الطلب للإدارة وتأكيد الشراء 🚀</button>
@@ -1462,7 +1462,11 @@
         let method = document.getElementById('cardPaymentMethod').value;
         let cardNum = document.getElementById('cardNumberInput').value.trim();
         let note = document.getElementById('cardNoteInput').value.trim();
-        if(!cardNum) return alert("⚠️ أدخل رقم العملية الخاص بـ زين كاش");
+        
+        // --- مشكلة 2: الحماية والتحقق من رقم عملية زين كاش (يجب أن يكون أرقام وصحيح ولا يقل عن 8 أرقام) ---
+        if(!cardNum || cardNum.length < 8 || !/^\d+$/.test(cardNum)) {
+            return alert("⚠️ رقم عملية التحويل غير صالح أو وهمي! يرجى إدخال رقم عملية زين كاش الحقيقي (أرقام فقط ولا يقل عن 8 أرقام).");
+        }
 
         let requestRef = rtdb.ref(`admin_supports`).push();
         requestRef.set({
@@ -2009,7 +2013,6 @@
         });
     }
 
-    // --- دالة لعبة "حزر الرقم" المحدثة والمصغرة ---
     function openGuessNumberGameModal() {
         document.getElementById('guessGameMsg').innerText = "";
         document.getElementById('guessNumberModal').style.display = 'flex';
@@ -2136,7 +2139,6 @@
         });
     }
 
-    // --- دالة الشحن المباشر من لوحة تحكم الإدارة (للأدمن حصراً) ---
     function adminDirectChargeUser() {
         if (currentEmail !== 'msaftwtn@gmail.com') return alert('⚠️ غير مسموح.');
         let targetId = document.getElementById('adminDirectTargetId').value.trim();
@@ -2294,6 +2296,7 @@
             area.innerHTML = html;
         });
 
+        // --- مشكلة 1: تحديث العداد الفعلي للمستخدم عند قبول طلب الشراء من الإدارة ---
         rtdb.ref('admin_supports').on('value', snap => {
             let area = document.getElementById('adminSupportsArea');
             if(!snap.exists()) { area.innerHTML = "لا توجد طلبات شراء عدادات حالياً."; return; }
@@ -2304,7 +2307,8 @@
                     <b>المستخدم:</b> ${d.userName} (${d.userId})<br>
                     <b>الطلب:</b> ${d.counterName}<br>
                     <b>رقم العملية:</b> ${d.accountInfo}<br>
-                    <button onclick="adminDeleteRef('admin_supports', '${item.key}')" style="background:#ef4444; color:#fff; border:none; padding:3px 8px; border-radius:4px; margin-top:4px; cursor:pointer;">إتمام الطلب 🗑️</button>
+                    <button onclick="adminApproveSupport('${item.key}', '${d.userKey}', '${d.counterName.replace(/'/g, "\\'")}')" style="background:#10b981; color:#fff; border:none; padding:3px 8px; border-radius:4px; margin-top:4px; cursor:pointer;">إتمام وتفعيل العداد ✅</button>
+                    <button onclick="adminDeleteRef('admin_supports', '${item.key}')" style="background:#ef4444; color:#fff; border:none; padding:3px 8px; border-radius:4px; margin-top:4px; cursor:pointer; margin-right:4px;">حذف 🗑️</button>
                 </div>`;
             });
             area.innerHTML = html;
@@ -2326,6 +2330,20 @@
                 </div>`;
             });
             area.innerHTML = html;
+        });
+    }
+
+    // --- دالة إتمام وتفعيل العداد للمستخدم من لوحة الأدمن ---
+    function adminApproveSupport(key, targetUserKey, counterName) {
+        if (currentEmail !== 'msaftwtn@gmail.com') return;
+        rtdb.ref(`users/${targetUserKey}`).update({ activeCounter: counterName }).then(() => {
+            rtdb.ref(`notifications/${targetUserKey}`).push({
+                text: `✅ تم قبول طلب تفعيل العداد (${counterName}) وتفعيله بنجاح في حسابك من قبل الإدارة!`,
+                timestamp: Date.now()
+            });
+            rtdb.ref(`admin_supports/${key}`).remove().then(() => {
+                alert("✅ تم تفعيل العداد للمستخدم بنجاح تام!");
+            });
         });
     }
 
