@@ -370,7 +370,7 @@
         </div>
     </div>
 
-    <!-- صفحة متجر العدادات (عرض فقط للاستعراض والتواصل مع الوكيل) -->
+    <!-- صفحة متجر العدادات (بدون أي كتابات أو جداول جانبية) -->
     <div id="shopScreen" class="screen-page">
         <div class="top-nav">
             <h3 style="margin:0; color:#f59e0b; font-size:15px;">🛒 متجر العدادات</h3>
@@ -381,10 +381,6 @@
                 <button class="shop-tab-btn active-gold" id="tabGold" onclick="switchShopTab('gold')">الذهبي</button>
                 <button class="shop-tab-btn" id="tabDiamond" onclick="switchShopTab('diamond')">الماسي</button>
                 <button class="shop-tab-btn" id="tabLegend" onclick="switchShopTab('legend')">الأسطوري</button>
-            </div>
-
-            <div style="background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 8px; padding: 6px 10px; margin-bottom: 10px; font-size: 11px; color: #38bdf8; text-align: center;">
-                💡 العدادات أدناه معروضة للاستعراض والتواصل مع وكلاء دينار المعتمدين للشحن!
             </div>
 
             <div id="shopGoldContent" class="shop-tier-content active">
@@ -616,7 +612,7 @@
     </div>
 </div>
 
-<!-- لوحة تحكم الإدارة (مع صلاحية شحن الطرفين: مستخدم أو حقيبة الوكيل) -->
+<!-- لوحة تحكم الإدارة -->
 <div id="adminPanelModal" class="modal">
     <div class="modal-content" style="text-align:right; max-width: 400px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -625,11 +621,11 @@
         </div>
 
         <div style="background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); padding: 10px; border-radius: 10px; margin-bottom: 10px;">
-            <h4 style="margin:0 0 6px 0; color:#38bdf8; font-size:12px;">⚡ شحن مباشر للطرفين (مستخدم أو حقيبة وكيل)</h4>
+            <h4 style="margin:0 0 6px 0; color:#38bdf8; font-size:12px;">⚡ شحن تراكمي مباشر (مستخدم أو حقيبة وكيل)</h4>
             <input type="text" id="adminTargetIdInput" class="input-box" placeholder="أدخل ID المستخدم أو الوكيل (أرقام فقط)" style="margin-bottom:6px;">
-            <input type="number" id="adminPointsAmountInput" class="input-box" placeholder="عدد النقاط المراد إضافتها" style="margin-bottom:6px;">
+            <input type="number" id="adminPointsAmountInput" class="input-box" placeholder="عدد النقاط العداد اليومي أو شحنها" style="margin-bottom:6px;">
             <div style="display:flex; gap:6px;">
-                <button class="action-btn btn-gold" style="padding:8px; font-size:11px;" onclick="adminChargeDirectUser()">شحن نقاط المستخدم 🪙</button>
+                <button class="action-btn btn-gold" style="padding:8px; font-size:11px;" onclick="adminChargeDirectUser()">شحن العداد/النقاط 🪙</button>
                 <button class="action-btn btn-blue" style="padding:8px; font-size:11px;" onclick="adminChargeAgentBag()">شحن حقيبة الوكيل 🎒</button>
             </div>
         </div>
@@ -878,7 +874,7 @@
     </div>
 </div>
 
-<!-- صفحة سحب الأرباح (حصرياً للإدارة عبر زين كاش) -->
+<!-- صفحة سحب الأرباح -->
 <div id="withdrawModal" class="modal">
     <div class="modal-content" style="text-align:right;">
         <div class="modal-header" style="display:flex; justify-content:space-between; margin-bottom:8px;">
@@ -1190,7 +1186,7 @@
         navigateTo('authScreen');
     }
 
-    // الشحن التراكمي للعداد اليومي
+    // الشحن التراكمي للعداد اليومي (من الإدارة أو الوكيل وتفعيل الساعة)
     function claimDailyReward() {
         let now = new Date().getTime();
         let lastTime = userData.lastSpinTime || 0;
@@ -1204,7 +1200,7 @@
 
         userData.points = (userData.points || 0) + rewardPoints;
         userData.lastSpinTime = now;
-        saveToDB().then(() => { updateUI(); startTimerCountdown(); alert(`🎉 مبروك! تم تفعيل العداد وحصلت على أرباحك التراكمية (${rewardPoints.toLocaleString()} نقطة) بنجاح.`); });
+        saveToDB().then(() => { updateUI(); startTimerCountdown(); alert(`🎉 مبروك! تم تفعيل العداد وحصلت على أرباحك التراكمية (${rewardPoints.toLocaleString()} نقطة) وبدأت الساعة بالعد التنازلي بنجاح.`); });
     }
 
     function convertGemsToPoints() {
@@ -1895,27 +1891,32 @@
 
             if(!targetUserKey) return alert("❌ لم يتم العثور على مستخدم بهذا الـ ID!");
 
-            rtdb.ref(`users/${targetUserKey}/points`).once('value').then(pSnap => {
-                let currentPoints = pSnap.val() || 0;
+            rtdb.ref(`users/${targetUserKey}`).once('value').then(tSnap => {
+                let tDat = tSnap.val();
+                let currentPoints = tDat.points || 0;
+                let currentCounterVal = tDat.activeCounterVal || 0;
+                
                 let updatedPoints = currentPoints + pointsToAdd;
+                let updatedCounterVal = currentCounterVal + pointsToAdd;
 
                 userData.agentBag -= pointsToAdd;
 
                 let updates = {};
                 updates[`users/${targetUserKey}/points`] = updatedPoints;
+                updates[`users/${targetUserKey}/activeCounterVal`] = updatedCounterVal;
                 updates[`users/${currentUserKey}/agentBag`] = userData.agentBag;
                 updates[`users/${currentUserKey}/weeklyAgentPoints`] = (userData.weeklyAgentPoints || 0) + pointsToAdd;
 
                 rtdb.ref().update(updates).then(() => {
                     rtdb.ref(`notifications/${targetUserKey}`).push({
-                        text: `تم شحن حسابك بـ ${pointsToAdd} نقطة بواسطة الوكيل المعتمد ${userData.name}`,
+                        text: `تم شحن وتجميع العداد اليومي بـ ${pointsToAdd} نقطة بواسطة الوكيل المعتمد ${userData.name}`,
                         timestamp: Date.now()
                     });
 
                     document.getElementById('agentTargetIdInput').value = '';
                     document.getElementById('agentPointsAmountInput').value = '';
                     updateUI();
-                    alert(`✅ تم شحن ${pointsToAdd} نقطة للمستخدم (ID: ${targetId}) بنجاح من حقيبتك!`);
+                    alert(`✅ تم شحن وتراكم العداد بـ ${pointsToAdd} نقطة للمستخدم (ID: ${targetId}) بنجاح من حقيبتك!`);
                 });
             });
         });
@@ -1927,7 +1928,7 @@
         let pointsToAdd = parseInt(document.getElementById('adminPointsAmountInput').value);
 
         if (!targetId || isNaN(pointsToAdd) || pointsToAdd <= 0) {
-            return alert('⚠️ أدخل الـ ID الصحيح وعدد النقاط المطلوب إضافتها للمستخدم!');
+            return alert('⚠️ أدخل الـ ID الصحيح وعدد النقاط المطلوب تجميعها للعداد!');
         }
 
         rtdb.ref('users').once('value').then(snap => {
@@ -1941,17 +1942,20 @@
             rtdb.ref(`users/${targetUserKey}`).once('value').then(uSnap => {
                 let uDat = uSnap.val();
                 let currentPoints = uDat.points || 0;
-                let updatedPoints = currentPoints + pointsToAdd;
+                let currentCounterVal = uDat.activeCounterVal || 0;
 
-                rtdb.ref(`users/${targetUserKey}`).update({ points: updatedPoints }).then(() => {
+                let updatedPoints = currentPoints + pointsToAdd;
+                let updatedCounterVal = currentCounterVal + pointsToAdd;
+
+                rtdb.ref(`users/${targetUserKey}`).update({ points: updatedPoints, activeCounterVal: updatedCounterVal }).then(() => {
                     rtdb.ref(`notifications/${targetUserKey}`).push({
-                        text: `⚡ قامت الإدارة بشحن رصيدك المباشر بـ ${pointsToAdd} نقطة جديدة!`,
+                        text: `⚡ قامت الإدارة بشحن وتراكم العداد اليومي بـ ${pointsToAdd} نقطة جديدة!`,
                         timestamp: Date.now()
                     });
 
                     document.getElementById('adminTargetIdInput').value = '';
                     document.getElementById('adminPointsAmountInput').value = '';
-                    alert(`✅ تم شحن رصيد المستخدم (ID: ${targetId}) بـ ${pointsToAdd} نقطة مباشرة بنجاح!`);
+                    alert(`✅ تم شحن وتراكم العداد للمستخدم (ID: ${targetId}) بـ ${pointsToAdd} نقطة بنجاح!`);
                 });
             });
         });
