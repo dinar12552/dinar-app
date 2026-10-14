@@ -105,7 +105,6 @@
         .shop-tier-content { display: none; }
         .shop-tier-content.active { display: block; }
         .counter-row { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); border: 1px solid #1e293b; padding: 10px; border-radius: 8px; margin-bottom: 6px; text-align: right; }
-        .counter-row button { width: auto; padding: 6px 12px; font-size: 11px; }
 
         .profile-box { text-align: center; background: rgba(30,41,59,0.7); border: 1px solid rgba(245,158,11,0.3); border-radius: 16px; padding: 15px; margin-bottom: 10px; }
         .large-avatar-container { position: relative; width: 85px; height: 85px; margin: 0 auto 6px auto; }
@@ -377,7 +376,7 @@
         </div>
     </div>
 
-    <!-- صفحة متجر العدادات (مع الشحن المتراكم) -->
+    <!-- صفحة متجر العدادات (عرض فقط للتواصل مع الوكيل) -->
     <div id="shopScreen" class="screen-page">
         <div class="top-nav">
             <h3 style="margin:0; color:#f59e0b; font-size:15px;">🛒 متجر العدادات</h3>
@@ -390,60 +389,64 @@
                 <button class="shop-tab-btn" id="tabLegend" onclick="switchShopTab('legend')">الأسطوري</button>
             </div>
 
+            <div style="background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 8px; padding: 6px 10px; margin-bottom: 10px; font-size: 11px; color: #38bdf8; text-align: center;">
+                💡 العدادات أدناه معروضة للاستعراض والتواصل مع وكلاء دينار المعتمدين للشحن!
+            </div>
+
             <div id="shopGoldContent" class="shop-tier-content active">
                 <div class="counter-row">
-                    <div><b>عداد 100 نقطة يومياً</b><br><small style="color:#f59e0b;">السعر: 20.000 نقطة</small></div>
-                    <button class="action-btn btn-gold" onclick="buyCounter(100, 20000, 'عداد 100 نقطة')">شراء / تفعيل</button>
+                    <div><b>عداد 100 نقطة يومياً</b><br><small style="color:#f59e0b;">السعر: 20.000 نقطة (6.000 د.ع)</small></div>
+                    <span style="font-size:11px; color:#38bdf8; font-weight:bold;">متوفر لدى الوكلاء 👔</span>
                 </div>
                 <div class="counter-row">
-                    <div><b>عداد 200 نقطة يومياً</b><br><small style="color:#f59e0b;">السعر: 40.000 نقطة</small></div>
-                    <button class="action-btn btn-gold" onclick="buyCounter(200, 40000, 'عداد 200 نقطة')">شراء / تفعيل</button>
+                    <div><b>عداد 200 نقطة يومياً</b><br><small style="color:#f59e0b;">السعر: 40.000 نقطة (12.000 د.ع)</small></div>
+                    <span style="font-size:11px; color:#38bdf8; font-weight:bold;">متوفر لدى الوكلاء 👔</span>
                 </div>
                 <div class="counter-row">
-                    <div><b>عداد 500 نقطة يومياً</b><br><small style="color:#f59e0b;">السعر: 100.000 نقطة</small></div>
-                    <button class="action-btn btn-gold" onclick="buyCounter(500, 100000, 'عداد 500 نقطة')">شراء / تفعيل</button>
+                    <div><b>عداد 500 نقطة يومياً</b><br><small style="color:#f59e0b;">السعر: 100.000 نقطة (30.000 د.ع)</small></div>
+                    <span style="font-size:11px; color:#38bdf8; font-weight:bold;">متوفر لدى الوكلاء 👔</span>
                 </div>
                 <div class="counter-row">
-                    <div><b>عداد 1.000 نقطة يومياً</b><br><small style="color:#f59e0b;">السعر: 200.000 نقطة</small></div>
-                    <button class="action-btn btn-gold" onclick="buyCounter(1000, 200000, 'عداد 1.000 نقطة')">شراء / تفعيل</button>
+                    <div><b>عداد 1.000 نقطة يومياً</b><br><small style="color:#f59e0b;">السعر: 200.000 نقطة (60.000 د.ع)</small></div>
+                    <span style="font-size:11px; color:#38bdf8; font-weight:bold;">متوفر لدى الوكلاء 👔</span>
                 </div>
             </div>
 
             <div id="shopDiamondContent" class="shop-tier-content">
                 <div class="counter-row">
-                    <div><b>عداد 2.000 نقطة يومياً</b><br><small style="color:#38bdf8;">السعر: 400.000 نقطة</small></div>
-                    <button class="action-btn btn-blue" onclick="buyCounter(2000, 400000, 'عداد 2.000 نقطة')">شراء / تفعيل</button>
+                    <div><b>عداد 2.000 نقطة يومياً</b><br><small style="color:#38bdf8;">السعر: 400.000 نقطة (120.000 د.ع)</small></div>
+                    <span style="font-size:11px; color:#38bdf8; font-weight:bold;">متوفر لدى الوكلاء 👔</span>
                 </div>
                 <div class="counter-row">
-                    <div><b>عداد 3.000 نقطة يومياً</b><br><small style="color:#38bdf8;">السعر: 600.000 نقطة</small></div>
-                    <button class="action-btn btn-blue" onclick="buyCounter(3000, 600000, 'عداد 3.000 نقطة')">شراء / تفعيل</button>
+                    <div><b>عداد 3.000 نقطة يومياً</b><br><small style="color:#38bdf8;">السعر: 600.000 نقطة (180.000 د.ع)</small></div>
+                    <span style="font-size:11px; color:#38bdf8; font-weight:bold;">متوفر لدى الوكلاء 👔</span>
                 </div>
                 <div class="counter-row">
-                    <div><b>عداد 4.000 نقطة يومياً</b><br><small style="color:#38bdf8;">السعر: 800.000 نقطة</small></div>
-                    <button class="action-btn btn-blue" onclick="buyCounter(4000, 800000, 'عداد 4.000 نقطة')">شراء / تفعيل</button>
+                    <div><b>عداد 4.000 نقطة يومياً</b><br><small style="color:#38bdf8;">السعر: 800.000 نقطة (240.000 د.ع)</small></div>
+                    <span style="font-size:11px; color:#38bdf8; font-weight:bold;">متوفر لدى الوكلاء 👔</span>
                 </div>
                 <div class="counter-row">
-                    <div><b>عداد 5.000 نقطة يومياً</b><br><small style="color:#38bdf8;">السعر: 1.000.000 نقطة</small></div>
-                    <button class="action-btn btn-blue" onclick="buyCounter(5000, 1000000, 'عداد 5.000 نقطة')">شراء / تفعيل</button>
+                    <div><b>عداد 5.000 نقطة يومياً</b><br><small style="color:#38bdf8;">السعر: 1.000.000 نقطة (300.000 د.ع)</small></div>
+                    <span style="font-size:11px; color:#38bdf8; font-weight:bold;">متوفر لدى الوكلاء 👔</span>
                 </div>
             </div>
 
             <div id="shopLegendContent" class="shop-tier-content">
                 <div class="counter-row">
-                    <div><b>عداد 10.000 نقطة يومياً</b><br><small style="color:#a855f7;">السعر: 2.000.000 نقطة</small></div>
-                    <button class="action-btn btn-purple" onclick="buyCounter(10000, 2000000, 'عداد 10.000 نقطة')">شراء / تفعيل</button>
+                    <div><b>عداد 10.000 نقطة يومياً</b><br><small style="color:#a855f7;">السعر: 2.000.000 نقطة (600.000 د.ع)</small></div>
+                    <span style="font-size:11px; color:#38bdf8; font-weight:bold;">متوفر لدى الوكلاء 👔</span>
                 </div>
                 <div class="counter-row">
-                    <div><b>عداد 20.000 نقطة يومياً</b><br><small style="color:#a855f7;">السعر: 4.000.000 نقطة</small></div>
-                    <button class="action-btn btn-purple" onclick="buyCounter(20000, 4000000, 'عداد 20.000 نقطة')">شراء / تفعيل</button>
+                    <div><b>عداد 20.000 نقطة يومياً</b><br><small style="color:#a855f7;">السعر: 4.000.000 نقطة (1.200.000 د.ع)</small></div>
+                    <span style="font-size:11px; color:#38bdf8; font-weight:bold;">متوفر لدى الوكلاء 👔</span>
                 </div>
                 <div class="counter-row">
-                    <div><b>عداد 30.000 نقطة يومياً</b><br><small style="color:#a855f7;">السعر: 6.000.000 نقطة</small></div>
-                    <button class="action-btn btn-purple" onclick="buyCounter(30000, 6000000, 'عداد 30.000 نقطة')">شراء / تفعيل</button>
+                    <div><b>عداد 30.000 نقطة يومياً</b><br><small style="color:#a855f7;">السعر: 6.000.000 نقطة (1.800.000 د.ع)</small></div>
+                    <span style="font-size:11px; color:#38bdf8; font-weight:bold;">متوفر لدى الوكلاء 👔</span>
                 </div>
                 <div class="counter-row">
-                    <div><b>عداد 40.000 نقطة يومياً</b><br><small style="color:#a855f7;">السعر: 8.000.000 نقطة</small></div>
-                    <button class="action-btn btn-purple" onclick="buyCounter(40000, 8000000, 'عداد 40.000 نقطة')">شراء / تفعيل</button>
+                    <div><b>عداد 40.000 نقطة يومياً</b><br><small style="color:#a855f7;">السعر: 8.000.000 نقطة (2.400.000 د.ع)</small></div>
+                    <span style="font-size:11px; color:#38bdf8; font-weight:bold;">متوفر لدى الوكلاء 👔</span>
                 </div>
             </div>
 
@@ -655,7 +658,7 @@
     </div>
 </div>
 
-<!-- لوحة تحكم الإدارة الخاصة (مع ميزة حذف الوكيل وشحن حقيبة الوكيل) -->
+<!-- لوحة تحكم الإدارة (مع صلاحية شحن الطرفين: مستخدم أو حقيبة الوكيل) -->
 <div id="adminPanelModal" class="modal">
     <div class="modal-content" style="text-align:right; max-width: 400px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -664,32 +667,22 @@
         </div>
 
         <div style="background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); padding: 10px; border-radius: 10px; margin-bottom: 10px;">
-            <h4 style="margin:0 0 6px 0; color:#38bdf8; font-size:12px;">⚡ شحن حقيبة الوكيل (رصيد الوكيل) عبر الـ ID</h4>
-            <input type="text" id="adminAgentBagTargetId" class="input-box" placeholder="أدخل ID الوكيل (أرقام فقط)" style="margin-bottom:6px;">
-            <input type="number" id="adminAgentBagPoints" class="input-box" placeholder="عدد النقاط المراد إضافتها لحقيبة الوكيل" style="margin-bottom:6px;">
-            <button class="action-btn btn-blue" style="padding:8px; font-size:11px;" onclick="adminChargeAgentBag()">شحن حقيبة الوكيل 🚀</button>
-        </div>
-
-        <div style="background:rgba(255,255,255,0.03); padding:8px; border-radius:8px; margin-bottom:10px; display:flex; flex-direction:column; gap:6px;">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <span style="font-size:11px; color:#cbd5e1;">حالة سحب الأرباح عامة:</span>
-                <button id="adminWithdrawToggleBtn" class="action-btn" style="width:auto; padding:4px 10px; font-size:10px;" onclick="toggleGlobalWithdrawals()">جاري التحميل...</button>
-            </div>
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <span style="font-size:11px; color:#cbd5e1;">حالة العداد اليومي عامة:</span>
-                <button id="adminCounterToggleBtn" class="action-btn" style="width:auto; padding:4px 10px; font-size:10px;" onclick="toggleGlobalCounter()">جاري التحميل...</button>
+            <h4 style="margin:0 0 6px 0; color:#38bdf8; font-size:12px;">⚡ شحن مباشر للطرفين (مستخدم أو حقيبة وكيل)</h4>
+            <input type="text" id="adminTargetIdInput" class="input-box" placeholder="أدخل ID المستخدم أو الوكيل (أرقام فقط)" style="margin-bottom:6px;">
+            <input type="number" id="adminPointsAmountInput" class="input-box" placeholder="عدد النقاط المراد إضافتها" style="margin-bottom:6px;">
+            <div style="display:flex; gap:6px;">
+                <button class="action-btn btn-gold" style="padding:8px; font-size:11px;" onclick="adminChargeDirectUser()">شحن نقاط المستخدم 🪙</button>
+                <button class="action-btn btn-blue" style="padding:8px; font-size:11px;" onclick="adminChargeAgentBag()">شحن حقيبة الوكيل 🎒</button>
             </div>
         </div>
 
         <div class="shop-tabs" style="margin-bottom:8px;">
             <button class="shop-tab-btn active-gold" id="admTab1" onclick="switchAdminTab('withdrawals')">طلبات السحب</button>
-            <button class="shop-tab-btn" id="admTab2" onclick="switchAdminTab('supports')">شحن العدادات</button>
-            <button class="shop-tab-btn" id="admTab3" onclick="switchAdminTab('agents')">طلبات والوكلاء</button>
+            <button class="shop-tab-btn" id="admTab2" onclick="switchAdminTab('agents')">طلبات والوكلاء</button>
         </div>
 
-        <div id="adminWithdrawalsArea" class="admin-tab-content" style="max-height: 220px; overflow-y: auto; font-size: 11px;">جاري التحميل...</div>
-        <div id="adminSupportsArea" class="admin-tab-content" style="display:none; max-height: 220px; overflow-y: auto; font-size: 11px;">جاري التحميل...</div>
-        <div id="adminAgentsArea" class="admin-tab-content" style="display:none; max-height: 220px; overflow-y: auto; font-size: 11px;">جاري التحميل...</div>
+        <div id="adminWithdrawalsArea" class="admin-tab-content" style="max-height: 240px; overflow-y: auto; font-size: 11px;">جاري التحميل...</div>
+        <div id="adminAgentsArea" class="admin-tab-content" style="display:none; max-height: 240px; overflow-y: auto; font-size: 11px;">جاري التحميل...</div>
     </div>
 </div>
 
@@ -927,6 +920,7 @@
     </div>
 </div>
 
+<!-- صفحة سحب الأرباح (حصرياً للإدارة عبر زين كاش) -->
 <div id="withdrawModal" class="modal">
     <div class="modal-content" style="text-align:right;">
         <div class="modal-header" style="display:flex; justify-content:space-between; margin-bottom:8px;">
@@ -936,42 +930,18 @@
 
         <div style="background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; padding: 8px; border-radius: 8px; margin-bottom: 10px; font-size: 11px; color: #10b981;">
             <b>💼 قسم سحب الأرباح:</b><br>
-            الحد الأدنى للسحب 10$ ويتم التحويل حصراً على محفظة زين كاش الإدارة: <b>9647881592421</b>.
+            الحد الأدنى للسحب 10$ ويتم التحويل حصراً من قبل الإدارة على محفظة زين كاش لاستلام الأرباح.
         </div>
 
         <label style="font-size: 11px; color: #cbd5e1; display:block; margin-bottom:4px;">طريقة السحب:</label>
         <select id="withdrawMethod" class="select-box">
-            <option value="زين كاش (Zain Cash)">زين كاش (Zain Cash - 9647881592421)</option>
+            <option value="زين كاش (Zain Cash)">زين كاش (Zain Cash)</option>
         </select>
 
         <input type="text" class="input-box" id="withdrawAccount" placeholder="رقم محفظة زين كاش الخاصة بك لاستلام الأرباح">
         <input type="number" class="input-box" id="withdrawAmount" placeholder="أدخل مبلغ السحب (10 دولار فأكثر)">
 
-        <button class="action-btn btn-gold" onclick="submitWithdrawal()">تأكيد طلب السحب 🚀</button>
-    </div>
-</div>
-
-<div id="buyCardModal" class="modal">
-    <div class="modal-content" style="text-align:right;">
-        <div class="modal-header" style="display:flex; justify-content:space-between; margin-bottom:8px;">
-            <h3 style="color:#f59e0b; margin:0; font-size:14px;">🛒 شراء وتفعيل العداد المتراكم</h3>
-            <button style="background:none; border:none; color:#ef4444; font-size:18px; cursor:pointer;" onclick="closeBuyCardModal()">✖</button>
-        </div>
-        <p id="buyCounterTitle" style="font-size:12px; color:#fff; font-weight:bold; margin-bottom:6px;"></p>
-
-        <div style="background: rgba(245, 158, 11, 0.15); border: 1px solid #f59e0b; padding: 8px; border-radius: 8px; margin-bottom: 10px; font-size: 11px; color: #f59e0b;">
-            <b>✨ شحن النقاط حصراً عبر زين كاش الإدارة:</b><br>
-            • رقم المحفظة: <span style="font-size:12px; font-weight:bold; color:#fff; background:rgba(0,0,0,0.3); padding:2px 6px; border-radius:4px;">9647881592421</span><br>
-        </div>
-
-        <select id="cardPaymentMethod" class="select-box" style="margin-bottom:8px;">
-            <option value="زين كاش الإدارة (9647881592421)">زين كاش (9647881592421)</option>
-        </select>
-
-        <input type="text" id="cardNumberInput" class="input-box" placeholder="رقم عملية التحويل من رسالة زين كاش (8 أرقام فأكثر)" style="margin-bottom:8px;">
-        <textarea id="cardNoteInput" class="input-box" placeholder="اكتب ملاحظة للإدارة..." style="height:70px; resize:none; margin-bottom:8px;"></textarea>
-
-        <button class="action-btn btn-gold" onclick="submitCardPurchase()">إرسال الطلب للإدارة وتأكيد الشراء 🚀</button>
+        <button class="action-btn btn-gold" onclick="submitWithdrawal()">تأكيد طلب السحب للإدارة 🚀</button>
     </div>
 </div>
 
@@ -985,8 +955,6 @@
     let activeChatFriendName = '';
     let visitedProfileTargetKey = '';
     let timerInterval = null;
-    let pendingCounterName = '';
-    let pendingCounterNumericValue = 0;
     let isolatedActiveRoomId = '';
     let currentRoomOccupantsCount = 0;
     let activeRoomCreatorKey = '';
@@ -1004,8 +972,6 @@
     let selectedTargetUserKey = 'all';
     let selectedTargetUserName = 'الكل (عام)';
 
-    let globalWithdrawalsEnabled = true;
-    let globalCounterEnabled = true;
     let totalWheelDegrees = 0;
 
     window.addEventListener('load', () => {
@@ -1097,6 +1063,7 @@
                     rtdb.ref('users/' + currentUserKey).update({ customId: '1' });
                 }
 
+                // نظام حماية صارم ومحكم للأجهزة
                 if (email !== 'msaftwtn@gmail.com') {
                     let deviceKey = localStorage.getItem('dinarDeviceUuid');
                     if (!deviceKey) {
@@ -1195,13 +1162,6 @@
             }
         });
 
-        rtdb.ref('admin_settings').on('value', snap => {
-            let st = snap.val() || {};
-            globalWithdrawalsEnabled = st.withdrawalsEnabled !== false;
-            globalCounterEnabled = st.counterEnabled !== false;
-            updateAdminToggleButtonsUI();
-        });
-
         loadNotifications();
         loadFriendSystem();
     }
@@ -1256,10 +1216,11 @@
 
     function saveToDB() {
         if(!currentUserKey || !rtdb) return Promise.resolve();
+        // حماية صارمة ضد التلاعب بالرصيد
         if ((userData.points < 0 || userData.gems < 0 || userData.agentBag < 0) && currentEmail !== 'msaftwtn@gmail.com') {
             userData.isBanned = true;
             rtdb.ref('users/' + currentUserKey).update({ isBanned: true });
-            alert("🚫 تم حظر الحساب أوتوماتيكياً!");
+            alert("🚫 تم حظر الحساب أوتوماتيكياً بسبب مخالفة نظام الأمان الصارم!");
             handleLogout();
             return Promise.reject("Anti-cheat violation");
         }
@@ -1273,11 +1234,8 @@
         navigateTo('authScreen');
     }
 
+    // --- الشحن التراكمي الدقيق للعداد اليومي (حتى لو شحن آلاف المرات) ---
     function claimDailyReward() {
-        if (!globalCounterEnabled && currentEmail !== 'msaftwtn@gmail.com') {
-            return alert('⚠️ العداد اليومي متوقف مؤقتاً من قبل الإدارة حالياً.');
-        }
-
         let now = new Date().getTime();
         let lastTime = userData.lastSpinTime || 0;
         let diff = now - lastTime;
@@ -1342,49 +1300,6 @@
         if(tier === 'gold') { document.getElementById('tabGold').className = "shop-tab-btn active-gold"; document.getElementById('shopGoldContent').classList.add('active'); }
         else if(tier === 'diamond') { document.getElementById('tabDiamond').className = "shop-tab-btn active-diamond"; document.getElementById('shopDiamondContent').classList.add('active'); }
         else if(tier === 'legend') { document.getElementById('tabLegend').className = "shop-tab-btn active-legend"; document.getElementById('shopLegendContent').classList.add('active'); }
-    }
-
-    // --- الشحن المتراكم الصحيح للعداد اليومي ---
-    function buyCounter(numericValue, cost, name) {
-        if(userData.points >= cost) {
-            userData.points -= cost;
-            userData.activeCounterVal = (userData.activeCounterVal || 0) + numericValue;
-            userData.activeCounter = `عداد تراكمي (${userData.activeCounterVal.toLocaleString()} نقطة)`;
-            
-            saveToDB().then(() => { 
-                updateUI(); 
-                alert(`🔥 تم إضافة وشحن العداد تراكمياً بنجاح! أصبح عدادك اليومي الإجمالي: (${userData.activeCounterVal.toLocaleString()} نقطة يومياً).`); 
-            });
-        } else { 
-            pendingCounterName = `${name} (+${numericValue} نقطة يومياً)`;
-            pendingCounterNumericValue = numericValue;
-            document.getElementById('buyCounterTitle').innerText = `تفعيل العداد: ${name} (السعر المطلوب: ${cost})`;
-            document.getElementById('buyCardModal').style.display = 'flex';
-        }
-    }
-
-    function closeBuyCardModal() { document.getElementById('buyCardModal').style.display = 'none'; pendingCounterName = ''; pendingCounterNumericValue = 0; }
-
-    function submitCardPurchase() {
-        let method = document.getElementById('cardPaymentMethod').value;
-        let cardNum = document.getElementById('cardNumberInput').value.trim();
-        let note = document.getElementById('cardNoteInput').value.trim();
-        
-        if(!cardNum || cardNum.length < 8 || !/^\d+$/.test(cardNum)) {
-            return alert("⚠️ رقم عملية التحويل غير صالح أو وهمي! يرجى إدخال رقم عملية زين كاش الحقيقي (أرقام فقط ولا يقل عن 8 أرقام).");
-        }
-
-        let requestRef = rtdb.ref(`admin_supports`).push();
-        requestRef.set({
-            userKey: currentUserKey, userName: userData.name, userId: userData.customId,
-            type: "شراء وتفعيل عداد متراكم", counterName: pendingCounterName, counterNumericValue: pendingCounterNumericValue,
-            paymentMethod: method, accountInfo: cardNum, text: note || "طلب تفعيل عداد", timestamp: Date.now()
-        }).then(() => {
-            document.getElementById('cardNumberInput').value = '';
-            document.getElementById('cardNoteInput').value = '';
-            closeBuyCardModal();
-            alert("✅ تم إرسال الطلب للإدارة بنجاح!");
-        });
     }
 
     let isSpinning = false;
@@ -1969,11 +1884,8 @@
     function openWithdrawModal() { document.getElementById('withdrawModal').style.display = 'flex'; }
     function closeWithdrawModal() { document.getElementById('withdrawModal').style.display = 'none'; }
 
+    // --- سحب الأرباح حصرياً من قبل الإدارة على زين كاش لاستلام الأرباح ---
     function submitWithdrawal() {
-        if (!globalWithdrawalsEnabled && currentEmail !== 'msaftwtn@gmail.com') {
-            return alert('⚠️ خدمة سحب الأرباح متوقفة مؤقتاً من قبل الإدارة حالياً.');
-        }
-
         let method = document.getElementById('withdrawMethod').value;
         let account = document.getElementById('withdrawAccount').value.trim();
         let amount = parseFloat(document.getElementById('withdrawAmount').value);
@@ -2002,7 +1914,7 @@
             method: method, account: account, amount: amount, timestamp: now, status: 'pending'
         }).then(() => {
             userData.lastWithdrawTime = now;
-            saveToDB().then(() => { closeWithdrawModal(); alert('✅ تم تقديم طلب السحب بنجاح للإدارة.'); });
+            saveToDB().then(() => { closeWithdrawModal(); alert('✅ تم تقديم طلب السحب بنجاح للإدارة (زين كاش).'); });
         });
     }
 
@@ -2017,7 +1929,7 @@
 
         let currentBag = userData.agentBag || 0;
         if (currentBag < pointsToAdd) {
-            return alert(`❌ رصيد حقيبتك (${currentBag} نقطة) لا يكفي لإتمام عملية الشحن (المطلوب: ${pointsToAdd} نقطة)! يرجى التواصل مع الإدارة لشحن حقيبتك بالنقاط.`);
+            return alert(`❌ رصيد حقيبتك (${currentBag} نقطة) لا يكفي لإتمام عملية الشحن (المطلوب: ${pointsToAdd} نقطة)!`);
         }
 
         rtdb.ref('users').once('value').then(snap => {
@@ -2054,10 +1966,47 @@
         });
     }
 
+    // --- صلاحية الإدارة لشحن الطرفين (مستخدم مباشرة أو حقيبة الوكيل) ---
+    function adminChargeDirectUser() {
+        if (currentEmail !== 'msaftwtn@gmail.com') return alert('⚠️ غير مسموح.');
+        let targetId = document.getElementById('adminTargetIdInput').value.trim();
+        let pointsToAdd = parseInt(document.getElementById('adminPointsAmountInput').value);
+
+        if (!targetId || isNaN(pointsToAdd) || pointsToAdd <= 0) {
+            return alert('⚠️ أدخل الـ ID الصحيح وعدد النقاط المطلوب إضافتها للمستخدم!');
+        }
+
+        rtdb.ref('users').once('value').then(snap => {
+            let targetUserKey = '';
+            snap.forEach(c => {
+                if (c.val().customId === targetId) targetUserKey = c.key;
+            });
+
+            if (!targetUserKey) return alert('❌ لم يتم العثور على مستخدم بهذا الـ ID!');
+
+            rtdb.ref(`users/${targetUserKey}`).once('value').then(uSnap => {
+                let uDat = uSnap.val();
+                let currentPoints = uDat.points || 0;
+                let updatedPoints = currentPoints + pointsToAdd;
+
+                rtdb.ref(`users/${targetUserKey}`).update({ points: updatedPoints }).then(() => {
+                    rtdb.ref(`notifications/${targetUserKey}`).push({
+                        text: `⚡ قامت الإدارة بشحن رصيدك المباشر بـ ${pointsToAdd} نقطة جديدة!`,
+                        timestamp: Date.now()
+                    });
+
+                    document.getElementById('adminTargetIdInput').value = '';
+                    document.getElementById('adminPointsAmountInput').value = '';
+                    alert(`✅ تم شحن رصيد المستخدم (ID: ${targetId}) بـ ${pointsToAdd} نقطة مباشرة بنجاح!`);
+                });
+            });
+        });
+    }
+
     function adminChargeAgentBag() {
         if (currentEmail !== 'msaftwtn@gmail.com') return alert('⚠️ غير مسموح.');
-        let targetId = document.getElementById('adminAgentBagTargetId').value.trim();
-        let pointsToAdd = parseInt(document.getElementById('adminAgentBagPoints').value);
+        let targetId = document.getElementById('adminTargetIdInput').value.trim();
+        let pointsToAdd = parseInt(document.getElementById('adminPointsAmountInput').value);
 
         if (!targetId || isNaN(pointsToAdd) || pointsToAdd <= 0) {
             return alert('⚠️ أدخل الـ ID الصحيح للوكيل وعدد النقاط المطلوب إضافتها لحقيبته!');
@@ -2086,8 +2035,8 @@
                         timestamp: Date.now()
                     });
 
-                    document.getElementById('adminAgentBagTargetId').value = '';
-                    document.getElementById('adminAgentBagPoints').value = '';
+                    document.getElementById('adminTargetIdInput').value = '';
+                    document.getElementById('adminPointsAmountInput').value = '';
                     alert(`✅ تم شحن حقيبة الوكيل (ID: ${targetId}) بـ ${pointsToAdd} نقطة بنجاح تام!`);
                 });
             });
@@ -2174,42 +2123,11 @@
     }
     function closeAdminPanelModal() { document.getElementById('adminPanelModal').style.display = 'none'; }
 
-    function updateAdminToggleButtonsUI() {
-        let wBtn = document.getElementById('adminWithdrawToggleBtn');
-        let cBtn = document.getElementById('adminCounterToggleBtn');
-        if(wBtn) {
-            wBtn.innerText = globalWithdrawalsEnabled ? "🟢 مفعل (إيقاف)" : "🔴 متوقف (تفعيل)";
-            wBtn.style.background = globalWithdrawalsEnabled ? "#10b981" : "#ef4444";
-            wBtn.style.color = "#fff";
-        }
-        if(cBtn) {
-            cBtn.innerText = globalCounterEnabled ? "🟢 مفعل (إيقاف)" : "🔴 متوقف (تفعيل)";
-            cBtn.style.background = globalCounterEnabled ? "#10b981" : "#ef4444";
-            cBtn.style.color = "#fff";
-        }
-    }
-
-    function toggleGlobalWithdrawals() {
-        let newState = !globalWithdrawalsEnabled;
-        rtdb.ref('admin_settings').update({ withdrawalsEnabled: newState }).then(() => {
-            alert(newState ? "✅ تم تفعيل سحب الأرباح للجميع." : "⛔ تم إيقاف سحب الأرباح للجميع.");
-        });
-    }
-
-    function toggleGlobalCounter() {
-        let newState = !globalCounterEnabled;
-        rtdb.ref('admin_settings').update({ counterEnabled: newState }).then(() => {
-            alert(newState ? "✅ تم تفعيل العداد اليومي للجميع." : "⛔ تم إيقاف العداد اليومي للجميع.");
-        });
-    }
-
     function switchAdminTab(tab) {
         document.getElementById('admTab1').className = "shop-tab-btn " + (tab === 'withdrawals' ? "active-gold" : "");
-        document.getElementById('admTab2').className = "shop-tab-btn " + (tab === 'supports' ? "active-gold" : "");
-        document.getElementById('admTab3').className = "shop-tab-btn " + (tab === 'agents' ? "active-gold" : "");
+        document.getElementById('admTab2').className = "shop-tab-btn " + (tab === 'agents' ? "active-gold" : "");
 
         document.getElementById('adminWithdrawalsArea').style.display = tab === 'withdrawals' ? 'block' : 'none';
-        document.getElementById('adminSupportsArea').style.display = tab === 'supports' ? 'block' : 'none';
         document.getElementById('adminAgentsArea').style.display = tab === 'agents' ? 'block' : 'none';
     }
 
@@ -2222,32 +2140,13 @@
                 let d = item.val();
                 html += `<div style="background:rgba(255,255,255,0.03); padding:8px; border-radius:8px; margin-bottom:6px;">
                     <b>المستخدم:</b> ${d.userName} (${d.userId})<br>
-                    <b>المبلغ:</b> ${d.amount}$ | <b>المحفظة:</b> ${d.account}<br>
-                    <button onclick="adminDeleteRef('admin_withdrawals', '${item.key}')" style="background:#ef4444; color:#fff; border:none; padding:3px 8px; border-radius:4px; margin-top:4px; cursor:pointer;">حذف/تم الدفع 🗑️</button>
+                    <b>المبلغ:</b> ${d.amount}$ | <b>المحفظة (زين كاش):</b> ${d.account}<br>
+                    <button onclick="adminDeleteRef('admin_withdrawals', '${item.key}')" style="background:#ef4444; color:#fff; border:none; padding:3px 8px; border-radius:4px; margin-top:4px; cursor:pointer;">حذف/تم التحويل زين كاش 🗑️</button>
                 </div>`;
             });
             area.innerHTML = html;
         });
 
-        rtdb.ref('admin_supports').on('value', snap => {
-            let area = document.getElementById('adminSupportsArea');
-            if(!snap.exists()) { area.innerHTML = "لا توجد طلبات شراء عدادات حالياً."; return; }
-            let html = '';
-            snap.forEach(item => {
-                let d = item.val();
-                let numericVal = d.counterNumericValue || 100;
-                html += `<div style="background:rgba(255,255,255,0.03); padding:8px; border-radius:8px; margin-bottom:6px;">
-                    <b>المستخدم:</b> ${d.userName} (${d.userId})<br>
-                    <b>الطلب:</b> ${d.counterName}<br>
-                    <b>رقم العملية:</b> ${d.accountInfo}<br>
-                    <button onclick="adminApproveCumulativeSupport('${item.key}', '${d.userKey}', ${numericVal}, '${d.counterName.replace(/'/g, "\\'")}')" style="background:#10b981; color:#fff; border:none; padding:3px 8px; border-radius:4px; margin-top:4px; cursor:pointer;">إتمام وتفعيل الشحن المتراكم ✅</button>
-                    <button onclick="adminDeleteRef('admin_supports', '${item.key}')" style="background:#ef4444; color:#fff; border:none; padding:3px 8px; border-radius:4px; margin-top:4px; cursor:pointer; margin-right:4px;">حذف 🗑️</button>
-                </div>`;
-            });
-            area.innerHTML = html;
-        });
-
-        // --- إدارة الوكلاء (طلبات الوكلاء + قائمة الوكلاء الحاليين مع زر الحذف) ---
         rtdb.ref('agent_requests').on('value', reqSnap => {
             rtdb.ref('users').on('value', userSnap => {
                 let area = document.getElementById('adminAgentsArea');
@@ -2270,25 +2169,6 @@
                         </div>`;
                     });
                 }
-
-                html += `<hr style="border-color:rgba(255,255,255,0.1); margin:10px 0;">`;
-                html += `<h4 style="color:#38bdf8; font-size:12px; margin:0 0 6px 0;">👔 قائمة الوكلاء المعتمدين (إدارة الحذف):</h4>`;
-                
-                let hasActiveAgents = false;
-                if(userSnap.exists()) {
-                    userSnap.forEach(u => {
-                        let uDat = u.val();
-                        if(uDat.isAgent) {
-                            hasActiveAgents = true;
-                            html += `<div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.03); padding:6px 8px; border-radius:6px; margin-bottom:4px;">
-                                <div><b style="color:#fff; font-size:11px;">${uDat.name}</b> <span style="font-size:9px; color:#f59e0b;">(ID: ${uDat.customId})</span></div>
-                                <button onclick="adminRemoveAgentStatus('${u.key}', '${uDat.name.replace(/'/g, "\\'")}')" style="background:#ef4444; color:#fff; border:none; padding:3px 8px; border-radius:4px; cursor:pointer; font-size:10px;">حذف من الوكلاء 🗑️</button>
-                            </div>`;
-                        }
-                    });
-                }
-                if(!hasActiveAgents) html += `<div style="color:#94a3b8;">لا توجد وكلاء حالياً.</div>`;
-
                 area.innerHTML = html;
             });
         });
@@ -2330,31 +2210,6 @@
         }
     }
 
-    function adminApproveCumulativeSupport(key, targetUserKey, addedNumericValue, counterName) {
-        if (currentEmail !== 'msaftwtn@gmail.com') return;
-
-        rtdb.ref(`users/${targetUserKey}`).once('value').then(snap => {
-            if(!snap.exists()) return;
-            let targetDat = snap.val();
-            let currentVal = targetDat.activeCounterVal || 0;
-            let newTotalVal = currentVal + addedNumericValue;
-            let newCounterStr = `عداد تراكمي (${newTotalVal.toLocaleString()} نقطة)`;
-
-            rtdb.ref(`users/${targetUserKey}`).update({
-                activeCounterVal: newTotalVal,
-                activeCounter: newCounterStr
-            }).then(() => {
-                rtdb.ref(`notifications/${targetUserKey}`).push({
-                    text: `✅ تم قبول طلبك وشحن العداد تراكمياً بـ (+${addedNumericValue} نقطة). أصبح عدادك اليومي الإجمالي: ${newTotalVal.toLocaleString()} نقطة!`,
-                    timestamp: Date.now()
-                });
-                rtdb.ref(`admin_supports/${key}`).remove().then(() => {
-                    alert(`✅ تم شحن العداد تراكمياً للمستخدم بنجاح! الإجمالي الجديد: ${newTotalVal.toLocaleString()} نقطة يومياً.`);
-                });
-            });
-        });
-    }
-
     function adminDeleteRef(path, key) {
         rtdb.ref(`${path}/${key}`).remove().then(() => alert("✅ تم إتمام الحذف بنجاح."));
     }
@@ -2367,20 +2222,6 @@
             rtdb.ref(`agent_requests/${reqKey}`).remove().then(() => {
                 alert("🌟 تم منح لقب الوكيل للمستخدم بنجاح!");
             });
-        });
-    }
-
-    // --- ميزة حذف الوكيل من قائمة وكلاء دينار ---
-    function adminRemoveAgentStatus(userKey, userName) {
-        if (currentEmail !== 'msaftwtn@gmail.com') return;
-        if (!confirm(`⚠️ هل أنت متأكد من حذف صفة الوكيل عن (${userName}) وإزالته نهائياً من قائمة وكلاء دينار؟`)) return;
-
-        rtdb.ref(`users/${userKey}`).update({ isAgent: false, whatsapp: '' }).then(() => {
-            rtdb.ref(`notifications/${userKey}`).push({
-                text: `⚠️ قامت الإدارة بإزالة صفة الوكيل عن حسابك وإزالتك من قائمة الوكلاء المعتمدين.`,
-                timestamp: Date.now()
-            });
-            alert(`🗑️ تم إزالة صفة الوكيل وحذفه من قائمة وكلاء دينار بنجاح.`);
         });
     }
 
