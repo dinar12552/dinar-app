@@ -802,12 +802,20 @@
     </div>
 </div>
 
-<!-- نافذة لوحة تحكم الإدارة الخاصة -->
+<!-- نافذة لوحة تحكم الإدارة الخاصة (مع زر شحن المباشر للجميع) -->
 <div id="adminPanelModal" class="modal">
     <div class="modal-content" style="text-align:right; max-width: 400px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
             <h4 style="margin:0; color:#ef4444; font-size:15px;">👑 لوحة تحكم الإدارة (msaftwtn)</h4>
             <button style="background:none; border:none; color:#ef4444; font-size:18px; cursor:pointer;" onclick="closeAdminPanelModal()">✖</button>
+        </div>
+
+        <!-- قسم شحن النقاط المباشر الجديد (للأدمن لأي مستخدم أو وكيل) -->
+        <div style="background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); padding: 10px; border-radius: 10px; margin-bottom: 10px;">
+            <h4 style="margin:0 0 6px 0; color:#38bdf8; font-size:12px;">⚡ شحن مباشر لأي مستخدم أو وكيل عبر الـ ID</h4>
+            <input type="text" id="adminDirectTargetId" class="input-box" placeholder="أدخل ID المستخدم أو الوكيل (أرقام فقط)" style="margin-bottom:6px;">
+            <input type="number" id="adminDirectPoints" class="input-box" placeholder="عدد النقاط المراد إضافتها" style="margin-bottom:6px;">
+            <button class="action-btn btn-blue" style="padding:8px; font-size:11px;" onclick="adminDirectChargeUser()">تنفيذ الشحن الفوري 🚀</button>
         </div>
 
         <div style="background:rgba(255,255,255,0.03); padding:8px; border-radius:8px; margin-bottom:10px; display:flex; flex-direction:column; gap:6px;">
@@ -2123,6 +2131,42 @@
                     document.getElementById('agentTargetIdInput').value = '';
                     document.getElementById('agentPointsAmountInput').value = '';
                     alert(`✅ تم شحن ${pointsToAdd} نقطة للمستخدم (ID: ${targetId}) بنجاح!`);
+                });
+            });
+        });
+    }
+
+    // --- دالة الشحن المباشر من لوحة تحكم الإدارة (للأدمن حصراً) ---
+    function adminDirectChargeUser() {
+        if (currentEmail !== 'msaftwtn@gmail.com') return alert('⚠️ غير مسموح.');
+        let targetId = document.getElementById('adminDirectTargetId').value.trim();
+        let pointsToAdd = parseInt(document.getElementById('adminDirectPoints').value);
+
+        if (!targetId || isNaN(pointsToAdd) || pointsToAdd <= 0) {
+            return alert('⚠️ أدخل الـ ID الصحيح وعدد النقاط المطلوب شحنها!');
+        }
+
+        rtdb.ref('users').once('value').then(snap => {
+            let targetUserKey = '';
+            snap.forEach(c => {
+                if (c.val().customId === targetId) targetUserKey = c.key;
+            });
+
+            if (!targetUserKey) return alert('❌ لم يتم العثور على مستخدم بهذا الـ ID!');
+
+            rtdb.ref(`users/${targetUserKey}/points`).once('value').then(pSnap => {
+                let currentPoints = pSnap.val() || 0;
+                let updatedPoints = currentPoints + pointsToAdd;
+
+                rtdb.ref(`users/${targetUserKey}`).update({ points: updatedPoints }).then(() => {
+                    rtdb.ref(`notifications/${targetUserKey}`).push({
+                        text: `⚡ تم شحن رصيدك بـ ${pointsToAdd} نقطة مباشرة من قبل إدارة التطبيق!`,
+                        timestamp: Date.now()
+                    });
+
+                    document.getElementById('adminDirectTargetId').value = '';
+                    document.getElementById('adminDirectPoints').value = '';
+                    alert(`✅ تم شحن ${pointsToAdd} نقطة للحساب (ID: ${targetId}) بنجاح تام!`);
                 });
             });
         });
