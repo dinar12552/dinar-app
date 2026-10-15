@@ -14,7 +14,6 @@
         .screen-page.active{display:flex}
         #authScreen.screen-page.active{background:#111827;justify-content:center;align-items:center;border-radius:20px;padding:15px}
         .auth-card{background:#1e293b;border:1px solid #f59e0b;border-radius:20px;padding:24px 20px;text-align:center;width:100%}
-        .animated-logo-container{display:inline-block;margin-bottom:10px}
         .tab-switch{display:flex;background:#0f172a;border-radius:12px;padding:4px;margin-bottom:16px;direction:rtl}
         .tab-btn{flex:1;padding:8px;border:none;background:transparent;color:#94a3b8;font-weight:bold;font-size:12px;border-radius:8px;cursor:pointer;text-align:center}
         .tab-btn.active{background:#f59e0b;color:#fff}
@@ -31,7 +30,6 @@
         .bell-icon-btn{background:none;border:none;font-size:20px;cursor:pointer;position:relative;padding:0;margin-left:8px}
         .top-profile-card{background:#1e293b;border:1px solid #f59e0b;border-radius:16px;padding:12px;margin-bottom:10px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}
         .coin-center-emblem{width:55px;height:55px;border-radius:50%;background:#271e05;border:2px solid #f59e0b;display:flex;justify-content:center;align-items:center;margin:0 auto}
-        .spinning-coin{font-size:22px}
         .timer-mini-bar{display:flex;align-items:center;justify-content:center;background:#0f172a;border:1px solid #334155;border-radius:20px;padding:2px 6px;gap:6px;margin-top:6px}
         .timer-time-text{font-family:monospace;font-size:10px;font-weight:bold;color:#fff}
         .power-btn{width:20px;height:20px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
@@ -39,11 +37,10 @@
         .power-btn.green-pulse{background:#10b981;color:#fff}
         .assets-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
         .asset-box{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:10px;display:flex;align-items:center;justify-content:space-between}
-        .grid-buttons-custom{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
-        .grid-btn-item{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:10px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;text-align:center;min-height:80px;position:relative}
-        .grid-btn-item span{font-size:10px;color:#fff;font-weight:bold;margin-top:4px}
-        .grid-btn-item .icon-circle{font-size:20px}
-        .grid-btn-item .mini-arrow{position:absolute;bottom:4px;font-size:9px;color:#94a3b8}
+        .grid-buttons-custom{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:10px}
+        .grid-btn-item{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:12px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;text-align:center;min-height:75px;position:relative}
+        .grid-btn-item span{font-size:11px;color:#fff;font-weight:bold;margin-top:4px}
+        .grid-btn-item .icon-circle{font-size:22px}
         .bottom-nav-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:420px;background:#0f172a;border-top:1px solid #334155;display:flex;justify-content:space-around;align-items:center;padding:8px 10px;z-index:999}
         .bottom-nav-item{display:flex;flex-direction:column;align-items:center;background:none;border:none;color:#94a3b8;font-size:10px;cursor:pointer;gap:2px}
         .bottom-nav-item.active{color:#38bdf8}
@@ -70,7 +67,7 @@
         .profile-gift-mini-card{background:#0f172a;border:1px solid #f59e0b;border-radius:8px;padding:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;height:55px}
         .profile-gift-mini-img{width:28px;height:28px;object-fit:contain}
         .profile-gift-mini-count{font-size:9px;color:#f59e0b;font-weight:bold;margin-top:2px}
-        .wheel-box{width:140px;height:140px;border-radius:50%;border:6px solid #f59e0b;margin:8px auto;position:relative;overflow:hidden;background:conic-gradient(#ef4444 0deg 60deg,#3b82f6 60deg 120deg,#10b981 120deg 180deg,#f59e0b 180deg 240deg,#8b5cf6 240deg 300deg,#ec4899 300deg 360deg)}
+        .wheel-box{width:140px;height:140px;border-radius:50%;border:6px solid #f59e0b;margin:8px auto;position:relative;overflow:hidden;background:conic-gradient(#ef4444 0deg 60deg,#3b82f6 60deg 120deg,#10b981 120deg 180deg,#f59e0b 180deg 240deg,#8b5cf6 240deg 300deg,#ec4899 300deg 360deg);transition:transform 5s cubic-bezier(0.1,0.9,0.1,1)}
         .wheel-pointer{width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:15px solid #fff;margin:0 auto;margin-bottom:-6px;z-index:10;position:relative}
         .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);justify-content:center;align-items:center;z-index:1000;padding:15px}
         .modal-content{background:#121826;border:1px solid #f59e0b;border-radius:16px;width:100%;max-width:380px;padding:16px;max-height:90vh;overflow-y:auto}
@@ -88,7 +85,6 @@
         .gift-pane-content.active{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
         .gift-card-box{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:8px 4px;text-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;height:82px}
         .gift-card-box.selected-gold{border:2px solid #f59e0b !important;background:#38270c !important}
-        .exclusive-gift-animated{display:block}
         .gift-icon-full{width:42px;height:42px;object-fit:contain;display:block}
         .gift-price-num{font-size:11px;color:#f59e0b;font-weight:bold;margin-top:3px}
         .bottom-action-bar{display:flex;align-items:center;justify-content:flex-end;margin-top:10px;padding-top:8px;border-top:1px solid #334155}
@@ -109,11 +105,9 @@
 <div class="container">
     <div id="authScreen" class="screen-page active">
         <div class="auth-card">
-            <div class="animated-logo-container">
-                <div style="width:75px;height:75px;border-radius:50%;background:#271e05;border:2px solid #f59e0b;display:flex;flex-direction:column;justify-content:center;align-items:center;margin:0 auto">
-                    <span style="font-size:24px;font-weight:900;color:#f59e0b">D</span>
-                    <span style="font-size:11px;font-weight:bold;color:#fff">Dinar</span>
-                </div>
+            <div style="width:75px;height:75px;border-radius:50%;background:#271e05;border:2px solid #f59e0b;display:flex;flex-direction:column;justify-content:center;align-items:center;margin:0 auto 10px auto">
+                <span style="font-size:24px;font-weight:900;color:#f59e0b">D</span>
+                <span style="font-size:11px;font-weight:bold;color:#fff">Dinar</span>
             </div>
             <h2 style="color:#f59e0b;margin:0 0 5px 0">منصة دينار</h2>
             <p style="color:#94a3b8;font-size:12px;margin-bottom:15px">تسجيل الدخول أو إنشاء حساب جديد</p>
@@ -162,7 +156,7 @@
                 <div style="font-size:12px;color:#34d399;font-weight:bold;margin-top:2px" id="activeCounterInfo">لا يوجد</div>
             </div>
             <div style="text-align:center">
-                <div class="coin-center-emblem"><div class="spinning-coin">🪙</div></div>
+                <div class="coin-center-emblem">🪙</div>
                 <div class="timer-mini-bar">
                     <span id="timerDisplay" class="timer-time-text">24:00:00</span>
                     <button id="powerActivateBtn" class="power-btn red-pulse" onclick="claimDailyReward()">⚡</button>
@@ -190,10 +184,8 @@
             </div>
         </div>
         <div class="grid-buttons-custom">
-            <div class="grid-btn-item" onclick="openGuessNumberGameModal()"><div class="icon-circle">🎯</div><span>حزر الرقم</span><div class="mini-arrow">⌄</div></div>
-            <div class="grid-btn-item" onclick="openWithdrawModal()"><div class="icon-circle">💸</div><span>سحب الأرباح</span><div class="mini-arrow">⌄</div></div>
-            <div class="grid-btn-item" onclick="navigateTo('leaderboardScreen')"><div class="icon-circle">🏆</div><span>التصنيف الأسبوعي</span><div class="mini-arrow">⌄</div></div>
-            <div class="grid-btn-item" onclick="navigateTo('agentsScreen')"><div class="icon-circle">👔</div><span>وكلاء دينار</span><div class="mini-arrow">⌄</div></div>
+            <div class="grid-btn-item" onclick="openWithdrawModal()"><div class="icon-circle">💸</div><span>سحب الأرباح</span></div>
+            <div class="grid-btn-item" onclick="navigateTo('agentsScreen')"><div class="icon-circle">👔</div><span>وكلاء دينار</span></div>
         </div>
         <div class="bottom-nav-bar">
             <button class="bottom-nav-item active" onclick="navigateTo('mainScreen')"><span>🏠</span><div>الرئيسية</div></button>
@@ -201,23 +193,6 @@
             <div class="bottom-nav-crown" onclick="navigateTo('wheelScreen')" title="عجلة الحظ">👑</div>
             <button class="bottom-nav-item" onclick="navigateTo('friendsScreen')"><span>👥</span><div>الأصدقاء</div></button>
             <button class="bottom-nav-item" onclick="navigateTo('shopScreen')"><span>🛒</span><div>المتجر</div></button>
-        </div>
-    </div>
-
-    <div id="leaderboardScreen" class="screen-page">
-        <div class="top-nav">
-            <h3 style="margin:0;color:#f59e0b;font-size:15px">🏆 التصنيف الأسبوعي (لوحة الشرف)</h3>
-            <button class="nav-btn back" onclick="navigateTo('mainScreen')">⬅️ الرئيسية</button>
-        </div>
-        <div class="card" style="text-align:right">
-            <div class="shop-tabs" style="margin-bottom:10px">
-                <button class="shop-tab-btn active-gold" id="lbTab1" onclick="switchLeaderboardTab('gifts')">🎁 الشحن والهدايا</button>
-                <button class="shop-tab-btn" id="lbTab2" onclick="switchLeaderboardTab('agents')">👔 نشاط الوكلاء</button>
-                <button class="shop-tab-btn" id="lbTab3" onclick="switchLeaderboardTab('wheel')">🎡 رابحي العجلة</button>
-            </div>
-            <div id="lbContentGifts" class="lb-pane-content"><div id="leaderboardGiftsList" style="font-size:11px;color:#cbd5e1">جاري التحميل...</div></div>
-            <div id="lbContentAgents" class="lb-pane-content" style="display:none"><div id="leaderboardAgentsList" style="font-size:11px;color:#cbd5e1">جاري التحميل...</div></div>
-            <div id="lbContentWheel" class="lb-pane-content" style="display:none"><div id="leaderboardWheelList" style="font-size:11px;color:#cbd5e1">جاري التحميل...</div></div>
         </div>
     </div>
 
@@ -245,8 +220,8 @@
         </div>
         <div class="card" style="text-align:right;margin-bottom:12px;padding:12px">
             <h4 style="margin:0 0 6px 0;color:#38bdf8;font-size:13px">📥 طلب شراء عداد مخصص</h4>
-            <p style="font-size:10px;color:#cbd5e1;margin-bottom:8px">حولت المبلغ للإدارة؟ اكتب تفاصيل طلبك هنا وسيتم التحقق والشحن مباشرة:</p>
-            <input type="text" id="manualCounterPhone" class="input-box" placeholder="رقم محفظتك أو الواتساب للتواصل" style="margin-bottom:6px">
+            <p style="font-size:10px;color:#cbd5e1;margin-bottom:8px">حولت المبلغ للإدارة؟ أدخل رقم عملية التحويل وتفاصيل العداد هنا:</p>
+            <input type="text" id="manualCounterPhone" class="input-box" placeholder="رقم عملية التحويل من زين كاش" style="margin-bottom:6px">
             <input type="text" id="manualCounterDetails" class="input-box" placeholder="اسم العداد المطلوب (مثال: عداد 30,000 نقطة)" style="margin-bottom:8px">
             <button class="action-btn btn-blue" style="padding:8px;font-size:11px" onclick="submitManualCounterOrder()">إرسال طلب الحجز للإدارة 🚀</button>
         </div>
@@ -376,7 +351,7 @@
                 </div>
                 <div style="display:flex;gap:4px"><button class="action-btn btn-blue" style="width:auto;padding:2px 8px;font-size:10px" onclick="exitIsolatedActiveRoom()">خروج 🚪</button></div>
             </div>
-            <div id="isolatedMessagesBox" style="flex:1;overflow-y:auto;background:#0f172a;background-size:cover;background-position:center;padding:8px;border-radius:8px;font-size:11px;margin-bottom:8px;text-align:right"></div>
+            <div id="isolatedMessagesBox" style="flex:1;overflow-y:auto;background:#0f172a;padding:8px;border-radius:8px;font-size:11px;margin-bottom:8px;text-align:right"></div>
             <div id="replyPreviewBar" class="reply-preview-bar">
                 <div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:85%">
                     <span style="color:#38bdf8;font-weight:bold" id="replyTargetSender">الرد على: </span>
@@ -391,26 +366,6 @@
                 <button class="action-btn btn-gold" style="width:55px;padding:0;height:38px" onclick="sendIsolatedMsg()">إرسال</button>
             </div>
         </div>
-    </div>
-</div>
-
-<div id="guessNumberModal" class="modal">
-    <div class="modal-content" style="text-align:right;max-width:380px">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-            <h4 style="margin:0;color:#38bdf8;font-size:15px">🎯 لعبة حزر الرقم</h4>
-            <button style="background:none;border:none;color:#ef4444;font-size:18px;cursor:pointer" onclick="closeGuessNumberGameModal()">✖</button>
-        </div>
-        <div style="background:#0f2b3c;border:1px solid #0284c7;padding:8px;border-radius:8px;margin-bottom:12px;font-size:11px;color:#38bdf8;text-align:center">✨ أول محاولة مجانية يومياً!<br>بعدها تكلف كل محاولة <b>20 جوهرة 💎</b>.</div>
-        <div style="font-size:12px;color:#fff;margin-bottom:10px;text-align:center">اختر رقماً من 0 إلى 5:</div>
-        <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:15px">
-            <button onclick="submitUserGuess(0)" class="action-btn btn-blue" style="padding:10px 0;font-size:13px">0</button>
-            <button onclick="submitUserGuess(1)" class="action-btn btn-blue" style="padding:10px 0;font-size:13px">1</button>
-            <button onclick="submitUserGuess(2)" class="action-btn btn-blue" style="padding:10px 0;font-size:13px">2</button>
-            <button onclick="submitUserGuess(3)" class="action-btn btn-blue" style="padding:10px 0;font-size:13px">3</button>
-            <button onclick="submitUserGuess(4)" class="action-btn btn-blue" style="padding:10px 0;font-size:13px">4</button>
-            <button onclick="submitUserGuess(5)" class="action-btn btn-blue" style="padding:10px 0;font-size:13px">5</button>
-        </div>
-        <div id="guessGameMsg" style="font-size:12px;text-align:center;font-weight:bold;min-height:25px;color:#f59e0b"></div>
     </div>
 </div>
 
@@ -538,9 +493,7 @@
         </div>
         <label style="font-size:11px;color:#cbd5e1;display:block;margin-bottom:4px">صورة الغرفة الظاهرة للخارج:</label>
         <input type="file" id="roomAvatarInput" accept="image/*" class="input-box" onchange="previewRoomAvatar(event)">
-        <label style="font-size:11px;color:#cbd5e1;display:block;margin-bottom:4px;margin-top:8px">خلفية الدردشة للغرفة:</label>
-        <input type="file" id="roomBgInput" accept="image/*" class="input-box" onchange="previewRoomBg(event)">
-        <button class="action-btn btn-purple" style="margin-top:10px" onclick="saveRoomCustomization()">حفظ التخصيص وتطبيق 💾</button>
+        <button class="action-btn btn-purple" style="margin-top:10px" onclick="saveRoomCustomization()">حفظ وتحديث صورة الغرفة 💾</button>
     </div>
 </div>
 
@@ -567,12 +520,12 @@
             <div class="gift-card-box" id="giftBox_6" onclick="highlightGift('قطة',15,'https://cdn-icons-png.flaticon.com/512/1818/1818400.png','giftBox_6')"><img src="https://cdn-icons-png.flaticon.com/512/1818/1818400.png" class="gift-icon-full" alt="قطة"><div class="gift-price-num">15 🪙</div></div>
         </div>
         <div id="exclusiveGiftsContent" class="gift-pane-content">
-            <div class="gift-card-box" id="giftBox_10" onclick="highlightGift('الأسد 🦁',1000,'https://cdn-icons-png.flaticon.com/512/1998/1998612.png','giftBox_10')"><img src="https://cdn-icons-png.flaticon.com/512/1998/1998612.png" class="gift-icon-full exclusive-gift-animated" alt="أسد"><div class="gift-price-num">1000 🪙</div></div>
-            <div class="gift-card-box" id="giftBox_11" onclick="highlightGift('عجلة فيراري 🏎️',1500,'https://cdn-icons-png.flaticon.com/512/741/741407.png','giftBox_11')"><img src="https://cdn-icons-png.flaticon.com/512/741/741407.png" class="gift-icon-full exclusive-gift-animated" alt="فيراري"><div class="gift-price-num">1500 🪙</div></div>
-            <div class="gift-card-box" id="giftBox_12" onclick="highlightGift('دب قطبي 🐻‍❄️',800,'https://cdn-icons-png.flaticon.com/512/235/235380.png','giftBox_12')"><img src="https://cdn-icons-png.flaticon.com/512/235/235380.png" class="gift-icon-full exclusive-gift-animated" alt="دب"><div class="gift-price-num">800 🪙</div></div>
-            <div class="gift-card-box" id="giftBox_13" onclick="highlightGift('فضاء حقيقي 🌌',1400,'https://cdn-icons-png.flaticon.com/512/1146/1146869.png','giftBox_13')"><img src="https://cdn-icons-png.flaticon.com/512/1146/1146869.png" class="gift-icon-full exclusive-gift-animated" alt="فضاء"><div class="gift-price-num">1400 🪙</div></div>
-            <div class="gift-card-box" id="giftBox_14" onclick="highlightGift('ذئب 🐺',750,'https://cdn-icons-png.flaticon.com/512/3069/3069172.png','giftBox_14')"><img src="https://cdn-icons-png.flaticon.com/512/3069/3069172.png" class="gift-icon-full exclusive-gift-animated" alt="ذئب"><div class="gift-price-num">750 🪙</div></div>
-            <div class="gift-card-box" id="giftBox_15" onclick="highlightGift('نرد الزار 🎲',150,'https://cdn-icons-png.flaticon.com/512/1041/1041888.png','giftBox_15')"><img src="https://cdn-icons-png.flaticon.com/512/1041/1041888.png" class="gift-icon-full exclusive-gift-animated" alt="نرد"><div class="gift-price-num">150 🪙</div></div>
+            <div class="gift-card-box" id="giftBox_10" onclick="highlightGift('الأسد 🦁',1000,'https://cdn-icons-png.flaticon.com/512/1998/1998612.png','giftBox_10')"><img src="https://cdn-icons-png.flaticon.com/512/1998/1998612.png" class="gift-icon-full" alt="أسد"><div class="gift-price-num">1000 🪙</div></div>
+            <div class="gift-card-box" id="giftBox_11" onclick="highlightGift('عجلة فيراري 🏎️',1500,'https://cdn-icons-png.flaticon.com/512/741/741407.png','giftBox_11')"><img src="https://cdn-icons-png.flaticon.com/512/741/741407.png" class="gift-icon-full" alt="فيراري"><div class="gift-price-num">1500 🪙</div></div>
+            <div class="gift-card-box" id="giftBox_12" onclick="highlightGift('دب قطبي 🐻‍❄️',800,'https://cdn-icons-png.flaticon.com/512/235/235380.png','giftBox_12')"><img src="https://cdn-icons-png.flaticon.com/512/235/235380.png" class="gift-icon-full" alt="دب"><div class="gift-price-num">800 🪙</div></div>
+            <div class="gift-card-box" id="giftBox_13" onclick="highlightGift('فضاء حقيقي 🌌',1400,'https://cdn-icons-png.flaticon.com/512/1146/1146869.png','giftBox_13')"><img src="https://cdn-icons-png.flaticon.com/512/1146/1146869.png" class="gift-icon-full" alt="فضاء"><div class="gift-price-num">1400 🪙</div></div>
+            <div class="gift-card-box" id="giftBox_14" onclick="highlightGift('ذئب 🐺',750,'https://cdn-icons-png.flaticon.com/512/3069/3069172.png','giftBox_14')"><img src="https://cdn-icons-png.flaticon.com/512/3069/3069172.png" class="gift-icon-full" alt="ذئب"><div class="gift-price-num">750 🪙</div></div>
+            <div class="gift-card-box" id="giftBox_15" onclick="highlightGift('نرد الزار 🎲',150,'https://cdn-icons-png.flaticon.com/512/1041/1041888.png','giftBox_15')"><img src="https://cdn-icons-png.flaticon.com/512/1041/1041888.png" class="gift-icon-full" alt="نرد"><div class="gift-price-num">150 🪙</div></div>
         </div>
         <div class="bottom-action-bar" id="giftSendActionBar"><button onclick="confirmSendPendingGift()" style="background:#059669;color:#fff;border:none;padding:6px 18px;border-radius:8px;font-size:12px;font-weight:bold;cursor:pointer">إرسال 🚀</button></div>
     </div>
@@ -615,7 +568,7 @@
             <h3 style="color:#f59e0b;margin:0;font-size:14px">💸 سحب الأرباح</h3>
             <button style="background:none;border:none;color:#ef4444;font-size:18px;cursor:pointer" onclick="closeWithdrawModal()">✖</button>
         </div>
-        <div style="background:#0a2c20;border:1px solid #10b981;padding:8px;border-radius:8px;margin-bottom:10px;font-size:11px;color:#10b981"><b>💼 قسم سحب الأرباح:</b><br>الحد الأدنى للسحب 10$ ويتم التحويل حصراً من قبل الإدارة على محفظة زين كاش لاستلام الأرباح.</div>
+        <div style="background:#0a2c20;border:1px solid #10b981;padding:8px;border-radius:8px;margin-bottom:10px;font-size:11px;color:#10b981"><b>💼 قسم سحب الأرباح:</b><br>الحد الأدنى للسحب 10$ (يلزم 30,000 نقطة كحد أدنى لطلب السحب).</div>
         <label style="font-size:11px;color:#cbd5e1;display:block;margin-bottom:4px">طريقة السحب:</label>
         <select id="withdrawMethod" class="select-box"><option value="زين كاش (Zain Cash)">زين كاش (Zain Cash)</option></select>
         <input type="text" class="input-box" id="withdrawAccount" placeholder="رقم محفظة زين كاش الخاصة بك لاستلام الأرباح">
@@ -640,7 +593,7 @@
     let userData={points:0,gems:0,agentBag:0,lastSpinTime:0,activeCounter:'لا يوجد',activeCounterVal:0,customId:'',name:'',avatar:'',bio:'',hasCreatedRoom:false,createdRoomId:'',lastWithdrawTime:0,isAgent:false,isBanned:false,whatsapp:''};
     let base64Image='',activeChatFriendKey='',activeChatFriendName='',visitedProfileTargetKey='',timerInterval=null;
     let isolatedActiveRoomId='',currentRoomOccupantsCount=0,activeRoomCreatorKey='',globalAppSettings={withdrawLocked:false,dailyCounterLocked:false};
-    let newRoomAvatarBase64='',newRoomBgBase64='',agentResidenceFrontBase64='',agentResidenceBackBase64='',agentNationalFrontBase64='',agentNationalBackBase64='';
+    let newRoomAvatarBase64='',agentResidenceFrontBase64='',agentResidenceBackBase64='',agentNationalFrontBase64='',agentNationalBackBase64='';
     let currentReplyTarget=null,pendingSelectedGift=null,selectedTargetUserKey='all',selectedTargetUserName='الكل (عام)',totalWheelDegrees=0;
     let currentSelectedWhatsappPhone = '';
 
@@ -664,7 +617,6 @@
         if(screenId==='friendsScreen')loadFriendSystem();
         if(screenId==='agentsScreen')loadApprovedAgentsList();
         if(screenId==='profileScreen'){loadProfileReceivedGifts(currentUserKey,'profileReceivedGiftsGrid');let b=document.getElementById('profileBioInput');if(b)document.getElementById('bioCounter').innerText=`${b.value.length} / 60`;}
-        if(screenId==='leaderboardScreen')loadLeaderboardData();
     }
     function openNotificationsPage(){document.querySelectorAll('.notification-badge').forEach(b=>b.style.display='none');navigateTo('notificationsScreen');}
     function switchAuthTab(type){
@@ -730,7 +682,7 @@
                 currentEmail=userData.email||'';
                 if(currentEmail==='msaftwtn@gmail.com'&&userData.customId!=='1'){userData.customId='1';rtdb.ref('users/'+currentUserKey).update({customId:'1'});}
                 if(!userData.customId||!/^\d+$/.test(userData.customId)){userData.customId=Math.floor(100000+Math.random()*900000).toString();rtdb.ref('users/'+currentUserKey).update({customId:userData.customId});}
-                updateUI();checkActiveTimer();checkAndRunAutomatedFridayDistribution();
+                updateUI();checkActiveTimer();
             }
         });
         rtdb.ref('app_settings').on('value',snap=>{globalAppSettings=snap.exists()?snap.val():{withdrawLocked:false,dailyCounterLocked:false};});
@@ -770,21 +722,21 @@
     }
     
     function submitManualCounterOrder(){
-        let ph = document.getElementById('manualCounterPhone').value.trim();
+        let opNum = document.getElementById('manualCounterPhone').value.trim();
         let det = document.getElementById('manualCounterDetails').value.trim();
-        if(!ph || !det) return alert("⚠️ يرجى ملء حقل رقم التواصل وتفاصيل الطلب!");
+        if(!opNum || !det) return alert("⚠️ يرجى إدخال رقم عملية التحويل وتفاصيل العداد!");
         rtdb.ref('manual_counter_orders').push({
             userKey: currentUserKey,
             userName: userData.name,
             userId: userData.customId,
-            phone: ph,
+            operationNum: opNum,
             details: det,
             timestamp: Date.now(),
             status: 'pending'
         }).then(()=>{
             document.getElementById('manualCounterPhone').value = '';
             document.getElementById('manualCounterDetails').value = '';
-            alert("✅ تم إرسال طلب حجز العداد للإدارة بنجاح! سيتم التحقق والشحن قريباً.");
+            alert("✅ تم إرسال طلب حجز العداد للإدارة برقم العملية بنجاح! سيتم التحقق والشحن قريباً.");
         }).catch(()=>alert("❌ حدث خطأ، حاول مجدداً."));
     }
 
@@ -831,64 +783,12 @@
         if(isSpinning)return;let msg=document.getElementById('wheelMsg'),spinBtn=document.getElementById('spinBtn');
         if((userData.gems||0)<100)return msg.innerText="❌ ليس لديك جواهر كافية (يلزم 100 جوهرة)!";
         isSpinning=true;spinBtn.disabled=true;userData.gems-=100;saveToDB();
-        let wheel=document.getElementById('wheelGraphic'),prizes=[0,5,10,15,20,50],idx=Math.floor(Math.random()*6),prize=prizes[idx];
-        totalWheelDegrees+=3600+(idx*60)+30;wheel.style.transform=`rotate(${totalWheelDegrees}deg)`;
+        let wheel=document.getElementById('wheelGraphic'),prizes=[0.5,10,15,20,25],idx=Math.floor(Math.random()*5),prize=prizes[idx];
+        totalWheelDegrees+=3600+(idx*72)+36;wheel.style.transform=`rotate(${totalWheelDegrees}deg)`;
         setTimeout(()=>{
             userData.points=(userData.points||0)+prize;userData.weeklyWheelPoints=(userData.weeklyWheelPoints||0)+prize;
             saveToDB().then(()=>{msg.innerText=`🎉 مبروك! حصلت على ${prize} نقطة بنجاح!`;isSpinning=false;spinBtn.disabled=false;updateUI();});
         },5000);
-    }
-    function switchLeaderboardTab(tab){
-        document.getElementById('lbTab1').className="shop-tab-btn "+(tab==='gifts'?"active-gold":"");
-        document.getElementById('lbTab2').className="shop-tab-btn "+(tab==='agents'?"active-gold":"");
-        document.getElementById('lbTab3').className="shop-tab-btn "+(tab==='wheel'?"active-gold":"");
-        document.getElementById('lbContentGifts').style.display=tab==='gifts'?'block':'none';
-        document.getElementById('lbContentAgents').style.display=tab==='agents'?'block':'none';
-        document.getElementById('lbContentWheel').style.display=tab==='wheel'?'block':'none';
-    }
-    function loadLeaderboardData(){
-        rtdb.ref('users').once('value').then(snap=>{
-            if(!snap.exists())return;let users=[];
-            snap.forEach(u=>{let d=u.val();users.push({key:u.key,name:d.name||'مستخدم',customId:d.customId||'---',avatar:d.avatar||'',gifts:d.weeklyGiftsSent||0,agents:d.weeklyAgentPoints||0,wheel:d.weeklyWheelPoints||0});});
-            renderLeaderboardList('leaderboardGiftsList',[...users].sort((a,b)=>b.gifts-a.gifts).slice(0,10),'gifts','نقطة مصروفة');
-            renderLeaderboardList('leaderboardAgentsList',[...users].sort((a,b)=>b.agents-a.agents).slice(0,10),'agents','نقطة مشحونة');
-            renderLeaderboardList('leaderboardWheelList',[...users].sort((a,b)=>b.wheel-a.wheel).slice(0,10),'wheel','نقطة مربوحة');
-        });
-    }
-    function renderLeaderboardList(id,list,key,unit){
-        let c=document.getElementById(id);if(!c)return;
-        if(list.length===0||list[0][key]===0){c.innerHTML="<div style='text-align:center;padding:15px;color:#94a3b8'>لا توجد بيانات مسجلة.</div>";return;}
-        let html='';list.forEach((it,i)=>{
-            let r=i+1,cr=r===1?'👑 ':(r===2?'🥈 ':(r===3?'🥉 ':''));
-            html+=`<div style="display:flex;justify-content:space-between;align-items:center;background:#0f172a;padding:8px;border-radius:10px;margin-bottom:6px;border:1px solid #334155">
-                <div style="display:flex;align-items:center;gap:8px">
-                    <span style="font-weight:900;font-size:12px;color:#f59e0b;width:22px;text-align:center">#${r}</span>
-                    <img src="${it.avatar||'https://via.placeholder.com/38'}" style="width:38px;height:38px;border-radius:50%;object-fit:cover" alt="صورة">
-                    <div><b style="color:#fff;font-size:12px;cursor:pointer" onclick="openVisitedUserProfileByKeyDirect('${it.key}')">${cr}${it.name}</b><div style="font-size:10px;color:#94a3b8">ID: ${it.customId}</div></div>
-                </div>
-                <div style="text-align:left"><span style="color:#34d399;font-weight:bold;font-size:12px">${it[key]}</span><div style="font-size:9px;color:#94a3b8">${unit}</div></div>
-            </div>`;
-        });
-        c.innerHTML=html;
-    }
-    function checkAndRunAutomatedFridayDistribution(){
-        let now=new Date();if(now.getDay()===5&&now.getHours()===6&&currentEmail==='msaftwtn@gmail.com'){
-            let l=localStorage.getItem('dinarLastFridayReset'),t=now.toDateString();
-            if(l!==t){localStorage.setItem('dinarLastFridayReset',t);executeAutomatedWeeklyRewards();}
-        }
-    }
-    function executeAutomatedWeeklyRewards(){
-        rtdb.ref('users').once('value').then(snap=>{
-            if(!snap.exists())return;let users=[];snap.forEach(u=>{users.push({key:u.key,...u.val()});});
-            [{key:'weeklyGiftsSent',name:'الهدايا'},{key:'weeklyAgentPoints',name:'الوكلاء'},{key:'weeklyWheelPoints',name:'العجلة'}].forEach(cat=>{
-                let s=[...users].sort((a,b)=>(b[cat.key]||0)-(a[cat.key]||0));
-                if(s[0]&&s[0][cat.key]>0){rtdb.ref(`users/${s[0].key}`).update({gems:(s[0].gems||0)+1000});rtdb.ref(`notifications/${s[0].key}`).push({text:`🎉 المركز الأول في (${cat.name})! جائزة 1000 جوهرة`,timestamp:Date.now()});}
-                if(s[1]&&s[1][cat.key]>0){rtdb.ref(`users/${s[1].key}`).update({gems:(s[1].gems||0)+500});rtdb.ref(`notifications/${s[1].key}`).push({text:`🎉 المركز الثاني في (${cat.name})! جائزة 500 جوهرة`,timestamp:Date.now()});}
-                if(s[2]&&s[2][cat.key]>0){rtdb.ref(`users/${s[2].key}`).update({gems:(s[2].gems||0)+250});rtdb.ref(`notifications/${s[2].key}`).push({text:`🎉 المركز الثالث في (${cat.name})! جائزة 250 جوهرة`,timestamp:Date.now()});}
-            });
-            let up={};users.forEach(u=>{up[`users/${u.key}/weeklyGiftsSent`]=0;up[`users/${u.key}/weeklyAgentPoints`]=0;up[`users/${u.key}/weeklyWheelPoints`]=0;});
-            rtdb.ref().update(up);
-        });
     }
     function loadNotifications(){
         if(!currentUserKey||!rtdb)return;
@@ -1030,26 +930,13 @@
         if(n)userData.name=n;if(b!==undefined)userData.bio=b.substring(0,60);if(base64Image)userData.avatar=base64Image;
         saveToDB().then(()=>{base64Image='';updateUI();alert('✅ تم حفظ التعديلات بنجاح!');}).catch(()=>alert('❌ حدث خطأ، حاول مجدداً.'));
     }
-    function openGuessNumberGameModal(){document.getElementById('guessGameMsg').innerText="";document.getElementById('guessNumberModal').style.display='flex';}
-    function closeGuessNumberGameModal(){document.getElementById('guessNumberModal').style.display='none';}
-    function submitUserGuess(cn){
-        let today=new Date().toDateString(),free=localStorage.getItem('dinar_guess_free_date')!==today,msg=document.getElementById('guessGameMsg');
-        if(!free){if((userData.gems||0)<20)return msg.innerHTML="<span style='color:#ef4444'>❌ ليس لديك جواهر كافية (تحتاج 20 جوهرة)!</span>";userData.gems-=20;}
-        else{localStorage.setItem('dinar_guess_free_date',today);}
-        let win=Math.floor(Math.random()*6),rew=[0,5,10,15,20][Math.floor(Math.random()*5)];
-        if(cn===win){
-            if(rew>0){userData.points=(userData.points||0)+rew;msg.innerHTML=`<span style='color:#10b981'>🎉 الرقم الصحيح (${win}). ربحت ${rew} نقطة!</span>`;}
-            else{msg.innerHTML=`<span style='color:#f59e0b'>⚠️ الرقم صحيح (${win}) لكن الحظ أعطاك (0) نقطة!</span>`;}
-        }else{msg.innerHTML=`<span style='color:#ef4444'>❌ تخمينك خطأ! الرقم الصحيح (${win}).</span>`;}
-        saveToDB().then(()=>updateUI());
-    }
     function openWithdrawModal(){if(globalAppSettings.withdrawLocked&&currentEmail!=='msaftwtn@gmail.com')return alert('⚠️ سحب الأرباح مقفل حالياً.');document.getElementById('withdrawModal').style.display='flex';}
     function closeWithdrawModal(){document.getElementById('withdrawModal').style.display='none';}
     function submitWithdrawal(){
         if(globalAppSettings.withdrawLocked&&currentEmail!=='msaftwtn@gmail.com')return alert('⚠️ سحب الأرباح مقفل.');
         let m=document.getElementById('withdrawMethod').value,acc=document.getElementById('withdrawAccount').value.trim(),amt=parseFloat(document.getElementById('withdrawAmount').value);
         if(!acc||isNaN(amt))return alert('⚠️ أدخل الحساب والمبلغ بشكل صحيح!');if(amt<10)return alert('⚠️ الحد الأدنى للسحب 10$!');
-        if((userData.points||0)<10000)return alert('❌ رصيدك الحالي من النقاط لا يكفي لتقديم طلب السحب!');
+        if((userData.points||0)<30000)return alert('❌ رصيدك الحالي أقل من 30,000 نقطة! النظام يرفض السحب إذا كان رصيدك أقل من 30,000 نقطة (10$).');
         if(userData.lastWithdrawTime&&(Date.now()-userData.lastWithdrawTime)<15*24*60*60*1000)return alert('⚠️ مسموح بالسحب مرة كل 15 يوماً.');
         rtdb.ref(`admin_withdrawals`).push({userKey:currentUserKey,userName:userData.name,userId:userData.customId,method:m,account:acc,amount:amt,timestamp:Date.now(),status:'pending'}).then(()=>{
             userData.lastWithdrawTime=Date.now();saveToDB().then(()=>{closeWithdrawModal();alert('✅ تم تقديم طلب السحب للإدارة بنجاح.');});
@@ -1058,6 +945,7 @@
 
     function agentChargeUserPoints(){
         if(!userData.isAgent)return alert("⚠️ للوكلاء المعتمدين فقط!");
+        if((userData.agentBag||0)<=0)return alert("⚠️ اشحن حقيبتك من قبل الإدارة أولاً! رصيد حقيبتك الحالي (0 نقطة).");
         let tId=document.getElementById('agentTargetIdInput').value.trim(),pts=parseInt(document.getElementById('agentPointsAmountInput').value);
         if(!tId||isNaN(pts)||pts<=0)return alert("⚠️ أدخل الـ ID وعدد نقاط صحيح!");
         if((userData.agentBag||0)<pts)return alert(`❌ رصيد حقيبتك الحالي (${userData.agentBag}) لا يكفي لشحن (${pts}) نقطة!`);
@@ -1207,7 +1095,7 @@
                 let d = item.val();
                 h+=`<div style="background:#0f172a;padding:8px;border-radius:8px;margin-bottom:6px">
                     <b>المستخدم:</b> ${d.userName} (${d.userId})<br>
-                    <b>رقم التواصل:</b> ${d.phone}<br>
+                    <b>رقم العملية:</b> ${d.operationNum}<br>
                     <b>الطلب المطلوب:</b> ${d.details}<br>
                     <button onclick="adminDeleteRef('manual_counter_orders','${item.key}')" style="background:#10b981;color:#fff;border:none;padding:3px 8px;border-radius:4px;margin-top:4px;cursor:pointer">إتمام الطلب والحذف ✔️</button>
                 </div>`;
@@ -1299,7 +1187,7 @@
         if(userData.hasCreatedRoom)return alert('⚠️ لديك غرفة مسبقاً!');
         let n=document.getElementById('isolatedRoomNameInput').value.trim();if(!n)return alert('⚠️ أدخل اسم الغرفة');
         let ref=rtdb.ref('public_rooms').push(),id=ref.key;
-        ref.set({id:id,name:n,creatorKey:currentUserKey,creatorName:userData.name,avatar:'',background:'',createdAt:Date.now()}).then(()=>{
+        ref.set({id:id,name:n,creatorKey:currentUserKey,creatorName:userData.name,avatar:'',createdAt:Date.now()}).then(()=>{
             userData.hasCreatedRoom=true;userData.createdRoomId=id;
             saveToDB().then(()=>{document.getElementById('isolatedRoomNameInput').value='';alert('✨ تم إنشاء غرفتك بنجاح!');});
         });
@@ -1321,7 +1209,6 @@
         rtdb.ref(`public_rooms/${id}`).on('value',snap=>{
             if(snap.exists()){
                 let d=snap.val();document.getElementById('activeRoomAvatarDisplay').src=d.avatar?d.avatar:'https://via.placeholder.com/30';
-                document.getElementById('isolatedMessagesBox').style.backgroundImage=d.background?`url(${d.background})`:'none';
             }
         });
         rtdb.ref(`room_occupants/${id}/${currentUserKey}`).set({name:userData.name});
@@ -1369,12 +1256,11 @@
     function openRoomSettingsModal(){if(currentUserKey!==activeRoomCreatorKey&&currentEmail!=='msaftwtn@gmail.com')return;document.getElementById('roomSettingsModal').style.display='flex';}
     function closeRoomSettingsModal(){document.getElementById('roomSettingsModal').style.display='none';}
     function previewRoomAvatar(e){const f=e.target.files[0];if(f){const rd=new FileReader();rd.onload=ce=>{newRoomAvatarBase64=ce.target.result;};rd.readAsDataURL(f);}}
-    function previewRoomBg(e){const f=e.target.files[0];if(f){const rd=new FileReader();rd.onload=ce=>{newRoomBgBase64=ce.target.result;};rd.readAsDataURL(f);}}
     function saveRoomCustomization(){
         if(!isolatedActiveRoomId)return;let up={};
-        if(newRoomAvatarBase64)up.avatar=newRoomAvatarBase64;if(newRoomBgBase64)up.background=newRoomBgBase64;
-        if(Object.keys(up).length===0)return alert('⚠️ اختر صورة أو خلفية أولاً!');
-        rtdb.ref(`public_rooms/${isolatedActiveRoomId}`).update(up).then(()=>{newRoomAvatarBase64='';newRoomBgBase64='';closeRoomSettingsModal();alert('✨ تم التحديث بنجاح!');});
+        if(newRoomAvatarBase64)up.avatar=newRoomAvatarBase64;
+        if(Object.keys(up).length===0)return alert('⚠️ اختر صورة الغرفة أولاً!');
+        rtdb.ref(`public_rooms/${isolatedActiveRoomId}`).update(up).then(()=>{newRoomAvatarBase64='';closeRoomSettingsModal();alert('✨ تم التحديث بنجاح!');});
     }
     function openUnifiedGiftBox(tk='all',tn='الكل (عام)'){
         if(!isolatedActiveRoomId)return alert('⚠️ أنت لست داخل غرفة!');
