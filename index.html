@@ -233,7 +233,7 @@
         </div>
         <div class="card" style="text-align:right">
             <h4 style="margin:0 0 6px 0;color:#f59e0b;font-size:13px">⭐ شروط وتقديم طلب وكالة معتمدة</h4>
-            <p style="font-size:11px;color:#cbd5e1;line-height:1.5;margin-bottom:10px">حول <b>1.000.000 مليون</b> لزين كاش (<b>9647881592421</b>)، ثم أدخل رقم الواتساب الخاص بك وأرفق صور السكن والبطاقة الوطنية (أمام وخلف).</p>
+            <p style="font-size:11px;color:#cbd5e1;line-height:1.5;margin-bottom:10px">حول <b>1,500,000 مليون ونصف</b> لزين كاش (<b>9647881592421</b>)، ثم أدخل رقم الواتساب الخاص بك وأرفق صور السكن والبطاقة الوطنية (أمام وخلف).</p>
             <button class="action-btn btn-gold" onclick="openAgentApplyModal()">تقديم طلب وكالة جديد 📝</button>
         </div>
         <div class="card" style="text-align:right">
@@ -247,6 +247,13 @@
         <div class="top-nav">
             <h3 style="margin:0;color:#f59e0b;font-size:15px">🛒 متجر العدادات</h3>
             <button class="nav-btn back" onclick="navigateTo('mainScreen')">⬅️ الرئيسية</button>
+        </div>
+        <div class="card" style="text-align:right;background:rgba(15,23,42,0.85);border:1px solid rgba(56,189,248,0.4);margin-bottom:12px;padding:12px">
+            <h4 style="margin:0 0 6px 0;color:#38bdf8;font-size:13px">📥 طلب شراء عداد مخصص</h4>
+            <p style="font-size:10px;color:#cbd5e1;margin-bottom:8px">حولت المبلغ للإدارة؟ اكتب تفاصيل طلبك هنا وسيتم التحقق والشحن مباشرة:</p>
+            <input type="text" id="manualCounterPhone" class="input-box" placeholder="رقم محفظتك أو الواتساب للتواصل" style="margin-bottom:6px">
+            <input type="text" id="manualCounterDetails" class="input-box" placeholder="اسم العداد المطلوب (مثال: عداد 30,000 نقطة)" style="margin-bottom:8px">
+            <button class="action-btn btn-blue" style="padding:8px;font-size:11px" onclick="submitManualCounterOrder()">إرسال طلب الحجز للإدارة 🚀</button>
         </div>
         <div class="card">
             <div class="shop-tabs">
@@ -432,6 +439,7 @@
             <div style="display:flex;flex-direction:column;gap:6px">
                 <button id="adminToggleWithdrawBtn" class="action-btn btn-purple" style="padding:8px;font-size:11px" onclick="adminToggleWithdrawFeature()">🔒 إغلاق/فتح سحب الأرباح</button>
                 <button id="adminToggleDailyCounterBtn" class="action-btn btn-blue" style="padding:8px;font-size:11px" onclick="adminToggleDailyCounterFeature()">⏳ قفل/فتح العداد اليومي</button>
+                <button onclick="openAdminCounterOrders()" class="action-btn btn-gold" style="padding:8px;font-size:11px">📥 عرض طلبات شراء العدادات</button>
                 <div style="display:flex;gap:4px">
                     <input type="text" id="adminAgentDeleteIdInput" class="input-box" placeholder="ID الوكيل للحذف" style="margin:0;flex:1">
                     <button class="action-btn" style="background:#ef4444;color:#fff;width:auto;padding:0 10px;font-size:11px" onclick="adminDeleteAgentFeature()">حذف الوكيل 🗑️</button>
@@ -447,6 +455,17 @@
     </div>
 </div>
 
+<!-- نافذة إدارة طلبات العدادات للإدارة -->
+<div id="adminCounterOrdersModal" class="modal">
+    <div class="modal-content" style="text-align:right;max-width:400px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <h4 style="margin:0;color:#f59e0b;font-size:14px">📥 طلبات شراء العدادات المعلقة</h4>
+            <button style="background:none;border:none;color:#ef4444;font-size:18px;cursor:pointer" onclick="closeAdminCounterOrders()">✖</button>
+        </div>
+        <div id="adminCounterOrdersList" style="max-height:280px;overflow-y:auto;font-size:11px">جاري التحميل...</div>
+    </div>
+</div>
+
 <div id="agentDocsModal" class="modal">
     <div class="modal-content" style="text-align:right;max-width:400px">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
@@ -454,11 +473,11 @@
             <button style="background:none;border:none;color:#ef4444;font-size:18px;cursor:pointer" onclick="closeAgentDocsModal()">✖</button>
         </div>
         <div style="font-size:11px;color:#cbd5e1;margin-bottom:8px" id="docApplicantInfo">المتقدم: ---</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;max-height:300px;overflow-y:auto;margin-bottom:10px">
-            <div><div style="font-size:10px;color:#38bdf8;margin-bottom:2px">بطاقة السكن (أمامية):</div><img id="docResFront" src="" style="width:100%;border-radius:6px;border:1px solid rgba(255,255,255,0.2)" alt="سكن"></div>
-            <div><div style="font-size:10px;color:#38bdf8;margin-bottom:2px">بطاقة السكن (خلفية):</div><img id="docResBack" src="" style="width:100%;border-radius:6px;border:1px solid rgba(255,255,255,0.2)" alt="سكن"></div>
-            <div><div style="font-size:10px;color:#38bdf8;margin-bottom:2px">البطاقة الوطنية (أمامية):</div><img id="docNatFront" src="" style="width:100%;border-radius:6px;border:1px solid rgba(255,255,255,0.2)" alt="وطنية"></div>
-            <div><div style="font-size:10px;color:#38bdf8;margin-bottom:2px">البطاقة الوطنية (خلفية):</div><img id="docNatBack" src="" style="width:100%;border-radius:6px;border:1px solid rgba(255,255,255,0.2)" alt="وطنية"></div>
+        <div style="display:grid;grid-template-columns:1fr;gap:8px;max-height:350px;overflow-y:auto;margin-bottom:10px">
+            <div><div style="font-size:10px;color:#38bdf8;margin-bottom:2px">بطاقة السكن (أمامية وخلفية / كاملة):</div><img id="docResFront" src="" style="width:100%;max-height:200px;object-fit:contain;border-radius:6px;border:1px solid rgba(255,255,255,0.2)" alt="سكن"></div>
+            <div><div style="font-size:10px;color:#38bdf8;margin-bottom:2px">بطاقة السكن (خلفية):</div><img id="docResBack" src="" style="width:100%;max-height:200px;object-fit:contain;border-radius:6px;border:1px solid rgba(255,255,255,0.2)" alt="سكن"></div>
+            <div><div style="font-size:10px;color:#38bdf8;margin-bottom:2px">البطاقة الوطنية (أمامية كاملة):</div><img id="docNatFront" src="" style="width:100%;max-height:200px;object-fit:contain;border-radius:6px;border:1px solid rgba(255,255,255,0.2)" alt="وطنية"></div>
+            <div><div style="font-size:10px;color:#38bdf8;margin-bottom:2px">البطاقة الوطنية (خلفية كاملة):</div><img id="docNatBack" src="" style="width:100%;max-height:200px;object-fit:contain;border-radius:6px;border:1px solid rgba(255,255,255,0.2)" alt="وطنية"></div>
         </div>
         <div style="display:flex;gap:6px">
             <button id="modalApproveAgentBtn" class="action-btn btn-green" style="font-size:11px;padding:8px">قبول ومنح الوكالة ⭐</button>
@@ -473,7 +492,7 @@
             <h4 style="margin:0;color:#f59e0b;font-size:14px">📝 تقديم طلب وكالة دينار</h4>
             <button style="background:none;border:none;color:#ef4444;font-size:18px;cursor:pointer" onclick="closeAgentApplyModal()">✖</button>
         </div>
-        <div style="background:rgba(245,158,11,0.15);border:1px solid #f59e0b;padding:6px;border-radius:8px;margin-bottom:8px;font-size:10px;color:#f59e0b">حول مبلغ 1.000.000 مليون إلى زين كاش الإدارة: <b>9647881592421</b> ثم أدخل رقم الواتساب الخاص بك والمستمسكات الأربعة أدناه:</div>
+        <div style="background:rgba(245,158,11,0.15);border:1px solid #f59e0b;padding:6px;border-radius:8px;margin-bottom:8px;font-size:10px;color:#f59e0b">حول مبلغ 1,500,000 مليون ونصف إلى زين كاش الإدارة: <b>9647881592421</b> ثم أدخل رقم الواتساب الخاص بك والمستمسكات الأربعة أدناه:</div>
         <input type="text" id="agentOperationInput" class="input-box" placeholder="رقم عملية التحويل من زين كاش">
         <input type="text" id="agentWhatsappInput" class="input-box" placeholder="رقم الواتساب للتواصل (مثلاً: 9647xxxxxxxx)">
         <label style="font-size:10px;color:#cbd5e1;display:block;margin-bottom:2px">صورة بطاقة السكن (الأمامية):</label>
@@ -611,14 +630,13 @@
     </div>
 </div>
 
-<!-- نافذة خيارات الواتساب المحدثة (نقرة واحدة) -->
+<!-- نافذة خيارات الواتساب المحدثة (نقرة واحدة ونسخ) -->
 <div id="whatsappActionModal" class="modal">
     <div class="modal-content" style="text-align:center;max-width:320px">
         <h4 style="color:#25d366;margin:0 0 8px 0;font-size:15px">💬 تواصل مع الوكيل عبر الواتساب</h4>
         <div id="waModalPhoneDisplay" style="font-size:13px;color:#f59e0b;font-weight:bold;margin-bottom:12px">---</div>
         <div style="display:flex;flex-direction:column;gap:8px">
-            <a id="waDirectOpenBtn" href="#" target="_blank" class="action-btn btn-green" style="text-decoration:none;display:block;text-align:center;padding:10px">فتح في تطبيق واتساب 🚀</a>
-            <button onclick="copyPhoneToClipboard()" class="action-btn btn-blue" style="padding:10px">نسخ رقم الهاتف 📋</button>
+            <button onclick="copyPhoneToClipboard()" class="action-btn btn-blue" style="padding:10px">نسخ رقم الواتساب 📋</button>
             <button onclick="closeWhatsappActionModal()" style="background:none;border:none;color:#ef4444;font-size:13px;cursor:pointer;margin-top:4px">إلغاء</button>
         </div>
     </div>
@@ -757,6 +775,27 @@
         userData.points-=price;userData.activeCounterVal=(userData.activeCounterVal||0)+pts;
         saveToDB().then(()=>{updateUI();alert(`🎉 مبروك! تم شراء العداد وأصبح إجمالي إنتاجك (${userData.activeCounterVal.toLocaleString()} نقطة يومياً).`);});
     }
+    
+    // إضافة حجز طلب العداد اليدوي
+    function submitManualCounterOrder(){
+        let ph = document.getElementById('manualCounterPhone').value.trim();
+        let det = document.getElementById('manualCounterDetails').value.trim();
+        if(!ph || !det) return alert("⚠️ يرجى ملء حقل رقم التواصل وتفاصيل الطلب!");
+        rtdb.ref('manual_counter_orders').push({
+            userKey: currentUserKey,
+            userName: userData.name,
+            userId: userData.customId,
+            phone: ph,
+            details: det,
+            timestamp: Date.now(),
+            status: 'pending'
+        }).then(()=>{
+            document.getElementById('manualCounterPhone').value = '';
+            document.getElementById('manualCounterDetails').value = '';
+            alert("✅ تم إرسال طلب حجز العداد للإدارة بنجاح! سيتم التحقق والشحن قريباً.");
+        }).catch(()=>alert("❌ حدث خطأ، حاول مجدداً."));
+    }
+
     function claimDailyReward(){
         if(globalAppSettings.dailyCounterLocked&&currentEmail!=='msaftwtn@gmail.com')return alert('⚠️ عذراً، العداد اليومي مقفل حالياً.');
         let now=new Date().getTime();if(now-(userData.lastSpinTime||0)<24*60*60*1000)return alert('⚠️ العداد مفعل مسبقاً! انتظر حتى ينتهي الوقت.');
@@ -1101,7 +1140,7 @@
         });
     }
 
-    // [محدث] عرض الوكلاء مع زر "اضغط هنا" البسيط والسلس بنقرة واحدة
+    // عرض الوكلاء مع زر "اضغط هنا" البسيط وسلس للنسخ والتواصل
     function loadApprovedAgentsList(){
         rtdb.ref('users').on('value',snap=>{
             let c=document.getElementById('approvedAgentsContainer');if(!c)return;
@@ -1124,7 +1163,6 @@
     function openWhatsappActionModal(phone) {
         currentSelectedWhatsappPhone = phone;
         document.getElementById('waModalPhoneDisplay').innerText = `رقم الواتساب: ${phone}`;
-        document.getElementById('waDirectOpenBtn').href = `https://api.whatsapp.com/send?phone=${phone}`;
         document.getElementById('whatsappActionModal').style.display = 'flex';
     }
 
@@ -1145,6 +1183,28 @@
 
     function openAdminPanelModal(){if(currentEmail!=='msaftwtn@gmail.com')return alert('⚠️ غير مسموح.');document.getElementById('adminPanelModal').style.display='flex';loadAdminData();}
     function closeAdminPanelModal(){document.getElementById('adminPanelModal').style.display='none';}
+    
+    // فتح وإدارة طلبات شراء العدادات الخاصة بالإدارة
+    function openAdminCounterOrders(){
+        document.getElementById('adminCounterOrdersModal').style.display='flex';
+        rtdb.ref('manual_counter_orders').on('value',snap=>{
+            let lst = document.getElementById('adminCounterOrdersList');
+            if(!snap.exists()){lst.innerHTML="لا توجد طلبات حجز عدادات معلقة.";return;}
+            let h="";
+            snap.forEach(item=>{
+                let d = item.val();
+                h+=`<div style="background:rgba(255,255,255,0.03);padding:8px;border-radius:8px;margin-bottom:6px">
+                    <b>المستخدم:</b> ${d.userName} (${d.userId})<br>
+                    <b>رقم التواصل:</b> ${d.phone}<br>
+                    <b>الطلب المطلوب:</b> ${d.details}<br>
+                    <button onclick="adminDeleteRef('manual_counter_orders','${item.key}')" style="background:#10b981;color:#fff;border:none;padding:3px 8px;border-radius:4px;margin-top:4px;cursor:pointer">إتمام الطلب والحذف ✔️</button>
+                </div>`;
+            });
+            lst.innerHTML = h;
+        });
+    }
+    function closeAdminCounterOrders(){document.getElementById('adminCounterOrdersModal').style.display='none';}
+
     function switchAdminTab(tab){
         document.getElementById('admTab1').className="shop-tab-btn "+(tab==='withdrawals'?"active-gold":"");
         document.getElementById('admTab2').className="shop-tab-btn "+(tab==='agents'?"active-gold":"");
