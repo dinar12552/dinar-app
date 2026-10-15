@@ -442,7 +442,7 @@
                 <button onclick="openAdminCounterOrders()" class="action-btn btn-gold" style="padding:8px;font-size:11px">📥 عرض طلبات شراء العدادات</button>
                 <div style="display:flex;gap:4px">
                     <input type="text" id="adminAgentDeleteIdInput" class="input-box" placeholder="ID الوكيل للحذف" style="margin:0;flex:1">
-                    <button class="action-btn" style="background:#ef4444;color:#fff;width:auto;padding:0 10px;font-size:11px" onclick="adminDeleteAgentFeature()">حذف الوكيل 🗑️</button>
+                    <button class="action-btn" style="background:#ef4444;color:#fff;width:auto;padding:0 10px;font-size:11px" onclick="adminDeleteAgentFeature()">سحب صفة الوكيل 🗑️</button>
                 </div>
             </div>
         </div>
@@ -455,7 +455,6 @@
     </div>
 </div>
 
-<!-- نافذة إدارة طلبات العدادات للإدارة -->
 <div id="adminCounterOrdersModal" class="modal">
     <div class="modal-content" style="text-align:right;max-width:400px">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
@@ -630,7 +629,6 @@
     </div>
 </div>
 
-<!-- نافذة خيارات الواتساب المحدثة (نقرة واحدة ونسخ) -->
 <div id="whatsappActionModal" class="modal">
     <div class="modal-content" style="text-align:center;max-width:320px">
         <h4 style="color:#25d366;margin:0 0 8px 0;font-size:15px">💬 تواصل مع الوكيل عبر الواتساب</h4>
@@ -795,18 +793,16 @@
         }).catch(()=>alert("❌ حدث خطأ، حاول مجدداً."));
     }
 
-    // التعديل الثاني: إضافة 500 جوهرة مع العداد اليومي عند التشغيل المباشر
     function claimDailyReward(){
         if(globalAppSettings.dailyCounterLocked&&currentEmail!=='msaftwtn@gmail.com')return alert('⚠️ عذراً، العداد اليومي مقفل حالياً.');
         let now=new Date().getTime();if(now-(userData.lastSpinTime||0)<24*60*60*1000)return alert('⚠️ العداد مفعل مسبقاً! انتظر حتى ينتهي الوقت.');
         let rPts=userData.activeCounterVal||100;if(rPts<=0)rPts=100;
         userData.points=(userData.points||0)+rPts;
-        userData.gems=(userData.gems||0)+500; // إضافة 500 جوهرة
+        userData.gems=(userData.gems||0)+500;
         userData.lastSpinTime=now;
         saveToDB().then(()=>{updateUI();startTimerCountdown();alert(`🎉 حصلت على أرباحك (${rPts.toLocaleString()} نقطة) و 500 جوهرة 💎 بنجاح، وبدأت الساعة بالعد التنازلي.`);});
     }
 
-    // التعديل الثالث: كل 5,000 جوهرة تساوي 100 نقطة
     function convertGemsToPoints(){
         if((userData.gems||0)<5000)return alert(`⚠️ رصيدك (${userData.gems}) لا يكفي. يلزم 5.000 جوهرة لتبديلها بـ 100 نقطة!`);
         userData.gems-=5000;userData.points=(userData.points||0)+100;
@@ -1065,7 +1061,6 @@
         });
     }
 
-    // التعديل الأول (الجزء 1): إصلاح مشكلة شحن الوكيل من الحقيبة للمستخدمين
     function agentChargeUserPoints(){
         if(!userData.isAgent)return alert("⚠️ للوكلاء المعتمدين فقط!");
         let tId=document.getElementById('agentTargetIdInput').value.trim(),pts=parseInt(document.getElementById('agentPointsAmountInput').value);
@@ -1090,7 +1085,6 @@
         });
     }
 
-    // التعديل الأول (الجزء 2): إصلاح مشكلة شحن الإدارة المباشر للنقاط والحقائب
     function adminChargeDirectUser(){
         if(currentEmail!=='msaftwtn@gmail.com')return alert('⚠️ غير مسموح.');
         let tId=document.getElementById('adminTargetIdInput').value.trim(),pts=parseInt(document.getElementById('adminPointsAmountInput').value);
@@ -1129,7 +1123,6 @@
     function adminToggleWithdrawFeature(){if(currentEmail!=='msaftwtn@gmail.com')return;let ns=!globalAppSettings.withdrawLocked;rtdb.ref('app_settings').update({withdrawLocked:ns}).then(()=>alert(ns?'🔒 تم إغلاق سحب الأرباح.':'🔓 تم فتح سحب الأرباح.'));}
     function adminToggleDailyCounterFeature(){if(currentEmail!=='msaftwtn@gmail.com')return;let ns=!globalAppSettings.dailyCounterLocked;rtdb.ref('app_settings').update({dailyCounterLocked:ns}).then(()=>alert(ns?'⏳ تم قفل العداد اليومي.':'⚡ تم فتح العداد اليومي.'));}
     
-    // تعديل عدم حذف الوكيل بالكامل ومعالجة المشكلة
     function adminDeleteAgentFeature(){
         if(currentEmail!=='msaftwtn@gmail.com')return;
         let tId=document.getElementById('adminAgentDeleteIdInput').value.trim();
@@ -1166,8 +1159,9 @@
         });
     }
 
+    // تم تعديل هذه الدالة لتستخدم once بدلاً من on المستمر لمنع الثقل والتهنيج
     function loadApprovedAgentsList(){
-        rtdb.ref('users').on('value',snap=>{
+        rtdb.ref('users').once('value').then(snap=>{
             let c=document.getElementById('approvedAgentsContainer');if(!c)return;
             if(!snap.exists()){c.innerHTML="لا يوجد وكلاء معتمدون.";return;}let h='';
             snap.forEach(u=>{
@@ -1211,7 +1205,7 @@
     
     function openAdminCounterOrders(){
         document.getElementById('adminCounterOrdersModal').style.display='flex';
-        rtdb.ref('manual_counter_orders').on('value',snap=>{
+        rtdb.ref('manual_counter_orders').once('value').then(snap=>{
             let lst = document.getElementById('adminCounterOrdersList');
             if(!snap.exists()){lst.innerHTML="لا توجد طلبات حجز عدادات معلقة.";return;}
             let h="";
@@ -1236,23 +1230,21 @@
         document.getElementById('adminAgentsArea').style.display=tab==='agents'?'block':'none';
     }
     function loadAdminData(){
-        rtdb.ref('admin_withdrawals').on('value',snap=>{
+        rtdb.ref('admin_withdrawals').once('value').then(snap=>{
             let a=document.getElementById('adminWithdrawalsArea');if(!snap.exists()){a.innerHTML="لا توجد طلبات سحب.";return;}let h='';
             snap.forEach(item=>{let d=item.val();h+=`<div style="background:rgba(255,255,255,0.03);padding:8px;border-radius:8px;margin-bottom:6px"><b>المستخدم:</b> ${d.userName} (${d.userId})<br><b>المبلغ:</b> ${d.amount}$ | <b>زين كاش:</b> ${d.account}<br><button onclick="adminDeleteRef('admin_withdrawals','${item.key}')" style="background:#ef4444;color:#fff;border:none;padding:3px 8px;border-radius:4px;margin-top:4px;cursor:pointer">حذف/تم التحويل 🗑️</button></div>`;});
             a.innerHTML=h;
         });
-        rtdb.ref('agent_requests').on('value',reqSnap=>{
-            rtdb.ref('users').on('value',()=>{
-                let area=document.getElementById('adminAgentsArea'),h=`<h4 style="color:#f59e0b;font-size:12px;margin:0 0 6px 0">📝 طلبات الوكلاء الجديدة:</h4>`;
-                if(!reqSnap.exists()){h+=`<div style="color:#94a3b8">لا توجد طلبات جديدة.</div>`;}
-                else{
-                    reqSnap.forEach(item=>{
-                        let d=item.val();
-                        h+=`<div style="background:rgba(255,255,255,0.03);padding:8px;border-radius:8px;margin-bottom:6px"><b>المتقدم:</b> ${d.userName} (ID: ${d.userId})<br><b>رقم العملية:</b> ${d.operationNum} | <b>واتساب:</b> ${d.whatsapp}<br><div style="display:flex;gap:4px;margin-top:6px"><button onclick="openAgentDocsModal('${d.userName}','${d.userKey}','${item.key}','${d.whatsapp}','${d.residenceFrontImg}','${d.residenceBackImg}','${d.nationalFrontImg}','${d.nationalBackImg}')" style="background:#0ea5e9;color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:10px">المستمسكات 📄</button><button onclick="approveAgent('${d.userKey}','${item.key}','${d.whatsapp}')" style="background:#10b981;color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:10px">قبول ⭐</button><button onclick="adminDeleteRef('agent_requests','${item.key}')" style="background:#ef4444;color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:10px">رفض ❌</button></div></div>`;
-                    });
-                }
-                area.innerHTML=h;
-            });
+        rtdb.ref('agent_requests').once('value').then(reqSnap=>{
+            let area=document.getElementById('adminAgentsArea'),h=`<h4 style="color:#f59e0b;font-size:12px;margin:0 0 6px 0">📝 طلبات الوكلاء الجديدة:</h4>`;
+            if(!reqSnap.exists()){h+=`<div style="color:#94a3b8">لا توجد طلبات جديدة.</div>`;}
+            else{
+                reqSnap.forEach(item=>{
+                    let d=item.val();
+                    h+=`<div style="background:rgba(255,255,255,0.03);padding:8px;border-radius:8px;margin-bottom:6px"><b>المتقدم:</b> ${d.userName} (ID: ${d.userId})<br><b>رقم العملية:</b> ${d.operationNum} | <b>واتساب:</b> ${d.whatsapp}<br><div style="display:flex;gap:4px;margin-top:6px"><button onclick="openAgentDocsModal('${d.userName}','${d.userKey}','${item.key}','${d.whatsapp}','${d.residenceFrontImg}','${d.residenceBackImg}','${d.nationalFrontImg}','${d.nationalBackImg}')" style="background:#0ea5e9;color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:10px">المستمسكات 📄</button><button onclick="approveAgent('${d.userKey}','${item.key}','${d.whatsapp}')" style="background:#10b981;color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:10px">قبول ⭐</button><button onclick="adminDeleteRef('agent_requests','${item.key}')" style="background:#ef4444;color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:10px">رفض ❌</button></div></div>`;
+                });
+            }
+            area.innerHTML=h;
         });
     }
     let curReqKey='',curUsrKey='',curWh='';
@@ -1272,7 +1264,7 @@
     function exitIsolatedChat(){exitIsolatedActiveRoom();navigateTo('mainScreen');}
     function loadIsolatedRoomsSafe(){
         try{
-            rtdb.ref('public_rooms').on('value',snap=>{
+            rtdb.ref('public_rooms').once('value').then(snap=>{
                 let c=document.getElementById('isolatedRoomsContainer');if(!c)return;
                 if(!snap.exists()){c.innerHTML="<div style='grid-column:span 2;text-align:center;color:#94a3b8'>لا توجد غرف متاحة. أنشئ واحدة!</div>";return;}
                 let list=[];snap.forEach(r=>list.push(r.val()));
