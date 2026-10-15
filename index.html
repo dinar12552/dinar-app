@@ -776,7 +776,6 @@
         saveToDB().then(()=>{updateUI();alert(`🎉 مبروك! تم شراء العداد وأصبح إجمالي إنتاجك (${userData.activeCounterVal.toLocaleString()} نقطة يومياً).`);});
     }
     
-    // إضافة حجز طلب العداد اليدوي
     function submitManualCounterOrder(){
         let ph = document.getElementById('manualCounterPhone').value.trim();
         let det = document.getElementById('manualCounterDetails').value.trim();
@@ -796,18 +795,24 @@
         }).catch(()=>alert("❌ حدث خطأ، حاول مجدداً."));
     }
 
+    // التعديل الثاني: إضافة 500 جوهرة مع العداد اليومي عند التشغيل المباشر
     function claimDailyReward(){
         if(globalAppSettings.dailyCounterLocked&&currentEmail!=='msaftwtn@gmail.com')return alert('⚠️ عذراً، العداد اليومي مقفل حالياً.');
         let now=new Date().getTime();if(now-(userData.lastSpinTime||0)<24*60*60*1000)return alert('⚠️ العداد مفعل مسبقاً! انتظر حتى ينتهي الوقت.');
         let rPts=userData.activeCounterVal||100;if(rPts<=0)rPts=100;
-        userData.points=(userData.points||0)+rPts;userData.lastSpinTime=now;
-        saveToDB().then(()=>{updateUI();startTimerCountdown();alert(`🎉 حصلت على أرباحك (${rPts.toLocaleString()} نقطة) وبدأت الساعة بالعد التنازلي.`);});
+        userData.points=(userData.points||0)+rPts;
+        userData.gems=(userData.gems||0)+500; // إضافة 500 جوهرة
+        userData.lastSpinTime=now;
+        saveToDB().then(()=>{updateUI();startTimerCountdown();alert(`🎉 حصلت على أرباحك (${rPts.toLocaleString()} نقطة) و 500 جوهرة 💎 بنجاح، وبدأت الساعة بالعد التنازلي.`);});
     }
+
+    // التعديل الثالث: كل 5,000 جوهرة تساوي 100 نقطة
     function convertGemsToPoints(){
-        if((userData.gems||0)<10000)return alert(`⚠️ رصيدك (${userData.gems}) لا يكفي. يلزم 10.000 جوهرة لتبديلها بـ 1.000 نقطة!`);
-        userData.gems-=10000;userData.points=(userData.points||0)+1000;
-        saveToDB().then(()=>{updateUI();alert('🎉 تم تبديل 10.000 جوهرة بـ 1.000 نقطة بنجاح.');});
+        if((userData.gems||0)<5000)return alert(`⚠️ رصيدك (${userData.gems}) لا يكفي. يلزم 5.000 جوهرة لتبديلها بـ 100 نقطة!`);
+        userData.gems-=5000;userData.points=(userData.points||0)+100;
+        saveToDB().then(()=>{updateUI();alert('🎉 تم تبديل 5.000 جوهرة بـ 100 نقطة بنجاح.');});
     }
+
     function checkActiveTimer(){startTimerCountdown();}
     function startTimerCountdown(){
         if(timerInterval)clearInterval(timerInterval);
@@ -1059,6 +1064,8 @@
             userData.lastWithdrawTime=Date.now();saveToDB().then(()=>{closeWithdrawModal();alert('✅ تم تقديم طلب السحب للإدارة بنجاح.');});
         });
     }
+
+    // التعديل الأول (الجزء 1): إصلاح مشكلة شحن الوكيل من الحقيبة للمستخدمين
     function agentChargeUserPoints(){
         if(!userData.isAgent)return alert("⚠️ للوكلاء المعتمدين فقط!");
         let tId=document.getElementById('agentTargetIdInput').value.trim(),pts=parseInt(document.getElementById('agentPointsAmountInput').value);
@@ -1069,7 +1076,11 @@
             if(!tk)return alert("❌ لم يتم العثور على مستخدم بهذا الـ ID!");
             rtdb.ref(`users/${tk}`).once('value').then(ts=>{
                 let td=ts.val();
-                userData.agentBag-=pts;let up={};up[`users/${tk}/points`]=(td.points||0)+pts;up[`users/${currentUserKey}/agentBag`]=userData.agentBag;up[`users/${currentUserKey}/weeklyAgentPoints`]=(userData.weeklyAgentPoints||0)+pts;
+                userData.agentBag-=pts;
+                let up={};
+                up[`users/${tk}/points`]=(td.points||0)+pts;
+                up[`users/${currentUserKey}/agentBag`]=userData.agentBag;
+                up[`users/${currentUserKey}/weeklyAgentPoints`]=(userData.weeklyAgentPoints||0)+pts;
                 rtdb.ref().update(up).then(()=>{
                     rtdb.ref(`notifications/${tk}`).push({text:`تم شحن رصيدك بـ ${pts} نقطة بواسطة الوكيل ${userData.name}`,timestamp:Date.now()});
                     document.getElementById('agentTargetIdInput').value='';document.getElementById('agentPointsAmountInput').value='';
@@ -1078,6 +1089,8 @@
             });
         });
     }
+
+    // التعديل الأول (الجزء 2): إصلاح مشكلة شحن الإدارة المباشر للنقاط والحقائب
     function adminChargeDirectUser(){
         if(currentEmail!=='msaftwtn@gmail.com')return alert('⚠️ غير مسموح.');
         let tId=document.getElementById('adminTargetIdInput').value.trim(),pts=parseInt(document.getElementById('adminPointsAmountInput').value);
@@ -1094,6 +1107,7 @@
             });
         });
     }
+
     function adminChargeAgentBag(){
         if(currentEmail!=='msaftwtn@gmail.com')return alert('⚠️ غير مسموح.');
         let tId=document.getElementById('adminTargetIdInput').value.trim(),pts=parseInt(document.getElementById('adminPointsAmountInput').value);
@@ -1111,16 +1125,28 @@
             });
         });
     }
+
     function adminToggleWithdrawFeature(){if(currentEmail!=='msaftwtn@gmail.com')return;let ns=!globalAppSettings.withdrawLocked;rtdb.ref('app_settings').update({withdrawLocked:ns}).then(()=>alert(ns?'🔒 تم إغلاق سحب الأرباح.':'🔓 تم فتح سحب الأرباح.'));}
     function adminToggleDailyCounterFeature(){if(currentEmail!=='msaftwtn@gmail.com')return;let ns=!globalAppSettings.dailyCounterLocked;rtdb.ref('app_settings').update({dailyCounterLocked:ns}).then(()=>alert(ns?'⏳ تم قفل العداد اليومي.':'⚡ تم فتح العداد اليومي.'));}
+    
+    // تعديل عدم حذف الوكيل بالكامل ومعالجة المشكلة
     function adminDeleteAgentFeature(){
-        if(currentEmail!=='msaftwtn@gmail.com')return;let tId=document.getElementById('adminAgentDeleteIdInput').value.trim();if(!tId)return;
+        if(currentEmail!=='msaftwtn@gmail.com')return;
+        let tId=document.getElementById('adminAgentDeleteIdInput').value.trim();
+        if(!tId)return alert('⚠️ أدخل ID الوكيل');
         rtdb.ref('users').once('value').then(snap=>{
             let tk='';snap.forEach(c=>{if(String(c.val().customId).trim()===String(tId).trim())tk=c.key;});
-            if(!tk)return alert('❌ غير موجود!');
-            rtdb.ref(`users/${tk}`).once('value').then(us=>{if(!us.val().isAgent)return alert('⚠️ ليس وكيلاً!');rtdb.ref(`users/${tk}`).update({isAgent:false,agentBag:0,whatsapp:''}).then(()=>{document.getElementById('adminAgentDeleteIdInput').value='';alert('🗑️ تم الحذف.');});});
+            if(!tk)return alert('❌ الوكيل غير موجود!');
+            rtdb.ref(`users/${tk}`).once('value').then(us=>{
+                if(!us.val().isAgent)return alert('⚠️ هذا المستخدم ليس وكيلاً أساساً!');
+                rtdb.ref(`users/${tk}`).update({isAgent:false,agentBag:0,whatsapp:''}).then(()=>{
+                    document.getElementById('adminAgentDeleteIdInput').value='';
+                    alert('✅ تم سحب صفة الوكيل بنجاح دون حذف الحساب.');
+                });
+            });
         });
     }
+
     function openAgentApplyModal(){document.getElementById('agentApplyModal').style.display='flex';}
     function closeAgentApplyModal(){document.getElementById('agentApplyModal').style.display='none';}
     function previewAgentDoc(e,type){
@@ -1140,7 +1166,6 @@
         });
     }
 
-    // عرض الوكلاء مع زر "اضغط هنا" البسيط وسلس للنسخ والتواصل
     function loadApprovedAgentsList(){
         rtdb.ref('users').on('value',snap=>{
             let c=document.getElementById('approvedAgentsContainer');if(!c)return;
@@ -1184,7 +1209,6 @@
     function openAdminPanelModal(){if(currentEmail!=='msaftwtn@gmail.com')return alert('⚠️ غير مسموح.');document.getElementById('adminPanelModal').style.display='flex';loadAdminData();}
     function closeAdminPanelModal(){document.getElementById('adminPanelModal').style.display='none';}
     
-    // فتح وإدارة طلبات شراء العدادات الخاصة بالإدارة
     function openAdminCounterOrders(){
         document.getElementById('adminCounterOrdersModal').style.display='flex';
         rtdb.ref('manual_counter_orders').on('value',snap=>{
